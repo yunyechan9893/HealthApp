@@ -65,3 +65,13 @@ https://www.youtube.com/watch?v=tRJWSizXI18
 - PT를 가입한 회원은 실시간으로 트레이너와 채팅을 주고 받을 수 있다.   
 - 채팅은  내용을 보낼떄에는  회원아이디, 트레이너아이디, 입력시간과  ,내용으로 구성된다.  사진을 보낼 때에는 내용을 비우고 회원아이디, 트레이너아이디, 입력시간으로 구성된다.
 - 직원은 게시판을 관리할 수 있다. PT회원이 공유한 식단, 운동기록을 볼 수 있고, 식단 공지사항과 회원이 신청한 PT일정을 관리할 수 있다.
+
+# 개발일지
+## 2023.06.29 (2시간)
+- 안드로이드에 내장된 백엔드 분리 시작
+- DB 조작은 SQLAlchemy 사용
+    - ORM 방식으로 보안적으로 우수하다
+- config 파일 분리 방법 공부
+    - 참조 : https://mingrammer.com/ways-to-manage-the-configuration-in-python/
+    - 빌트인 데이터 구조 채택
+- SQLAlchemy engine Database Url 연동까지 완료 및 config 파일 분리
