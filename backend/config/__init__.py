@@ -6,4 +6,4 @@ class Config :
 class DevelopmentConfig(Config):
     DEBUG = True
 
-    DATABASE_URL='mssql+pymssql://yyc:9893@172.30.105.252:1433/HealthApp'
+    DATABASE_URL='mssql+pymssql://yyc:9893@172.30.1.80:1433/HealthApp'
