@@ -18,6 +18,9 @@
 ### 오후
 - connection pool 공부 및 구현
 - CRUD 중 CR 일부 작성
+- 서비스 시 과부하로 서버가 터지는 것을 방지하기 위해 Recycle 30초로 축소
+- pool = 20, maxsize = 10
+- connection 개수는 pool_size + maxsize로 connection을 닫지 않고 재사용한다로 이해
 
 # 결과
 ## 결과 동영상
