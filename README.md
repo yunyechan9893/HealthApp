@@ -8,7 +8,7 @@
     - 빌트인 데이터 구조 채택
 - SQLAlchemy engine Database Url 연동까지 완료 및 config 파일 분리
 
-## 2023.06.30 (3시간)
+## 2023.06.30 (5시간)
 ### 오전
 - SQLAlchemy를 이용해 앱에서 SQL문 분리
     - DB연결 및 login ORM 작성
@@ -16,6 +16,8 @@
 - bluePrint를 이용하여 Rest Api 만들기
 - ORM 방식을 처음 사용하다보니 시간이 꽤 걸렸다
 ### 오후
+- connection pool 공부 및 구현
+- CRUD 중 CR 일부 작성
 
 # 결과
 ## 결과 동영상
