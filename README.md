@@ -22,6 +22,33 @@
 - pool = 20, maxsize = 10
 - connection 개수는 pool_size + maxsize로 connection을 닫지 않고 재사용한다로 이해
 
+## 2023.07.01 (6시간)
+### 오전
+#### 공부
+- GET 방식
+    - Read, Retrieve할 때 사용되는 method
+    - 주소 끝 파라미터에 포함 이것을 쿼리스트링이라 부름
+    - 데이터 변형에 위험성이 없어 안전
+    - 파라미터 내용은 노출, 민감한 데이터 사용 시 권장하지 않음
+- POST 방식
+    - 리소스를 생성/ 업데이트 하기위해 사용
+    - body를 사용하기 때문에 대용량 전송 가능
+    - 개발자 도구, Fiddler 같은 툴로 body 내용 확인이 가능함으로 암호화해서 전송 권장
+- 로그인 및 회원가입 시 비밀번호는 솔트 해시와 해시 함수를 사용하여 보안
+- 서비스 시 https로 바꾸고 SSL/TLS 프로토콜을 사용해 보안 강화
+    - https://growingsaja.tistory.com/696 참고
+#### 안드로이드
+- Retrofit2를 사용하여 flask와 통신
+    - Restful Api을 활용하여 구현 중
+    - 현재 로그인 구현
+- 로그인 파라미터값을 감추기 위해 post방식으로 구현
+
+#### 백엔드
+- 회원가입 구현
+- Json 데이터 통신 방식으로 변경
+
+
+
 # 결과
 ## 결과 동영상
 https://www.youtube.com/watch?v=tRJWSizXI18
