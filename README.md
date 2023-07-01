@@ -9,13 +9,13 @@
 - SQLAlchemy engine Database Url 연동까지 완료 및 config 파일 분리
 
 ## 2023.06.30 (5시간)
-### 오전
+### 🌞오전
 - SQLAlchemy를 이용해 앱에서 SQL문 분리
     - DB연결 및 login ORM 작성
     - 매핑 ( Members, Position ) 
 - bluePrint를 이용하여 Rest Api 만들기
 - ORM 방식을 처음 사용하다보니 시간이 꽤 걸렸다
-### 오후
+### 🌙오후
 - connection pool 공부 및 구현
 - CRUD 중 CR 일부 작성
 - 서비스 시 과부하로 서버가 터지는 것을 방지하기 위해 Recycle 30초로 축소
@@ -23,7 +23,7 @@
 - connection 개수는 pool_size + maxsize로 connection을 닫지 않고 재사용한다로 이해
 
 ## 2023.07.01 (8시간)
-### 오전
+### 🌞오전
 #### 공부
 - GET 방식
     - Read, Retrieve할 때 사용되는 method
@@ -47,7 +47,7 @@
 - 회원가입 구현
 - Json 데이터 통신 방식으로 변경
 
-### 오후
+### 🌙오후
 #### 백엔드
 - Jwt를 통해 Access 토큰발급
     - 사용자의 개인정보를 암호화하여 개인 저장소에 저장
