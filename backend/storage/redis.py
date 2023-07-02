@@ -1,8 +1,12 @@
 import redis
-import config
+from config import DevelopmentConfig as conf
 
 def __connect():
-    return redis.StrictRedis(host='127.0.0.1', port=6379, db=1)
+    return redis.StrictRedis(
+        host=conf.REDIS_IP, 
+        port=conf.REDIS_PORT, 
+        db=conf.REDIS_DB
+    )
 
 def hset( key, category, value, time= 60*60*24*30 ):
     with __connect() as conn :
@@ -16,7 +20,6 @@ def hget( key, category ):
             'time'  : conn.ttl( key )
         }
     
-
 def delete( key, category=None ) :
     with __connect() as conn :
         if category :
