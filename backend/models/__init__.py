@@ -1,6 +1,7 @@
+from flask import jsonify
 from .table import Position, User
 from .connection import SessionContext
-from .manager import create, get
+from .manager import create, get_one
 
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
@@ -12,22 +13,30 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 def login(id, pwd):
-    with SessionContext(session) as se:
-        print(get( session=se ,table=User, filter= and_(User.id==id, User.passward==pwd)))
+    try:
+        with SessionContext(session) as se:
+            return get_one( session=se ,table=User, filter= and_(User.id==id, User.passward==pwd) )
+    except Exception as e:
+        raise e
+    
 
-def register():
-    with SessionContext(session) as se:
-        create( 
-            session=se ,
-            table=User( 
-                id='test', 
-                passward='0000',
-                name='test',
-                phone='01023299893',
-                nickname='test',
-                position=1
-            ) 
-        )
+def register( id, passward, name, phone, nickname, position ):
+    try:
+        with SessionContext(session) as se:
+            create( 
+                session=se ,
+                table=User( 
+                    id=id, 
+                    passward=passward,
+                    name=name,
+                    phone=phone,
+                    nickname=nickname,
+                    position=position
+                ) 
+            )
+        return True
+    except Exception as e:
+        raise e 
 
 
 

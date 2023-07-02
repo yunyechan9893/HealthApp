@@ -6,5 +6,5 @@ api = Blueprint('api',  # 별칭, 해당 블루프린트 밑에서 정의된
     )
 
 from . import login
-from . import register
+from . import signup
 

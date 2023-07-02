@@ -1,3 +1,4 @@
 flask
 SQLAlchemy==23.1.2
 pymssql
+PyJWT==23.1.2
