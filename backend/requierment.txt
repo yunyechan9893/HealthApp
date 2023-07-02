@@ -1,4 +1,5 @@
 flask
-SQLAlchemy==23.1.2
+SQLAlchemy
 pymssql
-PyJWT==23.1.2
+PyJWT
+redis==4.6.0
