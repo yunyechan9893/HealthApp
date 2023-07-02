@@ -1,5 +1,5 @@
 import jwt
-from flask import current_app
+from flask import current_app, Response
 from datetime import datetime, timedelta
 
 __algorithm = 'HS256'
@@ -22,14 +22,15 @@ def post_access_token( User ):
 def check_access_token( access_token ):
     global __algorithm
     # access 토큰을 payload 디코딩하면 딕셔너리를 반환함
-    sceret_ket = current_app.config['JWT_SECRET_KEY']
+    sceret_key = current_app.config['JWT_SECRET_KEY']
     try:
-        payload = jwt.decode(access_token, sceret_ket, __algorithm )
+        payload = jwt.decode(access_token, sceret_key, __algorithm )
         print("아직 안만료")
-    except Exception as e:
-        # 리프레시 토큰을 확인하여 토큰 재발급
-        print("기간만료")
-        print(e)
-        return     
+    except jwt.ExpiredSignatureError:
+        return Response.status.HTTP_401_UNAUTHORIZED
+    except jwt.InvalidTokenError:
+        return Response.status.HTTP_401_UNAUTOHRIZED
+    else:
+        return True   
 
 
