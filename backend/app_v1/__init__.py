@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from security.token_manager import check_access_token as check_token
 
 api = Blueprint('api',  # 별칭, 해당 블루프린트 밑에서 정의된 
@@ -6,12 +6,41 @@ api = Blueprint('api',  # 별칭, 해당 블루프린트 밑에서 정의된
                     url_prefix='/api',             # 모든 URL 앞에 /main이 추가된다
     )
 
+auth = Blueprint('auth',  # 별칭, 해당 블루프린트 밑에서 정의된 
+                    __name__,   # 고정
+                    url_prefix='/auth',             # 모든 URL 앞에 /main이 추가된다
+    )
+
 @api.before_request
 def check_access_token():
     # 액세스 토큰 검사
+    user_info = dict()
     if request.endpoint != 'api.login':
-        access_token = request.headers.get('Authorization')
-        check_token( access_token )
+        json_data = request.json
+        access_token = json_data['access_token']
+        
+        token_info = check_token( access_token )
+        token_code = token_info['code']
+        
+
+        if token_code==200:
+            user_info     = token_info['message']
+        elif token_code==401:
+            # 리프래시 토큰 요구
+            return jsonify({
+                    "success":"F",
+                    "message":401,
+                }
+            )
+        else :
+            # 침입 판단
+            return jsonify({
+                    "success":"F",
+                    "message":400,
+                }
+            )
+
+            
 
 
     # 만료됐다면 리프레시 토큰을 확인 후 액세스 토큰 재발급
