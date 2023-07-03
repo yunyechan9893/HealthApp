@@ -44,8 +44,8 @@ def login():
 
 @api.route('/login/token', methods= ['POST'])
 def login_token():
-    user_info = request.user_info
-    
+    # user_info = request.user_info
+
     return jsonify({
                 "success":"T",
                 "message":200

@@ -1,16 +1,21 @@
-package kr.ac.doowon.healthmanageapp;
+package kr.ac.doowon.healthmanageapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import kr.ac.doowon.healthmanageapp.Activity_04_Main_Frame;
+import kr.ac.doowon.healthmanageapp.R;
+import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.LoginTokenRequest;
+import kr.ac.doowon.healthmanageapp.models.LoginTokenResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Activity_00_Loding extends AppCompatActivity {
+public class Loding extends AppCompatActivity {
     Class nextActivity;
     private static Prefs prefs;
 
@@ -22,15 +27,16 @@ public class Activity_00_Loding extends AppCompatActivity {
 
         prefs = Prefs.getInstance(getApplicationContext());
         String accessToken = prefs.getAccessToken();
-        nextActivity = Activity_01_Login.class;
+        nextActivity = Login.class;
 
         if (accessToken!=null){
             LoginTokenRequest loginTokenRequest = new LoginTokenRequest(accessToken);
             Call call = RetrofitClient.getApiService().tokenLogin(loginTokenRequest);
-            call.enqueue(new Callback() {
+            call.enqueue(new Callback<LoginTokenResponse>() {
                 @Override
-                public void onResponse(Call call, Response response) {
-                    nextActivity = Activity_04_Main_Frame.class;
+                public void onResponse(Call<LoginTokenResponse> call, Response<LoginTokenResponse> response) {
+                    if (response.body().getMessage()==200)
+                        nextActivity = Activity_04_Main_Frame.class;
                 }
 
                 @Override
@@ -40,11 +46,10 @@ public class Activity_00_Loding extends AppCompatActivity {
             });
         }
 
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(Activity_00_Loding.this, nextActivity);
+                Intent intent = new Intent(Loding.this, nextActivity);
                 startActivity(intent);
             }
         }, 2500);

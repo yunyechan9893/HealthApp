@@ -15,12 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.List;
+
+import kr.ac.doowon.healthmanageapp.activities.Login;
 
 
 public class Activity_04_Main_Frame extends AppCompatActivity {
@@ -33,7 +34,7 @@ public class Activity_04_Main_Frame extends AppCompatActivity {
 
             switch (methodName) {
                 case "Logout":
-                    Intent intent = new Intent(context, Activity_01_Login.class);
+                    Intent intent = new Intent(context, Login.class);
                     startActivity(intent);
                     break;
                 case "GetDietResultTread":

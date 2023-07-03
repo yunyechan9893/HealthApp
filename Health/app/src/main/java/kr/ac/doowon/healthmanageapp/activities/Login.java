@@ -1,7 +1,6 @@
-package kr.ac.doowon.healthmanageapp;
+package kr.ac.doowon.healthmanageapp.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -9,17 +8,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import kr.ac.doowon.healthmanageapp.Class_Tool.MakeToast;
+import android.widget.Toast;
+
+import kr.ac.doowon.healthmanageapp.Activity_02_Register;
+import kr.ac.doowon.healthmanageapp.Activity_04_Main_Frame;
+import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.models.LoginRequest;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
+import kr.ac.doowon.healthmanageapp.z_Test;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import androidx.annotation.Nullable;
 
-public class Activity_01_Login extends Activity {
+public class Login extends Activity {
     private static Prefs prefs;
     private Button btnRegister, btnLogin, btnFindIdPwd;
     EditText edId, edPwd;
@@ -55,7 +59,7 @@ public class Activity_01_Login extends Activity {
         @Override
         public void onClick(View view) {
             if(view.getId() == R.id.btnRegist){
-                Intent intent = new Intent(Activity_01_Login.this, Activity_02_Register.class);
+                Intent intent = new Intent(Login.this, Activity_02_Register.class);
                 startActivity(intent);
             }
             if(view.getId() == R.id.btnLogin) {
@@ -69,12 +73,12 @@ public class Activity_01_Login extends Activity {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         LoginResponse resp = response.body();
-                        int msg = Integer.parseInt(resp.getMessage());
+                        int msg = resp.getMessage();
                         String accessToken = resp.getAccessToken();
                         String refreshToken = resp.getRefreshToken();
 
                         if (msg==200) {
-                            intent = new Intent(Activity_01_Login.this, Activity_04_Main_Frame.class);
+                            intent = new Intent(Login.this, Activity_04_Main_Frame.class);
 
                             System.out.println(accessToken);
                             prefs.setAccessToken(accessToken);
@@ -83,7 +87,7 @@ public class Activity_01_Login extends Activity {
                             startActivity(intent);
                         }
                         else{
-                            MakeToast.Unit(getApplicationContext(), "아이디 혹은 비밀번호를 확인해주세요");
+                            Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -94,8 +98,9 @@ public class Activity_01_Login extends Activity {
                 });
 
             }
+
             if(view.getId() == R.id.btnFindIdPwd){
-                intent = new Intent(Activity_01_Login.this, z_Test.class);
+                intent = new Intent(Login.this, z_Test.class);
                 startActivity(intent);
             }
         }

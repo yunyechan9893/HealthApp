@@ -6,13 +6,13 @@ public class LoginTokenResponse {
     @SerializedName("success")
     private boolean success;
     @SerializedName("message")
-    private String message;
+    private int message;
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getMessage() {
+    public int getMessage() {
         return message;
     }
 }

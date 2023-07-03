@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import kr.ac.doowon.healthmanageapp.Class_Tool.MakeToast;
 import kr.ac.doowon.healthmanageapp.Class_Tool.Input;
+import kr.ac.doowon.healthmanageapp.activities.Login;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -129,7 +130,7 @@ public class Activity_02_Register extends Activity {
         edPwd.setFilters(new InputFilter[]{Input.AlphaNum});
         edPwdCheck.setFilters(new InputFilter[]{Input.AlphaNum});
 
-        intent = new Intent(Activity_02_Register.this, Activity_01_Login.class);
+        intent = new Intent(Activity_02_Register.this, Login.class);
 
         //버튼 색상 변경 코드
         draw = getResources().getDrawable(R.drawable.register_border2);

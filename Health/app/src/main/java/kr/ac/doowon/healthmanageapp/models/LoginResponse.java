@@ -6,7 +6,7 @@ public class LoginResponse {
     @SerializedName("success")
     private boolean success;
     @SerializedName("message")
-    private String message;
+    private int message;
     @SerializedName("refresh_token")
     private String refresh_token;
     @SerializedName("access_token")
@@ -17,7 +17,7 @@ public class LoginResponse {
         return success;
     }
 
-    public String getMessage() {
+    public int getMessage() {
         return message;
     }
     public String getAccessToken() {
