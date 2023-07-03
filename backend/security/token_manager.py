@@ -1,48 +1,83 @@
 import jwt
-from flask import current_app, Response
+from config import DevelopmentConfig as conf
+from flask import current_app, Response, jsonify
 from datetime import datetime, timedelta
 import uuid
 
-__algorithm = 'HS256'
+__algorithm = conf.JWT_algorithm
 
 
-def post_access_token( User ):
+def create_access_token( id, position ):
     global __algorithm
     sceret_ket = current_app.config['JWT_SECRET_KEY']
     pay_load = {
         "user_info":[{
-            "id"       : User.get_id(),
-            "auth"     : User.get_position()
+            "id"       : id,
+            "position" : position
         }],
         # 유효기간 설정
-        "exp": datetime.utcnow() + timedelta( seconds= 10 )
+        "exp": datetime.utcnow() + timedelta( seconds=conf.ACCESS_TOKEN_TIME )
     }
     
     return jwt.encode( pay_load, sceret_ket, __algorithm )
 
-def post_refresh_token( ):
+def create_refresh_token( ):
     global __algorithm
     sceret_ket = current_app.config['JWT_SECRET_KEY']
     pay_load = {
         "key":str(uuid.uuid4()),
         # 유효기간 설정
-        "exp": datetime.utcnow() + timedelta( seconds= 60 * 60 * 24 * 15 )
+        "exp": datetime.utcnow() + timedelta( seconds=conf.REFRESH_TOKEN_TIME )
     }
 
     return jwt.encode( pay_load, sceret_ket, __algorithm )
+
+def check_refresh_token( refresh_token ):
+    global __algorithm
+    # access 토큰을 payload 디코딩하면 딕셔너리를 반환함
+    sceret_key = current_app.config['JWT_SECRET_KEY']
+    try:
+        print("아직 안만료")
+        return {
+            'code'    : 200,
+            'message' : jwt.decode(refresh_token, sceret_key, __algorithm )
+        }
+    
+    except jwt.ExpiredSignatureError:
+        return {
+            'code'    : 401,
+            'message' : 'ExpiredSignatureError'
+        }
+    
+    except jwt.InvalidTokenError:
+        return {
+            'code'    : 400,
+            'message' : 'InvalidTokenError'
+        }
+ 
 
 def check_access_token( access_token ):
     global __algorithm
     # access 토큰을 payload 디코딩하면 딕셔너리를 반환함
     sceret_key = current_app.config['JWT_SECRET_KEY']
     try:
-        payload = jwt.decode(access_token, sceret_key, __algorithm )
         print("아직 안만료")
+        return {
+            'code'    : 200,
+            'message' : jwt.decode(access_token, sceret_key, __algorithm )
+        }
+    
     except jwt.ExpiredSignatureError:
-        return Response.status.HTTP_401_UNAUTHORIZED
+        return {
+            'code'    : 401,
+            'message' : 'ExpiredSignatureError'
+        }
+    
     except jwt.InvalidTokenError:
-        return Response.status.HTTP_401_UNAUTOHRIZED
-    else:
-        return True   
+        return {
+            'code'    : 400,
+            'message' : 'InvalidTokenError'
+        }
+ 
 
 
