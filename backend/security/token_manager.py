@@ -7,14 +7,15 @@ import uuid
 __algorithm = conf.JWT_algorithm
 
 
-def create_access_token( id, position ):
+def create_access_token( id, position, nickname ):
     global __algorithm
     sceret_ket = current_app.config['JWT_SECRET_KEY']
     pay_load = {
-        "user_info":[{
+        "user_info":{
             "id"       : id,
-            "position" : position
-        }],
+            "position" : position,
+            "nickname" : nickname
+        },
         # 유효기간 설정
         "exp": datetime.utcnow() + timedelta( seconds=conf.ACCESS_TOKEN_TIME )
     }

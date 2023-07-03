@@ -83,7 +83,6 @@
     - 이미지   : https://itguny04.tistory.com/68
     - 함수정리 : https://nowonbun.tistory.com/365
 
-- 레디스 
 #### 백엔드
 - 레디스 이미지화
 - 레디스 해시값 저장 및 삭제 구현
