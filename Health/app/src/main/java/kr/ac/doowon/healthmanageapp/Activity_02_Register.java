@@ -114,12 +114,26 @@ public class Activity_02_Register extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_03_register);
 
-        Awake();
-        Update();
-    }
+        // findViewById
+        btnCancel = findViewById(R.id.btnCancel);
+        btnRegister = findViewById(R.id.btnRegister);
+        btnIdCheck = findViewById(R.id.btnIdCheck);
+        btnNickNameCheck = findViewById(R.id.btnNickNameCheck);
+        btnPhoneNumberCheck = findViewById(R.id.btnPhoneNumberCheck);
 
-    private void Awake(){
-        FindByViewIdes();
+        edId = findViewById(R.id.edId);
+        edPwd = findViewById(R.id.edPwd);
+        edPwdCheck = findViewById(R.id.edPwdCheck);
+        edName = findViewById(R.id.edName);
+        edNickName = findViewById(R.id.edNickName);
+        edPhoneNumber = findViewById(R.id.edPhoneNumber);
+
+        txPwdDoubleCheck = findViewById(R.id.txPwdDoubleCheck);
+        txIdCheck = findViewById(R.id.txIdCheck);
+        txNameCheck = findViewById(R.id.txNameCheck);
+        txNicknameCheck = findViewById(R.id.txNicknameCheck);
+        txPhoneCheck = findViewById(R.id.txPhoneCheck);
+        txPwdCheck = findViewById(R.id.txPwdCheck);
 
         Handler handler = new HandlerManager();
         theadPool = new Class_TheadPool(handler);
@@ -136,9 +150,8 @@ public class Activity_02_Register extends Activity {
         draw = getResources().getDrawable(R.drawable.register_border2);
         draw.setColorFilter(0xFFDF00, PorterDuff.Mode.SRC_ATOP);
         btnRegister.setBackgroundDrawable(draw);
-    }
 
-    private void Update(){
+
         //비밀번호 규격 체크
         edPwd.addTextChangedListener(new Interface_TextWatcher() {
             @Override
@@ -206,28 +219,7 @@ public class Activity_02_Register extends Activity {
         btnRegister.setOnClickListener(onClick);
     }
 
-    private void FindByViewIdes()
-    {
-        btnCancel = findViewById(R.id.btnCancel);
-        btnRegister = findViewById(R.id.btnRegister);
-        btnIdCheck = findViewById(R.id.btnIdCheck);
-        btnNickNameCheck = findViewById(R.id.btnNickNameCheck);
-        btnPhoneNumberCheck = findViewById(R.id.btnPhoneNumberCheck);
 
-        edId = findViewById(R.id.edId);
-        edPwd = findViewById(R.id.edPwd);
-        edPwdCheck = findViewById(R.id.edPwdCheck);
-        edName = findViewById(R.id.edName);
-        edNickName = findViewById(R.id.edNickName);
-        edPhoneNumber = findViewById(R.id.edPhoneNumber);
-
-        txPwdDoubleCheck = findViewById(R.id.txPwdDoubleCheck);
-        txIdCheck = findViewById(R.id.txIdCheck);
-        txNameCheck = findViewById(R.id.txNameCheck);
-        txNicknameCheck = findViewById(R.id.txNicknameCheck);
-        txPhoneCheck = findViewById(R.id.txPhoneCheck);
-        txPwdCheck = findViewById(R.id.txPwdCheck);
-    }
 
     private boolean DubleCheckId(boolean isDoubleCheckIdSuccess,String id){
         String[] ides = id.split("");

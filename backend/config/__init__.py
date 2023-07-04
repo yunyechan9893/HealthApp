@@ -5,7 +5,7 @@ class Config :
 class DevelopmentConfig(Config):
     DEBUG = True
 
-    DATABASE_URL='mssql+pymssql://yyc:9893@172.30.1.67:1433/HealthApp'
+    DATABASE_URL='mssql+pymssql://yyc:9893@172.20.10.5:1433/HealthApp'
 
     #jwt
     JWT_algorithm ='HS256'
