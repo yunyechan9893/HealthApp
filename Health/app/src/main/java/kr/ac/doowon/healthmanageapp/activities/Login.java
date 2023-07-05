@@ -10,10 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import kr.ac.doowon.healthmanageapp.Activity_02_Register;
 import kr.ac.doowon.healthmanageapp.Activity_04_Main_Frame;
 import kr.ac.doowon.healthmanageapp.R;
-import kr.ac.doowon.healthmanageapp.models.LoginRequest;
+import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
@@ -65,7 +64,10 @@ public class Login extends Activity {
             if(view.getId() == R.id.btnLogin) {
                 String strId = edId.getText().toString();
                 String strPwd = edPwd.getText().toString();
-                LoginRequest loginReq = new LoginRequest(strId, strPwd);
+
+                UserRequest loginReq = new UserRequest();
+                loginReq.setUserId( strId   );
+                loginReq.setUserPwd( strPwd );
 
                 call = RetrofitClient.getApiService().login(loginReq);
                 call.enqueue(new Callback<LoginResponse>(){

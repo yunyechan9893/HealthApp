@@ -15,7 +15,8 @@ auth = Blueprint('auth',  # 별칭, 해당 블루프린트 밑에서 정의된
 def check_access_token():
     # 액세스 토큰 검사
     user_info = dict()
-    if request.endpoint != 'api.login':
+    print(request.method)
+    if request.endpoint != 'api.login' and request.method != 'GET':
         json_data = request.json
         access_token = json_data['access_token']
         

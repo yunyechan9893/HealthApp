@@ -6,9 +6,8 @@ import android.os.Handler;
 
 import kr.ac.doowon.healthmanageapp.Activity_04_Main_Frame;
 import kr.ac.doowon.healthmanageapp.R;
-import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.LoginTokenRequest;
-import kr.ac.doowon.healthmanageapp.models.LoginTokenResponse;
+import kr.ac.doowon.healthmanageapp.models.JsonResponese;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 import retrofit2.Call;
@@ -32,9 +31,9 @@ public class Loding extends AppCompatActivity {
         if (accessToken!=null){
             LoginTokenRequest loginTokenRequest = new LoginTokenRequest(accessToken);
             Call call = RetrofitClient.getApiService().tokenLogin(loginTokenRequest);
-            call.enqueue(new Callback<LoginTokenResponse>() {
+            call.enqueue(new Callback<JsonResponese>() {
                 @Override
-                public void onResponse(Call<LoginTokenResponse> call, Response<LoginTokenResponse> response) {
+                public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
                     if (response.body().getMessage()==200)
                         nextActivity = Activity_04_Main_Frame.class;
                 }

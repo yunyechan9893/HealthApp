@@ -43,9 +43,21 @@ def register( id, passward, name, phone, nickname, position ):
             )
         return True
     except Exception as e:
-        raise e 
+        return False
 
-
+def get_id(id):
+    try:
+        with SessionContext(session) as se:
+            return get_one( session=se ,table=User, filter= and_(User.id==id) )
+    except Exception as e:
+        return False
+    
+def get_nickname(nickname):
+    try:
+        with SessionContext(session) as se:
+            return get_one( session=se ,table=User, filter= and_(User.nickname==nickname) )
+    except Exception as e:
+        return False
 
 
 

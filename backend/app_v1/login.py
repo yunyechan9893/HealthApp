@@ -7,8 +7,8 @@ from storage import redis
 @api.route('/login', methods= ['POST'])
 def login():
     params = request.get_json()
-    user_id  = params['userId']
-    user_pwd = params['userPwd']
+    user_id  = params['user_id']
+    user_pwd = params['user_pwd']
 
     result = models.login_defualt(user_id, user_pwd)
     if result :
