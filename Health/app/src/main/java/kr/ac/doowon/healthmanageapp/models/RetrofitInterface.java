@@ -11,6 +11,9 @@ public interface RetrofitInterface {
         @POST("login")
         Call<LoginResponse> login(@Body UserRequest request);
 
+        @POST("signup")
+        Call<JsonResponese> signup(@Body UserRequest request);
+
         @POST("login/token")
         Call<JsonResponese> tokenLogin(@Body LoginTokenRequest request);
 

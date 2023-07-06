@@ -16,24 +16,36 @@ public class UserRequest {
     @Expose
     private String userName;
 
+    @SerializedName("user_nickname")
+    @Expose
+    private String userNickname;
+
     @SerializedName("user_phone")
     @Expose
     private String userPhone;
 
-    public void setUserId( String userPwd ){
+    @SerializedName("user_code")
+    @Expose
+    private String userCode;
+
+    public void setUserId( String userId ){
+        this.userId = userId;
+    }
+    public void setUserPwd( String userPwd ){
         this.userPwd = userPwd;
     }
-
-    public void setUserPwd( String userName ){
-        this.userName = userName;
-    }
-
     public void setUserName( String userName ){
         this.userName = userName;
     }
-
+    public void setUserNickname( String userNickname ){
+        this.userNickname = userNickname;
+    }
     public void setUserPhone( String userPhone ){
         this.userPhone = userPhone;
+    }
+
+    public void setUserCode( String userCode ){
+        this.userCode = userCode;
     }
 
 }

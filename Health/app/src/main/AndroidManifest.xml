@@ -18,7 +18,7 @@
         <activity android:name=".Activity_Management_Diet_Detail"/>
         <activity android:name=".Activity_04_Main_Frame"/>
         <activity android:name=".activities.Login"/>
-        <activity android:name=".activities.Activity_02_Register"/>
+        <activity android:name=".activities.Signup"/>
         <activity android:name=".z_Test"/>
         <activity
             android:name=".activities.Loding"

@@ -5,7 +5,7 @@ Base = declarative_base()
 
 class Position(Base):
     __tablename__='position'
-    no = Column(Integer, primary_key=True)
+    no = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(20))
 
 class User(Base):

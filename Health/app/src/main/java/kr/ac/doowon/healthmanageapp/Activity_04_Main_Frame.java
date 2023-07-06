@@ -85,7 +85,8 @@ public class Activity_04_Main_Frame extends AppCompatActivity {
     private List<JavaBean_Management_Diet_AllAteFood> dietList;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected
+    void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_04_main_frame);
 

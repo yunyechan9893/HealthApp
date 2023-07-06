@@ -58,7 +58,7 @@ public class Login extends Activity {
         @Override
         public void onClick(View view) {
             if(view.getId() == R.id.btnRegist){
-                Intent intent = new Intent(Login.this, Activity_02_Register.class);
+                Intent intent = new Intent(Login.this, Signup.class);
                 startActivity(intent);
             }
             if(view.getId() == R.id.btnLogin) {
