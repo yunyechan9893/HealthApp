@@ -22,9 +22,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import androidx.annotation.Nullable;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/* 수정할 것
+ * - 하드코딩 문자열 옮기기
+ * - 아이디 입력시 영어 키보드, 이름 입력시 한글 키보드 자동 변경
+ * */
 
 public class Signup extends Activity {
     @Override
@@ -264,9 +270,16 @@ public class Signup extends Activity {
             String nickname = edNickName.getText().toString();
             String phone = edPhoneNumber.getText().toString();
 
+            String hashPwd;
+            try {
+                hashPwd = encrypt(pwd);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+
             UserRequest userRequest = new UserRequest();
             userRequest.setUserId(id);
-            userRequest.setUserPwd(pwd);
+            userRequest.setUserPwd(hashPwd);
             userRequest.setUserName(name);
             userRequest.setUserNickname(nickname);
             userRequest.setUserPhone(phone);
@@ -291,6 +304,21 @@ public class Signup extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public String encrypt(String text) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(text.getBytes());
+
+        return bytesToHex(md.digest());
+    }
+    // 바이트를 해쉬화한다.
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : bytes) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
     }
 }
 
