@@ -114,6 +114,14 @@
 - register Activity java 리팩토링
 - Retrofit2 Get 방식 구현
 
+## 2023.07.05 ( 5시간 )
+### 🌙오후
+#### 안드로이드
+- register Activity java 리팩토링
+    - jdbc 통신 제거 -> Retrofit2로 변경
+    - 분할시킨 제거
+    - 코드 정리
+
 
 # 결과
 ## 결과 동영상
