@@ -5,29 +5,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import kr.ac.doowon.healthmanageapp.activities.Main_Frame;
 
 public class Fragment_Management_Diet extends Fragment {
 
@@ -88,7 +83,7 @@ public class Fragment_Management_Diet extends Fragment {
     ListView listTodayAteFood;
     Fragment_Management_Diet_Add diet_add;
     private String USERID;
-    Activity_04_Main_Frame parentActivity;
+    Main_Frame parentActivity;
     Bundle bundle;
     Handler handler;
     Class_TheadPool theadPool;
@@ -103,9 +98,9 @@ public class Fragment_Management_Diet extends Fragment {
 
         sharedPreferences = context.getSharedPreferences("Diet", context.MODE_PRIVATE);
         USERID = Class_Tool.getUSERID(context);
-        parentActivity = (Activity_04_Main_Frame) getActivity();
-        parentActivity.cfm.setFragmentManagementDiet(this);
-        fragmentManagementMain = parentActivity.cfm.getFragmentManagementMain();
+        parentActivity = (Main_Frame) getActivity();
+
+
         handler = new HandlerManager();
         diet_add = new Fragment_Management_Diet_Add(handler);
         theadPool = new Class_TheadPool(handler);
@@ -194,7 +189,7 @@ public class Fragment_Management_Diet extends Fragment {
         System.out.println("Diet 생명주기 종료");
         fragmentManagementMain.updateTodayKcal();
         fragmentManagementMain.updateTargetKcal();
-        parentActivity.cfm.setFragmentManagementDiet(null);
+
     }
 
     // 재사용은 안되지만 너무 길어 객체화 해주었다.

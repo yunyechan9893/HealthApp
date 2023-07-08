@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationBarView;
@@ -21,66 +22,23 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.doowon.healthmanageapp.adapters.MainPagerAdapter;
 import me.relex.circleindicator.CircleIndicator3;
 
-public class Fragment_Home extends Fragment implements View.OnClickListener {
-    public Fragment_Home(AppCompatActivity activity){
-        this.activity = activity;
-    }
-
-    @Override
-    public void onClick(View view) {
-
-    }
+public class Fragment_Home extends Fragment {
 
     // 내부 클래스 핸들러
-    class HandlerManager extends Handler{
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            bundle = msg.getData();
-            String methodName = bundle.getString("Method","E");
-
-            switch (methodName)
-            {
-                case  "BBSSetting":
-                    String title = bundle.getString("Title","E");
-                    int category = bundle.getInt("Category");
-
-                    if(category == 1000) {
-                        tvNoticeBBTitle.setText(title);
-                        threadPool.HomeBBSelectThread1(1001);
-                    }
-
-                    else if(category == 1001)
-                    {
-                        tvFreeBBTitle.setText(title);
-                        threadPool.HomeBBSelectThread1(1002);
-                    }
-                    else if(category == 1002) tvExerciseBBTitle.setText(title);
-            }
-        }
-    }
+    /*
+    * 구현해야할 것
+    * - SQL Lite에서 오늘의 칼로리, 운동, PT일정 가져오기
+    * -
+    * */
 
     View rootView;
     TextView tvNoticeBBTitle, tvFreeBBTitle, tvExerciseBBTitle;
-    SharedPreferences USER_ID;
-    Class_TheadPool threadPool;
-    Bundle bundle;
     ViewPager2 viewPg;
     CircleIndicator3 indicator;
-    int num_page = 4;
-    AppCompatActivity activity;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Handler handler = new HandlerManager();
-        threadPool = new Class_TheadPool(handler);
-        threadPool.HomeBBSelectThread1(1000);
-    }
 
     @Nullable
     @Override
@@ -94,14 +52,20 @@ public class Fragment_Home extends Fragment implements View.OnClickListener {
 
         //-- 추후 베너이미지 추가를 할 시 여기를 변경해주세요. --//
         // test용입니다.
-        List<Integer> bannerImage = new ArrayList<Integer>();
+        ArrayList<Integer> bannerImage = new ArrayList<>();
         bannerImage.add(R.drawable.img_banner_1);
         bannerImage.add(R.drawable.img_banner_2);
 
-        //-- 뷰페이저, 서클인디케이터, 프레그먼트 액티비티, 배너 이미지 바인딩을 담당합니다 --//
-        Class_ViewPagerManager viewPagerManager = new Class_ViewPagerManager(viewPg, indicator, activity, bannerImage);
-        //-- 우리 앱에 알맞게 세팅합니다 --//
-        viewPagerManager.Setting(viewPg, indicator);
+        FragmentStateAdapter fragmentStateAdapter = new MainPagerAdapter(getActivity(), bannerImage);
+        viewPg.setAdapter(fragmentStateAdapter);
+        indicator.setViewPager(viewPg);
+
+        int listCnt= bannerImage.size();
+        indicator.createIndicators(listCnt,0);
+        viewPg.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        viewPg.setCurrentItem(listCnt, true);
+        viewPg.setOffscreenPageLimit(listCnt);
+
 
         return rootView;
     }

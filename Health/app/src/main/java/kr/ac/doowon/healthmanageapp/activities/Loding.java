@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import kr.ac.doowon.healthmanageapp.Activity_04_Main_Frame;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.models.LoginTokenRequest;
 import kr.ac.doowon.healthmanageapp.models.JsonResponese;
@@ -35,7 +34,7 @@ public class Loding extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
                     if (response.body().getMessage()==200)
-                        nextActivity = Activity_04_Main_Frame.class;
+                        nextActivity = Main_Frame.class;
                 }
 
                 @Override

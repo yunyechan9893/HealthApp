@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import kr.ac.doowon.healthmanageapp.Activity_04_Main_Frame;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
@@ -21,6 +20,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import androidx.annotation.Nullable;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Login extends Activity {
     private static Prefs prefs;
@@ -65,9 +67,16 @@ public class Login extends Activity {
                 String strId = edId.getText().toString();
                 String strPwd = edPwd.getText().toString();
 
+                String hashPwd;
+                try {
+                    hashPwd = encrypt(strPwd);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
+
                 UserRequest loginReq = new UserRequest();
                 loginReq.setUserId( strId   );
-                loginReq.setUserPwd( strPwd );
+                loginReq.setUserPwd( hashPwd );
 
                 call = RetrofitClient.getApiService().login(loginReq);
                 call.enqueue(new Callback<LoginResponse>(){
@@ -80,7 +89,7 @@ public class Login extends Activity {
                         String refreshToken = resp.getRefreshToken();
 
                         if (msg==200) {
-                            intent = new Intent(Login.this, Activity_04_Main_Frame.class);
+                            intent = new Intent(Login.this, Main_Frame.class);
 
                             System.out.println(accessToken);
                             prefs.setAccessToken(accessToken);
@@ -106,5 +115,20 @@ public class Login extends Activity {
                 startActivity(intent);
             }
         }
+    }
+
+    public String encrypt(String text) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(text.getBytes());
+
+        return bytesToHex(md.digest());
+    }
+    // 바이트를 해쉬화한다.
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : bytes) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
     }
 }

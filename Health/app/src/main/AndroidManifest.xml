@@ -16,7 +16,7 @@
         android:theme="@style/Theme.HealthManageApp"
         tools:targetApi="31">
         <activity android:name=".Activity_Management_Diet_Detail"/>
-        <activity android:name=".Activity_04_Main_Frame"/>
+        <activity android:name=".activities.Main_Frame"/>
         <activity android:name=".activities.Login"/>
         <activity android:name=".activities.Signup"/>
         <activity android:name=".z_Test"/>

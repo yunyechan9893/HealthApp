@@ -13,15 +13,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
+
+import kr.ac.doowon.healthmanageapp.activities.Main_Frame;
 
 public class Fragment_Management_Diet_Add extends Fragment implements View.OnClickListener {
 
@@ -146,7 +146,7 @@ public class Fragment_Management_Diet_Add extends Fragment implements View.OnCli
     Context context;
     String USERID, sNowDate;
     Handler handler, ManagementDietHandler;
-    Activity_04_Main_Frame parentActivity;
+    Main_Frame parentActivity;
     Fragment_Management_Diet fragmentManagementDiet;
     int ateFoodCount = 0;
 
@@ -157,10 +157,10 @@ public class Fragment_Management_Diet_Add extends Fragment implements View.OnCli
         theadPool = new Class_TheadPool(handler);
         context = getActivity().getApplicationContext();
         USERID = Class_Tool.getUSERID(context);
-        parentActivity = (Activity_04_Main_Frame) getActivity();
-        parentActivity.cfm.setFragmentManagementDietAdd(this);
+        parentActivity = (Main_Frame) getActivity();
+
         sNowDate = Class_Tool.getNowDate();
-        fragmentManagementDiet = parentActivity.cfm.getFragmentManagementDiet();
+
     }
 
     @Nullable
@@ -273,7 +273,5 @@ public class Fragment_Management_Diet_Add extends Fragment implements View.OnCli
     @Override
     public void onDestroy() {
         super.onDestroy();
-        parentActivity.getDietView();
-        parentActivity.cfm.setFragmentManagementDietAdd(null);
     }
 }

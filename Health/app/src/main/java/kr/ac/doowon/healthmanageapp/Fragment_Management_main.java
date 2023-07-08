@@ -14,11 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import kr.ac.doowon.healthmanageapp.activities.Main_Frame;
 
 public class Fragment_Management_main extends Fragment implements View.OnClickListener {
     class HandlerManager extends Handler{
@@ -41,7 +38,7 @@ public class Fragment_Management_main extends Fragment implements View.OnClickLi
     private Class_TheadPool theadPool;
     private Bundle bundle;
     private static String USERID;
-    private Activity_04_Main_Frame parentActivity;
+    private Main_Frame parentActivity;
 
     int count = 0;
 
@@ -64,8 +61,7 @@ public class Fragment_Management_main extends Fragment implements View.OnClickLi
         theadPool = new Class_TheadPool(handler);
         USERID = Class_Tool.getUSERID(getContext());
         todayKcal = 0;
-        parentActivity = (Activity_04_Main_Frame) getActivity();
-        parentActivity.cfm.setFragmentManagementMain(this);
+        parentActivity = (Main_Frame) getActivity();
 
         // 현재 날짜를 가져온다
         sNowDate = Class_Tool.getNowDate();
