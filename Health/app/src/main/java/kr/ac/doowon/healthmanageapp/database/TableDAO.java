@@ -23,8 +23,8 @@ public class TableDAO {
         @Delete
         void delete(Diet diet);
 
-        @Query("SELECT * FROM diet")
-        List<Diet> getDiet();
+        @Query("SELECT * FROM diet WHERE date_time=:dateTime")
+        List<Diet> getDiet(String dateTime);
     }
 
     @Dao
