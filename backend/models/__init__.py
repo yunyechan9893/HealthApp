@@ -1,9 +1,9 @@
 from flask import jsonify
-from .table import Position, User
+from .table import Position, User, Diet, AteFood
 from .connection import SessionContext
-from .manager import create, get_one
+from .manager import create, get_one, get
 
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine, and_, or_
 from sqlalchemy.orm import sessionmaker
 from config import DevelopmentConfig as config
 
@@ -56,6 +56,26 @@ def get_nickname(nickname):
     try:
         with SessionContext(session) as se:
             return get_one( session=se ,table=User, filter= and_(User.nickname==nickname) )
+    except Exception as e:
+        return False
+    
+def get_diet(id):
+    try:
+        with SessionContext(session) as se:
+            table  = Diet
+            filter = and_(Diet.member_id == id)
+            
+            return get(session=se, table=table, filter=filter)
+    except Exception as e:
+        return False
+    
+def get_ate_food(*noes):
+    try:
+        with SessionContext(session) as se:
+            table  = AteFood
+            filter = or_(AteFood.diet_no == no for no in noes)
+
+            return get(session=se, table=table, filter=filter)
     except Exception as e:
         return False
 
