@@ -1,5 +1,6 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,7 @@ import kr.ac.doowon.healthmanageapp.Fragment_Management_main;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
 import kr.ac.doowon.healthmanageapp.database.DBHelper;
+import kr.ac.doowon.healthmanageapp.res.Prefs;
 
 public class Main_Frame extends AppCompatActivity {
     /*
@@ -23,6 +25,7 @@ public class Main_Frame extends AppCompatActivity {
     * - 로그아웃 구현
     * - 액세스 코인, 리프레시 코인 삭제
     * */
+    private static Prefs prefs;
     @Override
     protected
     void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +71,13 @@ public class Main_Frame extends AppCompatActivity {
 
         ibtnNav.setOnClickListener((view -> {
             drawerLayout.openDrawer(drawerView);
+        }));
+
+        prefs = Prefs.getInstance(getApplicationContext());
+        tvLogout.setOnClickListener((v -> {
+            prefs.clearToken();
+            Intent intent = new Intent(Main_Frame.this, Login.class);
+            startActivity(intent);
         }));
     }
 }
