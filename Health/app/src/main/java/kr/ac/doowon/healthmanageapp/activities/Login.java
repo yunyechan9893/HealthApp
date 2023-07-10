@@ -2,6 +2,7 @@ package kr.ac.doowon.healthmanageapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import kr.ac.doowon.healthmanageapp.R;
+import kr.ac.doowon.healthmanageapp.database.DBHelper;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
@@ -130,5 +132,13 @@ public class Login extends Activity {
             builder.append(String.format("%02x", b));
         }
         return builder.toString();
+    }
+
+    private void createDB(){
+        DBHelper helper;
+        SQLiteDatabase db;
+        helper = new DBHelper(this, "health.db", null, 1);
+        db = helper.getWritableDatabase();
+        helper.onCreate(db);
     }
 }
