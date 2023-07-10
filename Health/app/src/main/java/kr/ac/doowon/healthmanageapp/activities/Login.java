@@ -12,7 +12,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import kr.ac.doowon.healthmanageapp.R;
+import kr.ac.doowon.healthmanageapp.database.AppDatabase;
 import kr.ac.doowon.healthmanageapp.database.DBHelper;
+import kr.ac.doowon.healthmanageapp.database.Table;
+import kr.ac.doowon.healthmanageapp.database.TableDAO;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
@@ -22,9 +25,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import androidx.annotation.Nullable;
+import androidx.room.Room;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class Login extends Activity {
     private static Prefs prefs;
@@ -96,6 +101,7 @@ public class Login extends Activity {
                             System.out.println(accessToken);
                             prefs.setAccessToken(accessToken);
                             prefs.setRefreshToken(refreshToken);
+                            createDB();
 
                             startActivity(intent);
                         }
@@ -135,10 +141,15 @@ public class Login extends Activity {
     }
 
     private void createDB(){
-        DBHelper helper;
-        SQLiteDatabase db;
-        helper = new DBHelper(this, "health.db", null, 1);
-        db = helper.getWritableDatabase();
-        helper.onCreate(db);
+        //DBHelper helper;
+        //SQLiteDatabase db;
+        //helper = new DBHelper(this, "health.db", null, 1);
+        //db = helper.getWritableDatabase();
+        //helper.onCreate(db);
+
+        AppDatabase db = AppDatabase.getDatabase(this);
+        TableDAO.DietDAO dietDao = db.dietDAO();
+        System.out.println( "데이터베이스 연결 완료" + dietDao );
+        //List<Table.Diet> dietList = dietDao.get();
     }
 }
