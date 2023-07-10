@@ -47,6 +47,7 @@ public class Main_Frame extends AppCompatActivity {
         fragmentAdapter.addFragment(new Fragment_Management_main());
         fragmentAdapter.addFragment(new Fragment_Introduce_Main());
         viewPager.setAdapter(fragmentAdapter);
+        viewPager.setUserInputEnabled(false);
 
         navigationBarView.setOnItemSelectedListener(item -> {
             switch (item.getItemId())
@@ -64,13 +65,6 @@ public class Main_Frame extends AppCompatActivity {
             return false;
         });
 
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                navigationBarView.getMenu().getItem(position).setCheckable(true);
-            }
-        });
 
         ibtnNav.setOnClickListener((view -> {
             drawerLayout.openDrawer(drawerView);
