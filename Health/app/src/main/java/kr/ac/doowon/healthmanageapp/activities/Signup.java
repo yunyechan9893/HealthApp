@@ -11,6 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import kr.ac.doowon.healthmanageapp.Interface_TextWatcher;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.models.JsonResponese;
@@ -20,29 +26,18 @@ import kr.ac.doowon.healthmanageapp.res.KeyPatten;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import androidx.annotation.Nullable;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-/* 수정할 것
- * - 하드코딩 문자열 옮기기
- * - 아이디 입력시 영어 키보드, 이름 입력시 한글 키보드 자동 변경
- * */
 
 public class Signup extends Activity {
+
+    private ArrayList<Boolean> checkList;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        // 0 : 아이디 중복체크, 1: 비밀번호 체크, 2: 비밀번호 일치 체크, 3: 이름체크, 4: 폰 체크, 5:닉네임 체크
-        ArrayList<Boolean> checkList = new ArrayList<>(Arrays.asList(false, false, false, false, false, false));
-
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_03_register);
 
-        /* findViewById */
+        checkList = new ArrayList<>(Arrays.asList(false, false, false, false, false, false));
+
         Button btnCancel = findViewById(R.id.btnCancel);
         Button btnRegister = findViewById(R.id.btnRegister);
         Button btnIdCheck = findViewById(R.id.btnIdCheck);
@@ -59,27 +54,21 @@ public class Signup extends Activity {
         TextView txPwdDoubleCheck = findViewById(R.id.txPwdDoubleCheck);
         TextView txIdCheck = findViewById(R.id.txIdCheck);
         TextView txNameCheck = findViewById(R.id.txNameCheck);
-        TextView txNicknameCheck = findViewById(R.id.txNicknameCheck);
         TextView txPhoneCheck = findViewById(R.id.txPhoneCheck);
         TextView txPwdCheck = findViewById(R.id.txPwdCheck);
 
-        /* setFilters */
         KeyPatten keyPatten = new KeyPatten();
         edId.setFilters(new InputFilter[]{keyPatten.AlphaNum});
         edName.setFilters(new InputFilter[]{keyPatten.Kor});
         edPwd.setFilters(new InputFilter[]{keyPatten.AlphaNum});
         edPwdCheck.setFilters(new InputFilter[]{keyPatten.AlphaNum});
 
-        /* 버튼 색상 변경 코드 */
         Drawable draw = getResources().getDrawable(R.drawable.register_border2);
         draw.setColorFilter(0xFFDF00, PorterDuff.Mode.SRC_ATOP);
         btnRegister.setBackgroundDrawable(draw);
 
-        /* editText 키 입력시 자동 검사 */
-
-        // 아이디 키 입력시 중복검사 해제
         edId.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) -> checkList.set(0, false));
-        //비밀번호 규격 체크
+
         edPwd.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) -> {
             String strPwd = edPwd.getText().toString();
 
@@ -109,7 +98,7 @@ public class Signup extends Activity {
 
             txPwdCheck.setVisibility(View.INVISIBLE);
         });
-        // 비밀번호 일치 체크
+
         edPwdCheck.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) -> {
             String strPwd = edPwd.getText().toString();
 
@@ -122,32 +111,27 @@ public class Signup extends Activity {
                 checkList.set(2, false);
             }
         });
-        // 이름 체크
+
         edName.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) ->{
             boolean isName = i1!=0;
-            System.out.println( isName );
             txNameCheck.setVisibility(isName ?  View.INVISIBLE:View.VISIBLE);
             checkList.set(3, isName);
         });
 
-
-        /** Click Listener **/
-
         Toast toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
-        // 취소 버튼
+
         btnCancel.setOnClickListener(v -> {
             Intent intent = new Intent(Signup.this, Login.class);
             startActivity(intent);
         });
-        // 아이디 중복 검사
-        btnIdCheck.setOnClickListener(v ->{
+
+        btnIdCheck.setOnClickListener(v -> {
             String id = edId.getText().toString();
             txIdCheck.setVisibility(View.INVISIBLE);
 
             if (id.length() < 8 || id.length() > 20) {
                 toast.setText("8~15자 사이로 입력해주세요.");
                 toast.show();
-
                 return;
             }
 
@@ -160,7 +144,6 @@ public class Signup extends Activity {
                 if (!Character.isLetterOrDigit(c)) {
                     toast.setText("특수문자는 사용할 수 없습니다.");
                     toast.show();
-
                     return;
                 }
             }
@@ -168,11 +151,10 @@ public class Signup extends Activity {
             if (!alphabatCheck) {
                 toast.setText("영문이 포함되어야 합니다.");
                 toast.show();
-
                 return;
             }
 
-            Call call = RetrofitClient.getApiService().checkDuplicateId(id);
+            Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateId(id);
             call.enqueue(new Callback<JsonResponese>() {
                 @Override
                 public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
@@ -194,11 +176,11 @@ public class Signup extends Activity {
                 }
             });
         });
-        //닉네임중복검사버튼
+
         btnNickNameCheck.setOnClickListener( v -> {
             String nickname = edNickName.getText().toString();
 
-            Call call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
+            Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
             call.enqueue(new Callback<JsonResponese>() {
                 @Override
                 public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
@@ -220,7 +202,7 @@ public class Signup extends Activity {
                 }
             });
         });
-        //핸드폰인증검사버튼
+
         btnPhoneNumberCheck.setOnClickListener(v -> {
             if (edPhoneNumber.length() > 8) {
                 checkList.set(4, true);
@@ -229,38 +211,12 @@ public class Signup extends Activity {
                 txPhoneCheck.setVisibility(View.VISIBLE);
             }
         });
-        //회원가입검사버튼
+
         btnRegister.setOnClickListener(v -> {
             for (int i = 0; i < checkList.size(); i++) {
                 if (!checkList.get(i)) {
-                    switch (i) {
-                        case 0:
-                            txIdCheck.setVisibility(View.VISIBLE);
-                            edId.requestFocus();
-                            return;
-                        case 1:
-                            txPwdCheck.setVisibility(View.VISIBLE);
-                            edPwd.requestFocus();
-                            return;
-                        case 2:
-                            txPwdDoubleCheck.setVisibility(View.VISIBLE);
-                            edPwd.requestFocus();
-                            return;
-                        case 3:
-                            txNameCheck.setVisibility(View.VISIBLE);
-                            edName.requestFocus();
-                            return;
-                        case 4:
-                            txPhoneCheck.setVisibility(View.VISIBLE);
-                            edPhoneNumber.requestFocus();
-                            return;
-                        case 5:
-                            txNicknameCheck.setVisibility(View.VISIBLE);
-                            edNickName.requestFocus();
-                            return;
-                        default:
-                            return;
-                    }
+                    showErrorAndFocusInput(i);
+                    return;
                 }
             }
 
@@ -284,7 +240,7 @@ public class Signup extends Activity {
             userRequest.setUserNickname(nickname);
             userRequest.setUserPhone(phone);
 
-            Call call = RetrofitClient.getApiService().signup(userRequest);
+            Call<JsonResponese> call = RetrofitClient.getApiService().signup(userRequest);
             call.enqueue(new Callback<JsonResponese>() {
                 @Override
                 public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
@@ -301,6 +257,41 @@ public class Signup extends Activity {
         });
     }
 
+    private void showErrorAndFocusInput(int index) {
+        TextView textView;
+        EditText editText;
+        switch (index) {
+            case 0:
+                textView = findViewById(R.id.txIdCheck);
+                editText = findViewById(R.id.edId);
+                break;
+            case 1:
+                textView = findViewById(R.id.txPwdCheck);
+                editText = findViewById(R.id.edPwd);
+                break;
+            case 2:
+                textView = findViewById(R.id.txPwdDoubleCheck);
+                editText = findViewById(R.id.edPwd);
+                break;
+            case 3:
+                textView = findViewById(R.id.txNameCheck);
+                editText = findViewById(R.id.edName);
+                break;
+            case 4:
+                textView = findViewById(R.id.txPhoneCheck);
+                editText = findViewById(R.id.edPhoneNumber);
+                break;
+            case 5:
+                textView = findViewById(R.id.txNicknameCheck);
+                editText = findViewById(R.id.edNickName);
+                break;
+            default:
+                return;
+        }
+        textView.setVisibility(View.VISIBLE);
+        editText.requestFocus();
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -312,7 +303,7 @@ public class Signup extends Activity {
 
         return bytesToHex(md.digest());
     }
-    // 바이트를 해쉬화한다.
+
     private String bytesToHex(byte[] bytes) {
         StringBuilder builder = new StringBuilder();
         for (byte b : bytes) {
@@ -321,4 +312,3 @@ public class Signup extends Activity {
         return builder.toString();
     }
 }
-
