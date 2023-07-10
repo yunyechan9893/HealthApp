@@ -20,23 +20,12 @@ import kr.ac.doowon.healthmanageapp.database.DBHelper;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 
 public class Main_Frame extends AppCompatActivity {
-    /*
-    * 추가해야되는것
-    * - 로그아웃 구현
-    * - 액세스 코인, 리프레시 코인 삭제
-    * */
     private static Prefs prefs;
     @Override
     protected
     void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_04_main_frame);
-
-        DBHelper helper;
-        SQLiteDatabase db;
-        helper = new DBHelper(Main_Frame.this, "newdb.db", null, 1);
-        db = helper.getWritableDatabase();
-        helper.onCreate(db);
 
         TextView tvLogout = findViewById(R.id.tvLogout);
         NavigationBarView navigationBarView = findViewById(R.id.navBottom);

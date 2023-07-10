@@ -13,6 +13,8 @@ public class LoginResponse {
     private String access_token;
 
 
+
+
     public boolean isSuccess() {
         return success;
     }
