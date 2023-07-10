@@ -10,7 +10,7 @@ import java.util.Date;
 
 
 public class Table {
-    @Entity
+    @Entity(tableName = "diet")
     public class Diet{
         @PrimaryKey
         @ColumnInfo(name = "diet_Id")
