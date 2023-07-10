@@ -13,7 +13,7 @@ import kr.ac.doowon.healthmanageapp.database.Table.Diet;
 
 public class TableDAO {
     @Dao
-    interface DietDAO{
+    public interface DietDAO{
         @Insert
         void insert(Diet diet);
 
@@ -28,7 +28,7 @@ public class TableDAO {
     }
 
     @Dao
-    interface AteFoodDAO{
+    public interface AteFoodDAO{
         @Insert
         void insertAll(AteFood... ateFood);
 
