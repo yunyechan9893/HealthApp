@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class Table {
     @Entity(tableName = "diet")
-    public class Diet{
+    public static class Diet{
         @PrimaryKey
         @ColumnInfo(name = "diet_Id")
         public int dietId;
@@ -42,7 +42,7 @@ public class Table {
                     )
             }
     )
-    public class AteFood{
+    public static class AteFood{
         @PrimaryKey
         @ColumnInfo(name = "ate_food_id")
         public int ateFoodId;
