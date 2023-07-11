@@ -16,7 +16,7 @@ def check_access_token():
     # 액세스 토큰 검사
     user_info = dict()
     print(request.method)
-    if request.endpoint != 'api.login' and request.endpoint != 'api.signup' and request.method != 'GET':
+    if request.endpoint != 'api.login' and request.endpoint != 'api.signup'and request.endpoint != 'api.test' and request.method != 'GET':
         json_data = request.json
         access_token = json_data['access_token']
         
