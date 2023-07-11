@@ -27,6 +27,8 @@ def login():
         
         redis.set( refresh_token, json.dumps(refresh_token_info, ensure_ascii=False).encode('utf-8') )
 
+        diet = models.get_diet(user_id)
+        
     
         return jsonify({
                 "success":"T",

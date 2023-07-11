@@ -1,9 +1,10 @@
 from app_v1 import api
 from flask import request
+import models
 
 @api.route('/test', methods= ['POST', 'GET'])
 def test():
-    if request.method == 'POST':
-        return '성공'
+    diet = models.get_diet('test0000')
+    return diet
 
         
