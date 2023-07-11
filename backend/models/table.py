@@ -32,14 +32,14 @@ class User(Base):
 
 class Diet(Base):
     __tablename__='Diet'
-    no         = Column(int, primary_key=True, autoincrement=True)
-    member_id   = Column(String(64), ForeignKey('Members.id'))
+    no           = Column(Integer, primary_key=True, autoincrement=True)
+    member_id    = Column(String(64), ForeignKey('Members.id'))
     type_of_meal = Column(String(10))
-    meal_time   = Column(String(8))
-    comment    = Column(String(500))
-    date       = Column(String(10))
-    share      = Column(int)
-    url        = Column(String(500))
+    meal_time    = Column(String(8))
+    comment      = Column(String(500))
+    date         = Column(String(10))
+    share        = Column(Integer)
+    url          = Column(String(500))
 
     def get_type_of_meal(self):
         return self.typeOfMeal
@@ -59,16 +59,16 @@ class Diet(Base):
 
 class AteFood(Base):
     __tablename__='AteFood'
-    no            = Column(int, primary_key=True, autoincrement=True)
-    diet_no       = Column(int, ForeignKey('Diet.no'))
-    serial_number = Column(int)
+    no            = Column(Integer, primary_key=True, autoincrement=True)
+    diet_no       = Column(Integer, ForeignKey('Diet.no'))
+    serial_number = Column(Integer)
     food_Name     = Column(String(100))
-    amount        = Column(int)
-    kcal          = Column(int)
-    carbohydrate  = Column(int)
-    protein       = Column(int)
-    fat           = Column(int)
-    sodium        = Column(int)
+    amount        = Column(Integer)
+    kcal          = Column(Integer)
+    carbohydrate  = Column(Integer)
+    protein       = Column(Integer)
+    fat           = Column(Integer)
+    sodium        = Column(Integer)
 
     def get_diet_no(self):
         return self.diet_no
