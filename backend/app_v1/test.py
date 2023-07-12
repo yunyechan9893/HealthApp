@@ -19,12 +19,21 @@ def tool(msg, form=''):
 def test():
     diets = models.get_diet('test0000')
     diet_numbers = [diet.get_no() for diet in diets]
+    diet_numbers_dict = {diet_numbers[i]:i for i in range(len(diet_numbers))}
     ate_food = models.get_ate_food(diet_numbers)
 
-    diet_list = []
-    for idx, diet in enumerate(diets):
+    if diets:
+        diet_info = [{
+            "no": diet_numbers_dict.get(diet.get_no()) ,
+            "type_of_meal": diet.get_type_of_meal(),
+            "meal_time": diet.get_meal_time(),
+            "comment": diet.get_comment(),
+            "date": diet.get_date(),
+            "url": diet.get_url()} for diet in diets] 
+
         food_list = [
             {
+                "diet_no": diet_numbers_dict.get(food.get_diet_no()),
                 "name": food.get_food_name(),
                 "amount": food.get_amount(),
                 "kcal": food.get_kcal(),
@@ -34,26 +43,16 @@ def test():
                 "sodium": food.get_sodium()
             }
             for food in ate_food
-            if diet.get_no() == food.get_diet_no()
         ]
 
-        diet_info = {
-            "no": idx + 1,
-            "type_of_meal": diet.get_type_of_meal(),
-            "meal_time": diet.get_meal_time(),
-            "comment": diet.get_comment(),
-            "date": diet.get_date(),
-            "url": diet.get_url(),
-            "food": food_list
+        response_data = {
+                "success":"T",
+                "message":200,
+                "diet_info":diet_info,
+                "food_list":food_list
         }
-        diet_list.append(diet_info)
-
-    response_data = {
-        "success": "T",
-        "message": 200,
-        "data": diet_list
-    }
 
     return jsonify(response_data)
+
 
         
