@@ -63,18 +63,19 @@ def get_diet(id):
     try:
         with SessionContext(session) as se:
             table  = Diet
-            filter = and_(Diet.member_id == id)
+            filter = and_(Diet.member_id==id)
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:
+        
         return False
     
-def get_ate_food(*noes):
+def get_ate_food(numbers):
     try:
         with SessionContext(session) as se:
             table  = AteFood
-            filter = or_(AteFood.diet_no == no for no in noes)
-
+            filter = or_(AteFood.diet_no == no for no in numbers)
+            
             return get(session=se, table=table, filter=filter)
     except Exception as e:
         return False

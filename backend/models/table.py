@@ -33,7 +33,7 @@ class User(Base):
 class Diet(Base):
     __tablename__='Diet'
     no           = Column(Integer, primary_key=True, autoincrement=True)
-    member_id    = Column(String(64), ForeignKey('Members.id'))
+    member_id    = Column(String(20), ForeignKey('Members.id'))
     type_of_meal = Column(String(10))
     meal_time    = Column(String(8))
     comment      = Column(String(500))
@@ -41,20 +41,23 @@ class Diet(Base):
     share        = Column(Integer)
     url          = Column(String(500))
 
+    def get_no(self):
+        return self.no
+
     def get_type_of_meal(self):
-        return self.typeOfMeal
+        return self.type_of_meal.strip()
     
     def get_meal_time(self):
-        return self.meal_time
+        return self.meal_time.strip()
     
     def get_comment(self):
-        return self.comment
+        return self.comment.strip()
     
     def get_date(self):
-        return self.date
+        return self.date.strip()
     
     def get_url(self):
-        return self.url
+        return self.url.strip()
     
 
 class AteFood(Base):
@@ -62,8 +65,8 @@ class AteFood(Base):
     no            = Column(Integer, primary_key=True, autoincrement=True)
     diet_no       = Column(Integer, ForeignKey('Diet.no'))
     serial_number = Column(Integer)
-    food_Name     = Column(String(100))
-    amount        = Column(Integer)
+    food_name     = Column(String(100))
+    amount        = Column(String(20))
     kcal          = Column(Integer)
     carbohydrate  = Column(Integer)
     protein       = Column(Integer)
@@ -74,13 +77,13 @@ class AteFood(Base):
         return self.diet_no
 
     def get_serial_number(self):
-        return self.typeOfMeal
+        return self.serial_number
     
-    def get_food_Name(self):
-        return self.food_Name
+    def get_food_name(self):
+        return self.food_name.strip()
     
     def get_amount(self):
-        return self.amount
+        return self.amount.strip()
     
     def get_kcal(self):
         return self.kcal
