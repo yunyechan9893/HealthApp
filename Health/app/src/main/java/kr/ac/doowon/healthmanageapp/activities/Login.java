@@ -2,7 +2,6 @@ package kr.ac.doowon.healthmanageapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,25 +10,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import com.google.gson.internal.LinkedTreeMap;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
-import kr.ac.doowon.healthmanageapp.database.DBHelper;
-import kr.ac.doowon.healthmanageapp.database.Table;
-import kr.ac.doowon.healthmanageapp.database.TableDAO;
-import kr.ac.doowon.healthmanageapp.models.UserRequest;
+import kr.ac.doowon.healthmanageapp.database.Diet;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
+import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 import kr.ac.doowon.healthmanageapp.z_Test;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import androidx.annotation.Nullable;
-import androidx.room.Room;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public class Login extends Activity {
     private static Prefs prefs;
@@ -85,6 +86,7 @@ public class Login extends Activity {
                 loginReq.setUserId( strId   );
                 loginReq.setUserPwd( hashPwd );
 
+                Diet dietTable = new Diet();
                 call = RetrofitClient.getApiService().login(loginReq);
                 call.enqueue(new Callback<LoginResponse>(){
                     //콜백 받는 부분
@@ -95,13 +97,45 @@ public class Login extends Activity {
                         String accessToken = resp.getAccessToken();
                         String refreshToken = resp.getRefreshToken();
 
+                        List dietInfo = resp.getDietInfo();
+                        List ateFood = resp.getAteFoodList();
+
                         if (msg==200) {
                             intent = new Intent(Login.this, Main_Frame.class);
 
-                            System.out.println(accessToken);
                             prefs.setAccessToken(accessToken);
                             prefs.setRefreshToken(refreshToken);
-                            createDB();
+
+                            for (Object diet : dietInfo){
+                                LinkedTreeMap dietMap = (LinkedTreeMap) diet;
+                                int no = (int) Double.parseDouble( dietMap.get("no").toString() );
+                                String typeOfMeal = (String) dietMap.get("type_of_meal");
+                                String mealTime = (String) dietMap.get("meal_time");
+                                String comment = (String) dietMap.get("comment");
+                                String dateTime = (String) dietMap.get("date");
+                                String url = (String) dietMap.get("url");
+
+                                dietTable.setDietId(no);
+                                dietTable.setTypeOfMeal(typeOfMeal);
+                                dietTable.setMealTime(typeOfMeal);
+                                dietTable.setTypeOfMeal(mealTime);
+                                dietTable.setComment(comment);
+                                dietTable.setTypeOfMeal(typeOfMeal);
+                                dietTable.setDateTime(dateTime);
+                                dietTable.setDateTime(url);
+                            }
+                            System.out.println(dietTable);
+
+
+
+
+                            AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
+                            System.out.println(dietTable.dietId);
+                            db.dietDAO().insert(dietTable)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe();
+
 
                             startActivity(intent);
                         }
@@ -138,18 +172,5 @@ public class Login extends Activity {
             builder.append(String.format("%02x", b));
         }
         return builder.toString();
-    }
-
-    private void createDB(){
-        //DBHelper helper;
-        //SQLiteDatabase db;
-        //helper = new DBHelper(this, "health.db", null, 1);
-        //db = helper.getWritableDatabase();
-        //helper.onCreate(db);
-
-        AppDatabase db = AppDatabase.getDatabase(this);
-        TableDAO.DietDAO dietDao = db.dietDAO();
-        System.out.println( "데이터베이스 연결 완료" + dietDao );
-        //List<Table.Diet> dietList = dietDao.get();
     }
 }
