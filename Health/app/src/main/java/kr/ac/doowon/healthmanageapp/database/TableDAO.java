@@ -3,19 +3,21 @@ package kr.ac.doowon.healthmanageapp.database;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
 
-import kr.ac.doowon.healthmanageapp.database.Table.AteFood;
-import kr.ac.doowon.healthmanageapp.database.Table.Diet;
+import io.reactivex.rxjava3.core.Completable;
+import kr.ac.doowon.healthmanageapp.database.AteFood;
+import kr.ac.doowon.healthmanageapp.database.Diet;
 
 public class TableDAO {
     @Dao
     public interface DietDAO{
-        @Insert
-        void insert(Diet diet);
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        Completable insert(Diet... diet);
 
         @Update
         void update(Diet diet);
@@ -29,8 +31,8 @@ public class TableDAO {
 
     @Dao
     public interface AteFoodDAO{
-        @Insert
-        void insertAll(AteFood... ateFood);
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        Completable insertAll(AteFood... ateFood);
 
         @Update
         void updateAll(AteFood... ateFood);

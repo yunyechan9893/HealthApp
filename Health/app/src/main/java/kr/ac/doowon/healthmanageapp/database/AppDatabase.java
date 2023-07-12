@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Table.Diet.class, Table.AteFood.class}, version = 1)
+@Database(entities = {Diet.class, AteFood.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TableDAO.DietDAO dietDAO();
     public abstract TableDAO.AteFoodDAO ateFoodDAO();
@@ -28,8 +28,14 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "health_database")
+                                    AppDatabase.class, "health_database.db")
                             .addMigrations(MIGRATION_1_2)    // Migration 방법 지정
+                            .addCallback(new RoomDatabase.Callback() {
+                                @Override
+                                public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                                    super.onCreate(db);
+                                }
+                            })
                             .build();
                 }
             }
