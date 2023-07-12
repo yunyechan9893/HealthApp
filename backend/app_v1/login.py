@@ -41,7 +41,7 @@ def login():
             ate_food = models.get_ate_food(diet_numbers)
 
             diet_info = [ {
-                "no": diet_numbers_dict.get(diet.get_no()) ,
+                "no": diet_numbers_dict.get(diet.get_no()) + 1 ,
                 "type_of_meal": diet.get_type_of_meal(),
                 "meal_time": diet.get_meal_time(),
                 "comment": diet.get_comment(),
@@ -50,7 +50,7 @@ def login():
 
             food_list = [
                 {
-                    "diet_no": diet_numbers_dict.get(food.get_diet_no()),
+                    "diet_no": diet_numbers_dict.get(food.get_diet_no()) + 1,
                     "name": food.get_food_name(),
                     "amount": food.get_amount(),
                     "kcal": food.get_kcal(),
