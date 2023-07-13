@@ -16,12 +16,14 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
+import kr.ac.doowon.healthmanageapp.database.AteFood;
 import kr.ac.doowon.healthmanageapp.database.Diet;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
@@ -86,7 +88,10 @@ public class Login extends Activity {
                 loginReq.setUserId( strId   );
                 loginReq.setUserPwd( hashPwd );
 
-                Diet dietTable = new Diet();
+                List<Diet> lisDiet = new ArrayList<>();
+                List<AteFood> lisAteFood = new ArrayList<>();
+
+
                 call = RetrofitClient.getApiService().login(loginReq);
                 call.enqueue(new Callback<LoginResponse>(){
                     //콜백 받는 부분
@@ -106,36 +111,88 @@ public class Login extends Activity {
                             prefs.setAccessToken(accessToken);
                             prefs.setRefreshToken(refreshToken);
 
+
                             for (Object diet : dietInfo){
                                 LinkedTreeMap dietMap = (LinkedTreeMap) diet;
-                                int no = (int) Double.parseDouble( dietMap.get("no").toString() );
+                                int no            = (int) Double.parseDouble( dietMap.get("no").toString() );
                                 String typeOfMeal = (String) dietMap.get("type_of_meal");
-                                String mealTime = (String) dietMap.get("meal_time");
-                                String comment = (String) dietMap.get("comment");
-                                String dateTime = (String) dietMap.get("date");
-                                String url = (String) dietMap.get("url");
+                                String mealTime   = (String) dietMap.get("meal_time");
+                                String comment    = (String) dietMap.get("comment");
+                                String dateTime   = (String) dietMap.get("date");
+                                String url        = (String) dietMap.get("url");
 
-                                dietTable.setDietId(no);
-                                dietTable.setTypeOfMeal(typeOfMeal);
-                                dietTable.setMealTime(typeOfMeal);
-                                dietTable.setTypeOfMeal(mealTime);
-                                dietTable.setComment(comment);
-                                dietTable.setTypeOfMeal(typeOfMeal);
-                                dietTable.setDateTime(dateTime);
-                                dietTable.setDateTime(url);
+                                Diet dietTable = new Diet();
+
+                                lisDiet.add(
+                                    dietTable.setDietId(no)
+                                        .setTypeOfMeal(typeOfMeal)
+                                        .setMealTime(typeOfMeal)
+                                        .setTypeOfMeal(mealTime)
+                                        .setComment(comment)
+                                        .setTypeOfMeal(typeOfMeal)
+                                        .setDateTime(dateTime)
+                                        .setUrl(url)
+                                );
+
+                                System.out.println(mealTime);
+
                             }
-                            System.out.println(dietTable);
 
+                            for (Object food : ateFood){
+                                LinkedTreeMap foodMap = (LinkedTreeMap) food;
+                                int diet_no      = (int) Double.parseDouble( foodMap.get("diet_no").toString() );
+                                String name      = (String) foodMap.get("name");
+                                int amount       = (int) Double.parseDouble( foodMap.get("amount").toString() );
+                                int kcal         = (int) Double.parseDouble( foodMap.get("kcal").toString() );
+                                int carbohydrate = (int) Double.parseDouble( foodMap.get("carbohydrate").toString() );
+                                int protein      = (int) Double.parseDouble( foodMap.get("protein").toString() );
+                                int fat          = (int) Double.parseDouble( foodMap.get("fat").toString() );
+                                int sodium       = (int) Double.parseDouble( foodMap.get("sodium").toString() );
+
+                                AteFood ateFoodTable = new AteFood();
+                                ateFoodTable.setDietNo(diet_no)
+                                    .setFoodName(name)
+                                    .setAmount(amount)
+                                    .setKcal(kcal)
+                                    .setCarbohydrate(carbohydrate)
+                                    .setProtein(protein)
+                                    .setFat(fat)
+                                    .setSodium(sodium);
+
+                                lisAteFood.add(ateFoodTable);
+                            }
 
 
 
                             AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
-                            System.out.println(dietTable.dietId);
-                            db.dietDAO().insert(dietTable)
+
+                            db.dietDAO().deleteAll()
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe();
+                                    .doOnComplete(() -> {
+                                        Diet[] diets = lisDiet.toArray(new Diet[0]);
+                                        AteFood[] ateFoods = lisAteFood.toArray(new AteFood[0]);
 
+                                        db.dietDAO().insert(diets)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .doOnComplete(() -> {
+                                                    db.ateFoodDAO().insert(ateFoods)
+                                                            .subscribeOn(Schedulers.io())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribe(
+                                                                    () -> {
+                                                                        // 모든 작업이 완료되었을 때 수행할 동작
+                                                                        // 예: UI 업데이트 등
+                                                                    },
+                                                                    throwable -> {
+                                                                        // 에러 처리
+                                                                    }
+                                                            );
+                                                })
+                                                .subscribe();
+                                    })
+                                    .subscribe();
 
                             startActivity(intent);
                         }
