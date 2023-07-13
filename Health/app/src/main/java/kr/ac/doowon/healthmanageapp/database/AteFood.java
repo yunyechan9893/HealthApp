@@ -1,31 +1,38 @@
 package kr.ac.doowon.healthmanageapp.database;
 
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+
 @Entity(
         tableName = "ate_food",
-        foreignKeys = {
+        foreignKeys =
                 @ForeignKey(
                         entity = Diet.class,
                         parentColumns = "diet_Id",
-                        childColumns = "ate_food_id"
+                        childColumns = "diet_no",
+                        onDelete=ForeignKey.CASCADE,
+                        onUpdate = ForeignKey.CASCADE
                 )
-        }
+
 )
 public class AteFood{
-    @PrimaryKey
-    @ColumnInfo(name = "ate_food_id")
-    public int ateFoodId;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "no")
+    @NonNull
+    public int no;
+
+    @ColumnInfo(name = "diet_no")
+    public int dietNo;
 
     @ColumnInfo(name = "serial_number")
     public int serialNumber;
 
     @ColumnInfo(name = "food_name")
-    public String food_name;
+    public String foodName;
 
     @ColumnInfo(name = "amount")
     public int amount;
@@ -45,40 +52,52 @@ public class AteFood{
     @ColumnInfo(name = "sodium")
     public int sodium;
 
-    public int getAteFoodId() {
-        return ateFoodId;
+    public void setNo(int no) {
+        this.no = no;
     }
 
-    public int getSerialNumber() {
-        return serialNumber;
+    public AteFood setDietNo(int dietNo) {
+        this.dietNo = dietNo;
+        return this;
     }
 
-    public String getFood_name() {
-        return food_name;
+    public AteFood setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
+        return this;
     }
 
-    public int getAmount() {
-        return amount;
+    public AteFood setFoodName(String food_name) {
+        this.foodName = food_name;
+        return this;
     }
 
-    public int getKcal() {
-        return kcal;
+    public AteFood setAmount(int amount) {
+        this.amount = amount;
+        return this;
     }
 
-    public int getCarbohydrate() {
-        return carbohydrate;
+    public AteFood setKcal(int kcal) {
+        this.kcal = kcal;
+        return this;
     }
 
-    public int getProtein() {
-        return protein;
+    public AteFood setCarbohydrate(int carbohydrate) {
+        this.carbohydrate = carbohydrate;
+        return this;
     }
 
-    public int getFat() {
-        return fat;
+    public AteFood setProtein(int protein) {
+        this.protein = protein;
+        return this;
     }
 
-    public int getSodium() {
-        return sodium;
+    public AteFood setFat(int fat) {
+        this.fat = fat;
+        return this;
     }
 
+    public AteFood setSodium(int sodium) {
+        this.sodium = sodium;
+        return this;
+    }
 }
