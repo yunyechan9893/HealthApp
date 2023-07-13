@@ -25,6 +25,9 @@ public class TableDAO {
         @Delete
         void delete(Diet diet);
 
+        @Query("DELETE FROM diet")
+        Completable deleteAll();
+
         @Query("SELECT * FROM diet WHERE date_time=:dateTime")
         List<Diet> getDiet(String dateTime);
     }
@@ -32,13 +35,16 @@ public class TableDAO {
     @Dao
     public interface AteFoodDAO{
         @Insert(onConflict = OnConflictStrategy.REPLACE)
-        Completable insertAll(AteFood... ateFood);
+        Completable insert(AteFood... ateFood);
 
         @Update
         void updateAll(AteFood... ateFood);
 
         @Delete
         void deleteAll(AteFood... ateFood);
+
+        @Query("DELETE FROM ate_food")
+        Completable deleteAll();
 
         @Query("SELECT * FROM ate_food")
         List<AteFood> getAteFood();
