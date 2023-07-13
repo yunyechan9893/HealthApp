@@ -1,4 +1,26 @@
 # 개발일지
+## 2023.07.13 ( 4시간 )
+### 🌙오후
+#### 현재 상황정리
+- 안드로이드
+    - 비동기 : Rxjava
+    - 통신 : gson, Retrofit2
+    - 내장DB : SQL Lite
+    - DB ORM : Jetpack Room
+    - 백엔드 인증 : Access Token, Refresh Token
+- 백엔드 ( flask )
+    - 인증 : jwt(Access Token, Refresh Token)
+    - DB ORM 통신 : sqlAlchemy
+- Database (MSSQL)
+- VectorDB (레디스)
+#### 배운점
+- User[] 배열을 만들어 user1, user2를 넣어놓는다면 가변인자 함수에 인자값 등록 가능
+#### 안드로이드
+- Rxjava Chain으로 비동기 순서부여
+    - 로그인 시 식단 테이블 삭제
+    - 백엔드에서 가져온 식단 SQL Lite 저장
+    - 먹었던 음식도 SQL Lite 저장
+
 ## 2023.07.12 ( 6시간 )
 ### 🌙오후
 #### 목표
