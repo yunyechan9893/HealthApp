@@ -2,7 +2,6 @@ package kr.ac.doowon.healthmanageapp.database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 
@@ -28,28 +27,34 @@ public class Diet{
     @ColumnInfo(name = "url")
     public String url;
 
-    public void setDietId(int dietId) {
+    public Diet setDietId(int dietId) {
         this.dietId = dietId;
+        return this;
     }
 
-    public void setTypeOfMeal(String typeOfMeal) {
+    public Diet setTypeOfMeal(String typeOfMeal) {
         this.typeOfMeal = typeOfMeal;
+        return this;
     }
 
-    public void setMealTime(String mealTime) {
+    public Diet setMealTime(String mealTime) {
         this.mealTime = mealTime;
+        return this;
     }
 
-    public void setComment(String comment) {
+    public Diet setComment(String comment) {
         this.comment = comment;
+        return this;
     }
 
-    public void setDateTime(String dateTime) {
+    public Diet setDateTime(String dateTime) {
         this.dateTime = dateTime;
+        return this;
     }
 
-    public void setUrl(String url) {
+    public Diet setUrl(String url) {
         this.url = url;
+        return this;
     }
 }
 
