@@ -1,7 +1,6 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +15,6 @@ import kr.ac.doowon.healthmanageapp.Fragment_Introduce_Main;
 import kr.ac.doowon.healthmanageapp.Fragment_Management_main;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
-import kr.ac.doowon.healthmanageapp.database.DBHelper;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 
 public class Main_Frame extends AppCompatActivity {
