@@ -20,6 +20,8 @@ public class LoginResponse {
     @SerializedName("food_list")
     private List food_list;
 
+    @SerializedName("target_kcal")
+    private String target_kcal;
 
     public boolean isSuccess() {
         return success;
@@ -39,5 +41,8 @@ public class LoginResponse {
     }
     public List getAteFoodList() {
         return food_list;
+    }
+    public String getTargetKcal() {
+        return target_kcal;
     }
 }
