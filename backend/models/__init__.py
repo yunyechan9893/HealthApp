@@ -1,5 +1,5 @@
 from flask import jsonify
-from .table import Position, User, Diet, AteFood
+from .table import Position, User, Diet, AteFood, DietTargetKcal
 from .connection import SessionContext
 from .manager import create, get_one, get
 
@@ -67,7 +67,6 @@ def get_diet(id):
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:
-        
         return False
     
 def get_ate_food(numbers):
@@ -75,6 +74,16 @@ def get_ate_food(numbers):
         with SessionContext(session) as se:
             table  = AteFood
             filter = or_(AteFood.diet_no == no for no in numbers)
+            
+            return get(session=se, table=table, filter=filter)
+    except Exception as e:
+        return False
+    
+def get_diet_target_kcal(id):
+    try:
+        with SessionContext(session) as se:
+            table  = DietTargetKcal
+            filter = and_(DietTargetKcal.member_id==id)
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:

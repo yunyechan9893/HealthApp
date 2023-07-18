@@ -38,7 +38,8 @@ def login():
         if diets:
             diet_numbers = [diet.get_no() for diet in diets]
             diet_numbers_dict = {diet_numbers[i]:i for i in range(len(diet_numbers))}
-            ate_food = models.get_ate_food(diet_numbers)
+            ate_foods = models.get_ate_food(diet_numbers)
+            diet_target_kcals = models.get_diet_target_kcal(user_id)
 
             diet_info = [ {
                 "no": diet_numbers_dict.get(diet.get_no()) + 1,
@@ -59,7 +60,7 @@ def login():
                     "fat": food.get_fat(),
                     "sodium": food.get_sodium()
                 }
-                for food in ate_food
+                for food in ate_foods
             ]
 
             response_data = {
@@ -68,7 +69,8 @@ def login():
                     "refresh_token":refresh_token,
                     "access_token":access_token,
                     "diet_info":diet_info,
-                    "food_list":food_list
+                    "food_list":food_list,
+                    "target_kcal":str(diet_target_kcals)
             }
 
     return jsonify(response_data)

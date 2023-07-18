@@ -99,5 +99,23 @@ class AteFood(Base):
     
     def get_sodium(self):
         return self.sodium
+    
+class DietTargetKcal(Base):
+    __tablename__='DietTargetKcal'
+    no           = Column(Integer, primary_key=True, autoincrement=True)
+    id           = Column(String(20), ForeignKey('Members.id'))
+    date         = Column(String(10))
+    target_kcal  = Column(Integer)
 
+    def get_no(self):
+        return self.no
+
+    def get_id(self):
+        return self.id.strip()
+    
+    def get_date(self):
+        return self.date.strip()
+    
+    def get_target_kcal(self):
+        return self.target_kcal.strip()
     
