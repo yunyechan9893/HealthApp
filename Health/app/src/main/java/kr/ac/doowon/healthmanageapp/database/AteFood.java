@@ -1,10 +1,11 @@
 package kr.ac.doowon.healthmanageapp.database;
 
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 
 @Entity(
         tableName = "ate_food",

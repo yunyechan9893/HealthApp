@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-import kr.ac.doowon.healthmanageapp.activities.Main_Frame;
+import kr.ac.doowon.healthmanageapp.activities.MainFrame;
 
 public class Fragment_Management_Diet extends Fragment {
 
@@ -83,7 +83,7 @@ public class Fragment_Management_Diet extends Fragment {
     ListView listTodayAteFood;
     Fragment_Management_Diet_Add diet_add;
     private String USERID;
-    Main_Frame parentActivity;
+    MainFrame parentActivity;
     Bundle bundle;
     Handler handler;
     Class_TheadPool theadPool;
@@ -98,7 +98,7 @@ public class Fragment_Management_Diet extends Fragment {
 
         sharedPreferences = context.getSharedPreferences("Diet", context.MODE_PRIVATE);
         USERID = Class_Tool.getUSERID(context);
-        parentActivity = (Main_Frame) getActivity();
+        parentActivity = (MainFrame) getActivity();
 
 
         handler = new HandlerManager();

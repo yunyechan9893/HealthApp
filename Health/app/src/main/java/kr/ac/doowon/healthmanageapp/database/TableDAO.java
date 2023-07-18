@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjava3.core.Completable;
 import kr.ac.doowon.healthmanageapp.database.AteFood;
 import kr.ac.doowon.healthmanageapp.database.Diet;
