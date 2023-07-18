@@ -1,6 +1,17 @@
 # 개발일지
 ## 2023.07.13 ( 4시간 )
 ### 🌙오후
+#### 안드로이드
+- Rxjava Chain으로 비동기 순서부여 코드 수정
+    - Completable Then으로 동작 방식 변경
+- MainFrame Activity 이벤트 이미지 어뎁터 변경
+- Fragment 자동 동적 생성 어뎁터 제거
+- Target Kcal 얻어오는 기능 구현중
+#### 백엔드
+- login시 Target Kcal DB에서 얻어오는 기능 구현 중
+
+## 2023.07.13 ( 4시간 )
+### 🌙오후
 #### 현재 상황정리
 - 안드로이드
     - 비동기 : Rxjava
