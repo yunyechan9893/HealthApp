@@ -16,3 +16,4 @@ local.properties
 secret_key.py
 __pycache__/
 /config/
+__pycache__
