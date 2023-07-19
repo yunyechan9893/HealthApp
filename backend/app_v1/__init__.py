@@ -11,12 +11,17 @@ auth = Blueprint('auth',  # 별칭, 해당 블루프린트 밑에서 정의된
                     url_prefix='/auth',             # 모든 URL 앞에 /main이 추가된다
     )
 
+test = Blueprint('test',  # 별칭, 해당 블루프린트 밑에서 정의된 
+                    __name__,   # 고정
+                    url_prefix='/test',             # 모든 URL 앞에 /main이 추가된다
+    )
+
 @api.before_request
 def check_access_token():
     # 액세스 토큰 검사
     user_info = dict()
     print(request.method)
-    if request.endpoint != 'api.login' and request.endpoint != 'api.signup'and request.endpoint != 'api.test' and request.method != 'GET':
+    if request.endpoint != 'api.login' and request.endpoint != 'api.signup'and request.endpoint != 'api.test' and request.endpoint != 'api.target_kcalsand' and request.method != 'GET':
         json_data = request.json
         access_token = json_data['access_token']
         

@@ -1,5 +1,5 @@
-from app_v1 import api
-from flask import request, jsonify, json
+from app_v1 import api, test
+from flask import request, jsonify, json, current_app
 import models
 from security import token_manager 
 from storage import redis
@@ -9,6 +9,7 @@ def login():
     params = request.get_json()
     user_id  = params['user_id']
     user_pwd = params['user_pwd']
+    print(user_pwd)
 
     response_data = {
             "success":"F", 
@@ -39,7 +40,9 @@ def login():
             diet_numbers = [diet.get_no() for diet in diets]
             diet_numbers_dict = {diet_numbers[i]:i for i in range(len(diet_numbers))}
             ate_foods = models.get_ate_food(diet_numbers)
-            diet_target_kcals = models.get_diet_target_kcal(user_id)
+            target_kcals = models.get_target_kcal(user_id)
+
+            target_kcal_list = [json.loads(target_kcal.get_all_data()) for target_kcal in target_kcals]
 
             diet_info = [ {
                 "no": diet_numbers_dict.get(diet.get_no()) + 1,
@@ -70,7 +73,7 @@ def login():
                     "access_token":access_token,
                     "diet_info":diet_info,
                     "food_list":food_list,
-                    "target_kcal":str(diet_target_kcals)
+                    "target_kcal":target_kcal_list,
             }
 
     return jsonify(response_data)
@@ -83,3 +86,25 @@ def login_token():
                 "success":"T",
                 "message":200
     })
+
+
+## test code ## 
+
+@test.route('/target_kcals', methods= ['POST'])
+def get_diet_target_kcals():
+    if current_app.config['DEBUG_MODE'] :
+        test_id = 'test0000'
+        target_kcals = models.get_target_kcal(test_id)
+
+        target_kcal_list = [target_kcal.get_all_data() for target_kcal in target_kcals]
+
+        respone_data = {
+                    "success":"T",
+                    "message":200,
+                    "target_kcal":target_kcal_list,
+            }
+        
+        return respone_data
+
+    
+    raise Exception

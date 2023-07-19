@@ -11,13 +11,16 @@ def create_app():
 
 def init_env( app ):
     app.config['JWT_SECRET_KEY'] = key.get_app_key()
+    app.config['DEBUG_MODE'] = config.DEBUG
 
 def init_blueprint( app ):
     from app_v1 import api
     from app_v1 import auth
+    from app_v1 import test
 
     app.register_blueprint(api)
     app.register_blueprint(auth)
+    app.register_blueprint(test)
 
 
 if __name__=='__main__':

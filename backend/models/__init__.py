@@ -79,11 +79,12 @@ def get_ate_food(numbers):
     except Exception as e:
         return False
     
-def get_diet_target_kcal(id):
+def get_target_kcal(id):
     try:
         with SessionContext(session) as se:
+            print(id)
             table  = DietTargetKcal
-            filter = and_(DietTargetKcal.member_id==id)
+            filter = and_(DietTargetKcal.id==id)
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:

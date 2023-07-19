@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-
+import json
 Base = declarative_base()
 
 class Position(Base):
@@ -118,4 +118,11 @@ class DietTargetKcal(Base):
     
     def get_target_kcal(self):
         return self.target_kcal.strip()
+    
+    def get_all_data(self):
+        data_json = json.dumps({
+            "date":self.date,
+            "target_kcal":self.target_kcal
+        })
+        return data_json
     
