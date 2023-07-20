@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "593278348509",
+    "project_id": "healthmanageapp-aa3e0",
+    "storage_bucket": "healthmanageapp-aa3e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593278348509:android:8cf170ec8781aa2d3f3f34",
+        "android_client_info": {
+          "package_name": "kr.ac.doowon.healthmanageapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "593278348509-is7nbb7c1nv1kci8ne00orslgfaks115.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATA6xC3v9jnyGr5PDgETdQqLGMBLK6Vtg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "593278348509-is7nbb7c1nv1kci8ne00orslgfaks115.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

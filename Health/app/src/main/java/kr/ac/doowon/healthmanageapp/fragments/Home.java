@@ -1,6 +1,7 @@
 package kr.ac.doowon.healthmanageapp.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.internal.subscribers.LambdaSubscriber;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
+import kr.ac.doowon.healthmanageapp.database.AppDatabase;
 import me.relex.circleindicator.CircleIndicator3;
 
-public class Home extends Fragment {
+public class Home extends Fragment implements View.OnClickListener {
 
     // 내부 클래스 핸들러
     /*
@@ -58,6 +66,47 @@ public class Home extends Fragment {
         viewPg.setCurrentItem(listCnt, true);
         viewPg.setOffscreenPageLimit(listCnt);
 
+        AppDatabase db = AppDatabase.getDatabase(getContext());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date nowDate = new Date();
+        String formatNowDate = dateFormat.format(nowDate);
+
+
+
+        Disposable dispose = db.targetKcalDAO().getTargetKcal(formatNowDate)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(targetKcals -> {
+
+                        },
+                        throwable -> {
+
+                        });
+
+        Log.i("getTargetKcal",dispose.toString());
+
+        dispose.dispose();
+
+        Log.i("getTargetKcal",dispose.toString());
+
+        ProgressBar pbTodayKcal = rootView.findViewById(R.id.pb_today_kcal);
+
+
+
         return rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        //if (disposable != null && !disposable.isDisposed()) {
+         //   disposable.dispose();
+       // }
     }
 }

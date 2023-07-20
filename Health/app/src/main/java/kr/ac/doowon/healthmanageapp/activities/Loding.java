@@ -22,7 +22,6 @@ public class Loding extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_01_main);
 
-
         prefs = Prefs.getInstance(getApplicationContext());
         String accessToken = prefs.getAccessToken();
         nextActivity = Login.class;

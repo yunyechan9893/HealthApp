@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import java.util.List;
 
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
@@ -42,11 +44,24 @@ public class Login extends Activity implements View.OnClickListener {
     private Button btnRegister, btnLogin, btnFindIdPwd;
     Drawable drawRegist;
     Call<LoginResponse> call;
+    Disposable disposable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_02_login);
+
+        Button crashButton = new Button(this);
+        crashButton.setText("Test Crash");
+        crashButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                throw new RuntimeException("Test Crash"); // Force a crash
+            }
+        });
+
+        addContentView(crashButton, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
 
         prefs = Prefs.getInstance(getApplicationContext());
 
@@ -188,7 +203,7 @@ public class Login extends Activity implements View.OnClickListener {
                         TargetKcal[] targetKcals1 = lisTargetKcal.toArray(new TargetKcal[0]);
                         Completable insertTargetKcalsCompletable = db.targetKcalDAO().insert(targetKcals1);
 
-                        deleteAllCompletable
+                        disposable = deleteAllCompletable
                                 .andThen(
                                         Completable.mergeArray(
                                                 insertDietsCompletable,
@@ -203,6 +218,7 @@ public class Login extends Activity implements View.OnClickListener {
                                         () -> {
                                             // 모든 작업이 완료되었을 때 수행할 동작
                                             Log.i("성공", "");
+                                            startActivity(intent);
                                         },
                                         throwable -> {
                                             // 에러 처리
@@ -210,7 +226,7 @@ public class Login extends Activity implements View.OnClickListener {
                                         }
                                 );
 
-                        startActivity(intent);
+
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
@@ -247,4 +263,9 @@ public class Login extends Activity implements View.OnClickListener {
         return builder.toString();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposable.dispose();
+    }
 }

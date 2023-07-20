@@ -4,6 +4,7 @@
     package="kr.ac.doowon.healthmanageapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -15,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthManageApp"
         tools:targetApi="31">
+        <profileable android:shell="true"/>
         <activity android:name=".Activity_Management_Diet_Detail"/>
         <activity android:name=".activities.MainFrame"/>
         <activity android:name=".activities.Login"/>
