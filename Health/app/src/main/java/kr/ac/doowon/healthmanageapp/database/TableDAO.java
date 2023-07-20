@@ -9,10 +9,10 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
 import io.reactivex.rxjava3.core.Completable;
 import kr.ac.doowon.healthmanageapp.database.AteFood;
 import kr.ac.doowon.healthmanageapp.database.Diet;
+import kr.ac.doowon.healthmanageapp.database.TargetKcal;
 
 public class TableDAO {
     @Dao
@@ -27,7 +27,7 @@ public class TableDAO {
         void delete(Diet diet);
 
         @Query("DELETE FROM diet")
-        Completable deleteAll();
+        Completable deleteTable();
 
         @Query("SELECT * FROM diet WHERE date_time=:dateTime")
         List<Diet> getDiet(String dateTime);
@@ -45,9 +45,27 @@ public class TableDAO {
         void deleteAll(AteFood... ateFood);
 
         @Query("DELETE FROM ate_food")
-        Completable deleteAll();
+        Completable deleteTable();
 
         @Query("SELECT * FROM ate_food")
         List<AteFood> getAteFood();
+    }
+
+    @Dao
+    public interface TargetKcalDAO{
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        Completable insert(TargetKcal... targetKcal);
+
+        @Update
+        void updateAll(TargetKcal... targetKcal);
+
+        @Delete
+        void deleteAll(TargetKcal... targetKcal);
+
+        @Query("DELETE FROM target_kcal")
+        Completable deleteAll();
+
+        @Query("SELECT * FROM target_kcal WHERE date==:date")
+        List<TargetKcal> getTargetKcal(String date);
     }
 }

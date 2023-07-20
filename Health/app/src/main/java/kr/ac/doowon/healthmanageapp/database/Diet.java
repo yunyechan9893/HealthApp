@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
-
 @Entity(tableName = "diet")
 public class Diet{
     @PrimaryKey

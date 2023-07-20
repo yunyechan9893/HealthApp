@@ -27,6 +27,7 @@ import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
 import kr.ac.doowon.healthmanageapp.database.AteFood;
 import kr.ac.doowon.healthmanageapp.database.Diet;
+import kr.ac.doowon.healthmanageapp.database.TargetKcal;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
@@ -97,16 +98,16 @@ public class Login extends Activity implements View.OnClickListener {
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     LoginResponse resp = response.body();
                     int msg = resp.getMessage();
-                    String accessToken = resp.getAccessToken();
-                    String refreshToken = resp.getRefreshToken();
-
-                    List dietInfo = resp.getDietInfo();
-                    List ateFood = resp.getAteFoodList();
-                    //List targetKcal = resp.getTargetKcal();
-                    //Log.i("TargetKcal",targetKcal.toString() );
 
                     if (msg==200) {
                         Intent intent = new Intent(Login.this, MainFrame.class);
+
+                        String accessToken = resp.getAccessToken();
+                        String refreshToken = resp.getRefreshToken();
+                        List dietInfo = resp.getDietInfo();
+                        List ateFood = resp.getAteFoodList();
+                        List targetKcals = resp.getTargetKcal();
+                        Log.i("TargetKcal",targetKcals.toString() );
 
                         prefs.setAccessToken(accessToken);
                         prefs.setRefreshToken(refreshToken);
@@ -160,9 +161,23 @@ public class Login extends Activity implements View.OnClickListener {
                             lisAteFood.add(ateFoodTable);
                         }
 
+                        List<TargetKcal> lisTargetKcal = new ArrayList<>();
+                        for (Object targetKcal : targetKcals){
+                            LinkedTreeMap targetKcalMap = (LinkedTreeMap) targetKcal;
+                            String date = targetKcalMap.get("date").toString();
+                            int kcal = (int) Double.parseDouble( targetKcalMap.get("target_kcal").toString() );
+
+                            TargetKcal targetKcalTable = new TargetKcal();
+                            targetKcalTable.setKcal(kcal)
+                                    .setDate(date);
+
+
+                            lisTargetKcal.add(targetKcalTable);
+                        }
+
                         AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
 
-                        Completable deleteAllCompletable = db.dietDAO().deleteAll();
+                        Completable deleteAllCompletable = db.dietDAO().deleteTable();
 
                         Diet[] diets = lisDiet.toArray(new Diet[0]);
                         Completable insertDietsCompletable = db.dietDAO().insert(diets);
@@ -170,9 +185,18 @@ public class Login extends Activity implements View.OnClickListener {
                         AteFood[] ateFoods = lisAteFood.toArray(new AteFood[0]);
                         Completable insertAteFoodsCompletable = db.ateFoodDAO().insert(ateFoods);
 
+                        TargetKcal[] targetKcals1 = lisTargetKcal.toArray(new TargetKcal[0]);
+                        Completable insertTargetKcalsCompletable = db.targetKcalDAO().insert(targetKcals1);
+
                         deleteAllCompletable
-                                .andThen(insertDietsCompletable) // deleteAllCompletable 다음 실행
+                                .andThen(
+                                        Completable.mergeArray(
+                                                insertDietsCompletable,
+                                                insertTargetKcalsCompletable
+                                                )
+                                ) // deleteAllCompletable 다음 실행
                                 .andThen(insertAteFoodsCompletable) // insertDietsCompletable 다음 실행
+
                                 .subscribeOn(Schedulers.io()) // 입출력 스케줄러 사용
                                 .observeOn(Schedulers.io()) // UI에 영향을 안주기에 입출력 스케줄러 사용
                                 .subscribe(
