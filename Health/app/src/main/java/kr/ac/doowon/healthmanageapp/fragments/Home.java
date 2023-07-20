@@ -10,61 +10,56 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.internal.subscribers.LambdaSubscriber;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import kr.ac.doowon.healthmanageapp.Fragment_Introduce_Main;
+import kr.ac.doowon.healthmanageapp.Fragment_Management_main;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
+import kr.ac.doowon.healthmanageapp.databinding.FragmentHomeBinding;
+import kr.ac.doowon.healthmanageapp.view_model.BannerViewModel;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class Home extends Fragment implements View.OnClickListener {
-
-    // 내부 클래스 핸들러
-    /*
-    * 구현해야할 것
-    * - SQL Lite에서 오늘의 칼로리, 운동, PT일정 가져오기
-    * -
-    * */
-
-    View rootView;
-    TextView tvNoticeBBTitle, tvFreeBBTitle, tvExerciseBBTitle;
-    ViewPager2 viewPg;
-    CircleIndicator3 indicator;
-    ProgressBar pbTodayKcal;
-
+    private FragmentHomeBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        viewPg = rootView.findViewById(R.id.viewPager2);
-        indicator = rootView.findViewById(R.id.circleIndicator);
-        tvNoticeBBTitle = rootView.findViewById(R.id.tvNoticeBBTitle);
-        tvFreeBBTitle = rootView.findViewById(R.id.tvFreeBBTitle);
-        tvExerciseBBTitle = rootView.findViewById(R.id.tvExerciseBBTitle);
-        pbTodayKcal = rootView.findViewById(R.id.pb_today_kcal);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
-        //-- 추후 베너이미지 추가를 할 시 여기를 변경해주세요. --//
-        // test용입니다.
+        BannerViewModel bannerViewModel = new BannerViewModel();
+        bannerViewModel
+                .addBannerImage(new HomeMainImage(R.drawable.img_banner_1))
+                .addBannerImage(new HomeMainImage(R.drawable.img_banner_2));
+
+        ArrayList<Fragment> bannerImages = bannerViewModel.getFragments();
 
         FragmentPagerAdapter fragmentAdapter = new FragmentPagerAdapter(getActivity());
-        fragmentAdapter.addFragment(new HomeMainImage(R.drawable.img_banner_1));
-        fragmentAdapter.addFragment(new HomeMainImage(R.drawable.img_banner_2));
-        viewPg.setAdapter(fragmentAdapter);
-        indicator.setViewPager(viewPg);
+        for (Fragment fragment: bannerImages
+             ) {
+            fragmentAdapter.addFragment(fragment);
+        }
+
+        binding.viewPager2.setAdapter(fragmentAdapter);
+        binding.circleIndicator.setViewPager(binding.viewPager2);
 
         int listCnt= fragmentAdapter.getItemCount();
-        indicator.createIndicators(listCnt,0);
-        viewPg.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        viewPg.setCurrentItem(listCnt, true);
-        viewPg.setOffscreenPageLimit(listCnt);
+        binding.circleIndicator.createIndicators(listCnt,0);
+        binding.viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        binding.viewPager2.setCurrentItem(listCnt, true);
+        binding.viewPager2.setOffscreenPageLimit(listCnt);
 
         AppDatabase db = AppDatabase.getDatabase(getContext());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -83,17 +78,12 @@ public class Home extends Fragment implements View.OnClickListener {
 
                         });
 
-        Log.i("getTargetKcal",dispose.toString());
 
         dispose.dispose();
 
-        Log.i("getTargetKcal",dispose.toString());
+        ProgressBar b = binding.pbTodayKcal;
 
-        ProgressBar pbTodayKcal = rootView.findViewById(R.id.pb_today_kcal);
-
-
-
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
@@ -104,7 +94,7 @@ public class Home extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        binding = null;
         //if (disposable != null && !disposable.isDisposed()) {
          //   disposable.dispose();
        // }

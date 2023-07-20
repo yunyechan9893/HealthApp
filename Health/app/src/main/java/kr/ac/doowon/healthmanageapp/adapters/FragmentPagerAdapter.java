@@ -26,9 +26,11 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
         return fragments.size();
     }
 
-    public void addFragment(Fragment fragment) {
+    public FragmentPagerAdapter addFragment(Fragment fragment) {
         fragments.add(fragment);
         notifyItemInserted(fragments.size() - 1);
+
+        return this;
     }
 
     public void removeFragment() {
