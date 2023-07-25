@@ -1,25 +1,42 @@
 package kr.ac.doowon.healthmanageapp.view_model;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.errorprone.annotations.Immutable;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import kr.ac.doowon.healthmanageapp.Fragment_Management_main;
+import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
+import kr.ac.doowon.healthmanageapp.fragments.HomeMainImage;
 
 
 public class BannerViewModel extends ViewModel {
-    private ArrayList<Fragment> bannerImagefragments;
 
-    public BannerViewModel(){
-        bannerImagefragments = new ArrayList<>();
+    private FragmentPagerAdapter fragmentAdapter;
+    private List<File> imgFiles;
+
+    public void setBannerFiles(List<File> imgFiles, FragmentActivity activity){
+        this.imgFiles = imgFiles;
+        fragmentAdapter = new FragmentPagerAdapter(activity);
     }
 
-    public BannerViewModel addBannerImage( Fragment fragment ){
-        bannerImagefragments.add(fragment);
-
-        return this;
-    }
-
-    public ArrayList getFragments(){
-        return bannerImagefragments;
+    public FragmentPagerAdapter setFragments(){
+        for (File imgFile:
+             imgFiles) {
+            fragmentAdapter.addFragment(new HomeMainImage(imgFile));
+        }
+        return fragmentAdapter;
     }
 }
