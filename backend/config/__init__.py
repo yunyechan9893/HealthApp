@@ -4,8 +4,8 @@ class Config :
 
 class DevelopmentConfig(Config):
     DEBUG = True
-
-    DATABASE_URL='mssql+pymssql://yyc:9893@10.150.6.19:1433/HealthApp'
+    __DATABASE_IP='127.0.0.1'
+    DATABASE_URL=f'mssql+pymssql://yyc:9893@{__DATABASE_IP}:1433/HealthApp'
 
     #jwt
     JWT_algorithm ='HS256'
@@ -16,3 +16,12 @@ class DevelopmentConfig(Config):
     REDIS_IP='127.0.0.1'
     REDIS_PORT=6379
     REDIS_DB=1
+
+    if DEBUG :
+        import socket
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(("pwnbit.kr", 443))
+        __DATABASE_IP=sock.getsockname()[0]
+        DATABASE_URL=f'mssql+pymssql://yyc:9893@{__DATABASE_IP}:1433/HealthApp'
+        print("내부 IP: ", DATABASE_URL)
