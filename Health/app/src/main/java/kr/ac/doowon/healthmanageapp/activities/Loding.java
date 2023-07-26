@@ -65,12 +65,12 @@ public class Loding extends AppCompatActivity {
                 "https://firebasestorage.googleapis.com/v0/b/carscratch.appspot.com/o/image%2Fimg_banner_1.png?alt=media&token=19569bed-573a-40df-87cf-9edc79b22bc2",
                 "https://firebasestorage.googleapis.com/v0/b/carscratch.appspot.com/o/image%2Fimg_banner_1.png?alt=media&token=19569bed-573a-40df-87cf-9edc79b22bc2"
         );
+
         for (int i=0; i<urls.size();i++){
             int finalI = i;
             Glide.with(this)
                     .asBitmap()
                     .load(urls.get(i))
-                    .override(300,300)
                     .error(R.drawable.img_logo)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(new CustomTarget<Bitmap>() {

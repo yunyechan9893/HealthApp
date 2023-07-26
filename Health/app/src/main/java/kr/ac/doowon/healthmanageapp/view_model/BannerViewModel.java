@@ -27,16 +27,23 @@ public class BannerViewModel extends ViewModel {
     private FragmentPagerAdapter fragmentAdapter;
     private List<File> imgFiles;
 
-    public void setBannerFiles(List<File> imgFiles, FragmentActivity activity){
-        this.imgFiles = imgFiles;
-        fragmentAdapter = new FragmentPagerAdapter(activity);
+    public BannerViewModel(FragmentActivity activity, List<File> imgFiles){
+
     }
 
-    public FragmentPagerAdapter setFragments(){
+    public void init(FragmentActivity activity,List<File> imgFiles){
+        fragmentAdapter = new FragmentPagerAdapter(activity);
+        this.imgFiles = imgFiles;
+    }
+
+    public void setFragments(){
         for (File imgFile:
              imgFiles) {
             fragmentAdapter.addFragment(new HomeMainImage(imgFile));
         }
+    }
+
+    public FragmentPagerAdapter getFragmentAdapter(){
         return fragmentAdapter;
     }
 }

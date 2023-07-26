@@ -1,7 +1,5 @@
 package kr.ac.doowon.healthmanageapp.fragments;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,13 +41,11 @@ import kr.ac.doowon.healthmanageapp.view_model.BannerViewModel;
 import kr.ac.doowon.healthmanageapp.view_model.BannerViewModelFactory;
 
 public class Home extends Fragment implements View.OnClickListener {
-    /* * * * *
-     * 1. 로딩창에서 비트맵 받기
-     * 2. SQLLite에 비트맵 저장
-     * 3. SQLLite에서 비트맵 확인 후 메인화면에 출력
-     * ※ 비동기로 Url 이미지를 받아오니 시간이 오래걸린다
-     * * * * * */
+
     private FragmentHomeBinding binding;
+    private BannerViewModel bannerViewModel;
+    private Disposable disposable;
+
 
     @Nullable
     @Override
@@ -57,18 +53,18 @@ public class Home extends Fragment implements View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
         List<File> imgFiles = Arrays.asList(
-                new File(getActivity().getFilesDir(), "banner_0"),
-                new File(getActivity().getFilesDir(), "banner_1"),
-                new File(getActivity().getFilesDir(), "banner_2"),
-                new File(getActivity().getFilesDir(), "banner_3")
+                new File(requireActivity().getFilesDir(), "banner_0"),
+                new File(requireActivity().getFilesDir(), "banner_1"),
+                new File(requireActivity().getFilesDir(), "banner_2"),
+                new File(requireActivity().getFilesDir(), "banner_3")
         );
 
-        Log.i("PATH",getActivity().getFilesDir().toString());
-        Log.i("File",new File(getActivity().getFilesDir(), "banner_1").toString());
-
-        BannerViewModel bannerViewModel = new ViewModelProvider(getActivity()).get(BannerViewModel.class);
-        bannerViewModel.setBannerFiles(imgFiles, getActivity());
-        FragmentPagerAdapter pagerAdapter = bannerViewModel.setFragments();
+        // ViewModel 초기화
+        BannerViewModelFactory factory = new BannerViewModelFactory(requireActivity(), imgFiles);
+        bannerViewModel = new ViewModelProvider(this, factory).get(BannerViewModel.class);
+        bannerViewModel.init(requireActivity(), imgFiles);
+        bannerViewModel.setFragments();
+        FragmentPagerAdapter pagerAdapter = bannerViewModel.getFragmentAdapter();
 
         binding.viewPager2.setAdapter(pagerAdapter);
         binding.circleIndicator.setViewPager(binding.viewPager2);
@@ -80,41 +76,36 @@ public class Home extends Fragment implements View.OnClickListener {
         binding.viewPager2.setCurrentItem(listCnt, true);
         binding.viewPager2.setOffscreenPageLimit(listCnt);
 
-        AppDatabase db = AppDatabase.getDatabase(getContext());
+        AppDatabase db = AppDatabase.getDatabase(requireContext());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date nowDate = new Date();
         String formatNowDate = dateFormat.format(nowDate);
 
-
-
-        Disposable dispose = db.targetKcalDAO().getTargetKcal(formatNowDate)
+        // RxJava를 사용한 비동기 처리
+        disposable = db.targetKcalDAO().getTargetKcal(formatNowDate)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(targetKcals -> {
+                    // 데이터 처리
+                }, throwable -> {
+                    // 에러 처리
+                });
 
-                        },
-                        throwable -> {
-
-                        });
-
-
-        dispose.dispose();
-
-        ProgressBar b = binding.pbTodayKcal;
-
+        // 나머지 코드는 그대로 유지
         return binding.getRoot();
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        binding = null;
+        // Disposable 객체 해제
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
 
-
+    @Override
+    public void onClick(View v) {
+        // 클릭 이벤트 처리
+    }
 }

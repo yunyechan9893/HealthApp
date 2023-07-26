@@ -265,5 +265,6 @@ public class Login extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         disposable.dispose();
+
     }
 }

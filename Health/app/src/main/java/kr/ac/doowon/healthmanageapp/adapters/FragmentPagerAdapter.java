@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
@@ -17,10 +18,6 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
         super(activity);
     }
 
-    public void setFragmentsAll(List<Fragment> fragments){
-        this.fragments = fragments;
-
-    }
 
     @NonNull
     @Override
@@ -36,15 +33,9 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
 
     public FragmentPagerAdapter addFragment(Fragment fragment) {
         fragments.add(fragment);
-        notifyItemInserted(fragments.size() - 1);
-
         Log.i("addFragment",fragment.toString());
 
         return this;
-    }
-
-    public List<Fragment> getFragments(){
-        return fragments;
     }
 
     public void removeFragment() {
@@ -52,4 +43,5 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
 
         notifyItemRemoved(fragments.size());
     }
+
 }
