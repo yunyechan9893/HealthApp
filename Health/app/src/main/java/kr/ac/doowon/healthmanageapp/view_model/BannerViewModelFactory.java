@@ -21,6 +21,6 @@ public class BannerViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new BannerViewModel(fragmentActivity, imgFiles);
+        return (T) new BannerViewModel();
     }
 }

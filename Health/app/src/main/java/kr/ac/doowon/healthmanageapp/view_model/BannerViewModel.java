@@ -24,26 +24,30 @@ import kr.ac.doowon.healthmanageapp.fragments.HomeMainImage;
 
 public class BannerViewModel extends ViewModel {
 
-    private FragmentPagerAdapter fragmentAdapter;
+    private MutableLiveData<FragmentPagerAdapter> mutableLiveDatafragmentAdapter
+            = new MutableLiveData<>();
     private List<File> imgFiles;
 
-    public BannerViewModel(FragmentActivity activity, List<File> imgFiles){
+    public BannerViewModel initAdpter(FragmentActivity activity){
+        mutableLiveDatafragmentAdapter.setValue(new FragmentPagerAdapter(activity));
 
+        return this;
     }
 
-    public void init(FragmentActivity activity,List<File> imgFiles){
-        fragmentAdapter = new FragmentPagerAdapter(activity);
+    public BannerViewModel initFiles(List<File> imgFiles){
         this.imgFiles = imgFiles;
+
+        return this;
     }
 
     public void setFragments(){
         for (File imgFile:
              imgFiles) {
-            fragmentAdapter.addFragment(new HomeMainImage(imgFile));
+            mutableLiveDatafragmentAdapter.getValue().addFragment(new HomeMainImage(imgFile));
         }
     }
 
     public FragmentPagerAdapter getFragmentAdapter(){
-        return fragmentAdapter;
+        return mutableLiveDatafragmentAdapter.getValue();
     }
 }

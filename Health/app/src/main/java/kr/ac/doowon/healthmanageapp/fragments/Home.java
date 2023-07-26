@@ -52,18 +52,24 @@ public class Home extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
-        List<File> imgFiles = Arrays.asList(
-                new File(requireActivity().getFilesDir(), "banner_0"),
-                new File(requireActivity().getFilesDir(), "banner_1"),
-                new File(requireActivity().getFilesDir(), "banner_2"),
-                new File(requireActivity().getFilesDir(), "banner_3")
-        );
+
 
         // ViewModel 초기화
-        BannerViewModelFactory factory = new BannerViewModelFactory(requireActivity(), imgFiles);
-        bannerViewModel = new ViewModelProvider(this, factory).get(BannerViewModel.class);
-        bannerViewModel.init(requireActivity(), imgFiles);
-        bannerViewModel.setFragments();
+        // BannerViewModelFactory factory = new BannerViewModelFactory(requireActivity(), Arrays.asList());
+        bannerViewModel = new ViewModelProvider(this).get(BannerViewModel.class);
+
+        if (bannerViewModel.initAdpter(getActivity()).getFragmentAdapter().getItemCount()==0){
+            List<File> imgFiles = Arrays.asList(
+                    new File(requireActivity().getFilesDir(), "banner_0"),
+                    new File(requireActivity().getFilesDir(), "banner_1"),
+                    new File(requireActivity().getFilesDir(), "banner_2"),
+                    new File(requireActivity().getFilesDir(), "banner_3")
+            );
+
+            bannerViewModel.initFiles(imgFiles);
+            bannerViewModel.setFragments();
+        }
+
         FragmentPagerAdapter pagerAdapter = bannerViewModel.getFragmentAdapter();
 
         binding.viewPager2.setAdapter(pagerAdapter);
