@@ -10,11 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Activity_Management_Diet_Detail extends AppCompatActivity {
-
     private TextView tvTypeOfMeal, tvTime, tvConsumedKcal, tvConsumedCarbohydrate, tvConsumedDietaryFiber,
             tvConsumedProtein, tvConsumedFat, tvConsumedDietarySaturatedFiber, tvConsumedDietaryUnsaturatedFiber,
             tvConsumedDietaryCholesterol;
@@ -26,7 +23,7 @@ public class Activity_Management_Diet_Detail extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_management_diet_detail);
+        setContentView(R.layout.fragment_management_diet_detail);
 
         Intent intent = getIntent();
         // 받은 날짜를 가져온다.

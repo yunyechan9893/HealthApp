@@ -16,7 +16,6 @@ import com.bumptech.glide.request.transition.Transition;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class Loding extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_01_main);
+        setContentView(R.layout.activity_loding);
 
         prefs = Prefs.getInstance(getApplicationContext());
         String accessToken = prefs.getAccessToken();

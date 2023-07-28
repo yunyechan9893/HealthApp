@@ -2,64 +2,43 @@ package kr.ac.doowon.healthmanageapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import kr.ac.doowon.healthmanageapp.databinding.Activity04MainFrameBinding;
-import kr.ac.doowon.healthmanageapp.fragments.Home;
+import com.google.android.material.navigation.NavigationBarView;
+
+import kr.ac.doowon.healthmanageapp.Fragment_Introduce_Main;
+import kr.ac.doowon.healthmanageapp.fragments.management.Management;
+import kr.ac.doowon.healthmanageapp.databinding.ActivityMainFrameBinding;
+import kr.ac.doowon.healthmanageapp.fragments.home.Home;
 
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
+import kr.ac.doowon.healthmanageapp.view_model.NavigationVIewModel;
 
-public class MainFrame extends AppCompatActivity {
-    FragmentPagerAdapter fragmentAdapter;
+public class MainFrame extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, View.OnClickListener {
     private static Prefs prefs;
+    ActivityMainFrameBinding binding;
+
     @Override
     protected
     void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Activity04MainFrameBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_04_main_frame);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_frame);
 
-        View drawerView = findViewById(R.id.drawer);
+        // 네비게이션 아이템 클릭 시 보여줄 프레그먼트 구성
+        setNavigationFragmentAdapter();
 
-        fragmentAdapter = new FragmentPagerAdapter(this)
-                .addFragment(new Home());
-                //.addFragment(new Fragment_Management_main())
-                //.addFragment(new Fragment_Introduce_Main());
-
-        binding.viewPager.setAdapter(fragmentAdapter);
-        binding.viewPager.setUserInputEnabled(false);
-
-        binding.navBottom.setOnItemSelectedListener(item -> {
-            switch (item.getItemId())
-            {
-                case R.id.icHome:
-                    binding.viewPager.setCurrentItem(0);
-                    return true;
-//                case R.id.icManage:
-//                    binding.viewPager.setCurrentItem(1);
-//                    return true;
-//                case R.id.icIntroduce:
-//                    binding.viewPager.setCurrentItem(2);
-//                    return true;
-            }
-            return false;
-        });
-
-
-        binding.ibtnNav.setOnClickListener((view -> {
-            binding.drawerLayout.openDrawer(drawerView);
-        }));
-
-        prefs = Prefs.getInstance(getApplicationContext());
-        binding.tvLogout.setOnClickListener((v -> {
-            prefs.clearToken();
-            Intent intent = new Intent(MainFrame.this, Login.class);
-            startActivity(intent);
-        }));
+        binding.navBottom.setOnItemSelectedListener(this::onNavigationItemSelected);
+        binding.ibtnNav.setOnClickListener(this::onClick);
+        binding.tvLogout.setOnClickListener(this::onClick);
 
     }
 
@@ -67,5 +46,52 @@ public class MainFrame extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.icHome:
+                binding.viewPager.setCurrentItem(0);
+                return true;
+            case R.id.icManage:
+                binding.viewPager.setCurrentItem(1);
+                return true;
+            case R.id.icIntroduce:
+                binding.viewPager.setCurrentItem(2);
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.i("e", "1");
+        if (binding.ibtnNav.equals(v)) {
+            binding.drawerLayout.openDrawer((View) findViewById(R.id.drawer));
+        }
+        else if (binding.tvLogout.equals(v)) {
+            prefs = Prefs.getInstance(getApplicationContext());
+            prefs.clearToken();
+
+            Intent intent = new Intent(MainFrame.this, Login.class);
+            startActivity(intent);
+        }
+    }
+
+    private void setNavigationFragmentAdapter(){
+        NavigationVIewModel navigationVIewModel = new NavigationVIewModel();
+        FragmentPagerAdapter fragmentAdapter = navigationVIewModel.getFragmentAdapter();
+        if (fragmentAdapter==null){
+            fragmentAdapter = navigationVIewModel.initAdpter(this)
+                    .addFragment(new Home())
+                    .addFragment(new Management())
+                    .addFragment(new Fragment_Introduce_Main())
+                    .getFragmentAdapter();
+        }
+
+        binding.viewPager.setAdapter(fragmentAdapter);
+        binding.viewPager.setUserInputEnabled(false);
     }
 }

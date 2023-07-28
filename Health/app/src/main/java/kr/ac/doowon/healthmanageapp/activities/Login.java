@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -30,6 +31,7 @@ import kr.ac.doowon.healthmanageapp.database.AppDatabase;
 import kr.ac.doowon.healthmanageapp.database.AteFood;
 import kr.ac.doowon.healthmanageapp.database.Diet;
 import kr.ac.doowon.healthmanageapp.database.TargetKcal;
+import kr.ac.doowon.healthmanageapp.databinding.ActivityLoginBinding;
 import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
@@ -41,51 +43,35 @@ import retrofit2.Response;
 
 public class Login extends Activity implements View.OnClickListener {
     private static Prefs prefs;
-    private Button btnRegister, btnLogin, btnFindIdPwd;
     Drawable drawRegist;
     Call<LoginResponse> call;
     Disposable disposable;
+    ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_02_login);
-
-        Button crashButton = new Button(this);
-        crashButton.setText("Test Crash");
-        crashButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                throw new RuntimeException("Test Crash"); // Force a crash
-            }
-        });
-
-        addContentView(crashButton, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
         prefs = Prefs.getInstance(getApplicationContext());
-
-        btnRegister = findViewById(R.id.btnRegist);
-        btnLogin = findViewById(R.id.btnLogin);
-        btnFindIdPwd = findViewById(R.id.btnFindIdPwd);
 
         //버튼 색상 변경 코드
         drawRegist = getResources().getDrawable(R.drawable.register_border2);
         drawRegist.setColorFilter(0xff99cc00, PorterDuff.Mode.SRC_ATOP);
-        btnRegister.setBackgroundDrawable(drawRegist);
+        binding.btnRegist.setBackgroundDrawable(drawRegist);
 
-        btnRegister.setOnClickListener(this::onClick);
-        btnLogin.setOnClickListener(this::onClick);
-        btnFindIdPwd.setOnClickListener(this::onClick);
+        binding.btnRegist.setOnClickListener(this::onClick);
+        binding.btnLogin.setOnClickListener(this::onClick);
+        binding.btnFindIdPwd.setOnClickListener(this::onClick);
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.btnRegist){
+        if(binding.btnRegist.equals(view)){
             Intent intent = new Intent(Login.this, Signup.class);
             startActivity(intent);
         }
-        if(view.getId() == R.id.btnLogin) {
+        else if(binding.btnLogin.equals(view)) {
             EditText edId = findViewById(R.id.edId);
             EditText edPwd = findViewById(R.id.edPwd);
 
@@ -239,7 +225,7 @@ public class Login extends Activity implements View.OnClickListener {
 
         }
 
-        if(view.getId() == R.id.btnFindIdPwd){
+        else if(binding.btnFindIdPwd.equals(view)){
             Intent intent = new Intent(Login.this, z_Test.class);
             startActivity(intent);
         }

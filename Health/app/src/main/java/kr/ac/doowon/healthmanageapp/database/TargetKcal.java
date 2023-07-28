@@ -27,5 +27,9 @@ public class TargetKcal {
         this.kcal = kcal;
         return this;
     }
+
+    public int getKcal(){
+        return kcal;
+    }
 }
 

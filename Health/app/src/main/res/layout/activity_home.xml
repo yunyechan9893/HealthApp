@@ -636,11 +636,4 @@
             app:menu="@menu/menu" />
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ivTest"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        />
-
 </LinearLayout>

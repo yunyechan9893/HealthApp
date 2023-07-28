@@ -1,27 +1,28 @@
 package kr.ac.doowon.healthmanageapp;
 
-import android.app.Activity;
+import kr.ac.doowon.healthmanageapp.activities.DietFrame;
+import kr.ac.doowon.healthmanageapp.fragments.management.Management;
 
 public class Class_CFM {
-    private Fragment_Management_main fragmentManagementMain;
-    private Fragment_Management_Diet fragmentManagementDiet;
+    private Management fragmentManagementMain;
+    private DietFrame fragmentManagementDiet;
     private Fragment_Management_Diet_Add fragmentManagementDietAdd;
 
     // FragmentManagementMain setter,getter
-    public void setFragmentManagementMain(Fragment_Management_main fragmentManagementMain){
+    public void setFragmentManagementMain(Management fragmentManagementMain){
         this.fragmentManagementMain = fragmentManagementMain;
     }
 
-    public Fragment_Management_main getFragmentManagementMain() {
+    public Management getFragmentManagementMain() {
         return fragmentManagementMain;
     }
 
     // FragmentManagementDiet setter,getter
-    public void setFragmentManagementDiet(Fragment_Management_Diet fragmentManagementDiet) {
+    public void setFragmentManagementDiet(DietFrame fragmentManagementDiet) {
         this.fragmentManagementDiet = fragmentManagementDiet;
     }
 
-    public Fragment_Management_Diet getFragmentManagementDiet() {
+    public DietFrame getFragmentManagementDiet() {
         return fragmentManagementDiet;
     }
 

@@ -1,4 +1,4 @@
-package kr.ac.doowon.healthmanageapp.fragments;
+package kr.ac.doowon.healthmanageapp.fragments.home;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -45,15 +45,12 @@ public class HomeMainImage extends Fragment {
                     .addListener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.i("HomeMainImage","실패");
                             return false;
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             // 이미지 로드 성공 시 처리
-
-                            Log.i("HomeMainImage","로드성공");
                             return false;
                         }
                     })

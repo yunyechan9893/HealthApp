@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
@@ -27,13 +26,11 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        Log.i("getItemCount",String.valueOf(fragments.size()));
         return fragments.size();
     }
 
     public FragmentPagerAdapter addFragment(Fragment fragment) {
         fragments.add(fragment);
-        Log.i("addFragment",fragment.toString());
 
         return this;
     }

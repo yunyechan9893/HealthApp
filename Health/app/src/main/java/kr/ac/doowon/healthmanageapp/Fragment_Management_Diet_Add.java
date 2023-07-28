@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
+import kr.ac.doowon.healthmanageapp.activities.DietFrame;
 import kr.ac.doowon.healthmanageapp.activities.MainFrame;
 
 public class Fragment_Management_Diet_Add extends Fragment implements View.OnClickListener {
@@ -147,7 +148,7 @@ public class Fragment_Management_Diet_Add extends Fragment implements View.OnCli
     String USERID, sNowDate;
     Handler handler, ManagementDietHandler;
     MainFrame parentActivity;
-    Fragment_Management_Diet fragmentManagementDiet;
+    DietFrame fragmentManagementDiet;
     int ateFoodCount = 0;
 
     @Override
