@@ -18,51 +18,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/Test"/>
-
-            <!--최상위 아이콘 모음-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/mainLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/ibtnTargetKcal"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_baseline_star_24"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ibtnDietRegister" />
-
-
-                <ImageButton
-                    android:id="@+id/ibtnDate"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_baseline_calendar"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ibtnTargetKcal"/>
-
-                <ImageButton
-                    android:id="@+id/ibtnDietRegister"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_baseline_add_circle_outline"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <!--최상위 아이콘 모음 끝-->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
                 android:background="@color/white"
                 android:layout_marginBottom="10dp"/>
 

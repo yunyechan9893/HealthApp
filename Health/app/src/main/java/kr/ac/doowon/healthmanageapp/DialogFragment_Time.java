@@ -17,14 +17,8 @@ import androidx.fragment.app.Fragment;
 
 
 public class DialogFragment_Time extends DialogFragment {
-    private Fragment fragment;
     int hourOfDay, minute;
-    Message msg;
-    Handler handler;
 
-    public DialogFragment_Time(Handler handler){
-        this.handler = handler;
-    }
 
     @Nullable
     @Override
@@ -36,36 +30,19 @@ public class DialogFragment_Time extends DialogFragment {
         Button btnCancel = rootView.findViewById(R.id.btnCancel);
         Button btnRegister = rootView.findViewById(R.id.btnRegist);
 
-        fragment = getActivity().getSupportFragmentManager().findFragmentByTag("tag");
-        Bundle args = getArguments();
-
         timePicker.setOnTimeChangedListener(((timePickerView, _hourOfDay, _minute) -> {
             hourOfDay = _hourOfDay;
             minute = _minute;
         }));
 
         btnRegister.setOnClickListener(view -> {
-            msg = handler.obtainMessage();
-            args.putString("Method", "getTime");
-            args.putInt("hourOfDay", hourOfDay);
-            args.putInt("minute", minute);
-            msg.setData(args);
-            handler.sendMessage(msg);
-
-            if (fragment != null) {
-                DialogFragment dialogFragment = (DialogFragment) fragment;
-                dialogFragment.dismiss();
-            }
+           this.dismiss();
         });
 
         //버튼 클릭시 다이얼로그 종료
         btnCancel.setOnClickListener((view-> {
-
-
-            if (fragment != null) {
-                DialogFragment dialogFragment = (DialogFragment) fragment;
-                dialogFragment.dismiss();
-        }}));
+            this.dismiss();
+        }));
 
         return rootView;
     }

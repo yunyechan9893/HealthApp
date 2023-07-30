@@ -1,12 +1,13 @@
 package kr.ac.doowon.healthmanageapp;
 
 import kr.ac.doowon.healthmanageapp.activities.DietFrame;
+import kr.ac.doowon.healthmanageapp.fragments.management.DietAdd;
 import kr.ac.doowon.healthmanageapp.fragments.management.Management;
 
 public class Class_CFM {
     private Management fragmentManagementMain;
     private DietFrame fragmentManagementDiet;
-    private Fragment_Management_Diet_Add fragmentManagementDietAdd;
+    private DietAdd fragmentManagementDietAdd;
 
     // FragmentManagementMain setter,getter
     public void setFragmentManagementMain(Management fragmentManagementMain){
@@ -27,11 +28,11 @@ public class Class_CFM {
     }
 
     // FragmentManagementDietAdd setter,getter
-    public void setFragmentManagementDietAdd(Fragment_Management_Diet_Add fragmentManagementDietAdd) {
+    public void setFragmentManagementDietAdd(DietAdd fragmentManagementDietAdd) {
         this.fragmentManagementDietAdd = fragmentManagementDietAdd;
     }
 
-    public Fragment_Management_Diet_Add getFragmentManagementDietAdd() {
+    public DietAdd getFragmentManagementDietAdd() {
         return fragmentManagementDietAdd;
     }
 }
