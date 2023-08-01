@@ -16,6 +16,7 @@ test = Blueprint('test',  # 별칭, 해당 블루프린트 밑에서 정의된
                     url_prefix='/test',             # 모든 URL 앞에 /main이 추가된다
     )
 
+''' 동작되는것을 확인했으니 테스트 후 수정하자
 @api.before_request
 def check_access_token():
     # 액세스 토큰 검사
@@ -46,15 +47,16 @@ def check_access_token():
                 }
             )
 
-            
+
 
 
     # 만료됐다면 리프레시 토큰을 확인 후 액세스 토큰 재발급
      
     # 유효하지 않은 토큰일 시 401리턴
-
+'''
 
 from . import login
 from . import signup
+from . import food_api
 from . import test
 
