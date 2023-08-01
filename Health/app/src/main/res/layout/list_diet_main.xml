@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="20dp"
+        android:paddingBottom="30dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
+
+        <LinearLayout
+            android:id="@id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvTypeOfMeal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanum_bold"
+                android:text="식사종류"
+                android:textColor="#ff0000"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgAteFood"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:src="@drawable/img_diet_nofood"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+        <!--칼로리와 단백질 나타내는 그룹-->
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgAteFood">
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/nanum_middle"
+                android:text="칼로리 : "
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgAteFood" />
+
+            <TextView
+                android:id="@+id/tvKcal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/nanum_middle"
+                android:text="0kcal"
+                android:textSize="16dp"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/tv1"
+                app:layout_constraintTop_toBottomOf="@+id/imgAteFood" />
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/nanum_middle"
+                android:text="단백질 : "
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/tvKcal"
+                app:layout_constraintTop_toBottomOf="@+id/imgAteFood" />
+
+            <TextView
+                android:id="@+id/tvProtein"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/nanum_middle"
+                android:text="0g"
+                android:textSize="16dp"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/tv2"
+                app:layout_constraintTop_toBottomOf="@+id/imgAteFood" />
+        </LinearLayout>
+        <!--칼로리와 단백질 나타내는 그룹 끝-->
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:orientation="vertical"
+            android:layout_margin="7dp"
+            android:background="#3A3A3A"
+            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+            tools:layout_editor_absoluteX="50dp">
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanum_bold"
+                android:layout_marginLeft="10dp"
+                android:text="*"
+                android:textSize="17dp"
+                tools:layout_editor_absoluteX="56dp"
+                tools:layout_editor_absoluteY="372dp" />
+
+            <TextView
+                android:id="@+id/tvComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanum_middle"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:padding="10dp"
+                android:text="이 곳은 짧게 코멘트를 적는 곳입니다.     가끔은 이렇게 여러줄도 적힌답니다."
+                android:textSize="17dp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="1dp"
+            android:background="#3A3A3A"
+            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

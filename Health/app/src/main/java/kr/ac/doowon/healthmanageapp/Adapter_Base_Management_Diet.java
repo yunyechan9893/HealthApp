@@ -37,7 +37,7 @@ public class Adapter_Base_Management_Diet extends BaseAdapter {
 
     @Override
     public View getView(int position, View converView, ViewGroup viewGroup) {
-        View view = mLayoutInflater.inflate(R.layout.list_management_diet_todayatefood,null);
+        View view = mLayoutInflater.inflate(R.layout.list_diet_main,null);
         TextView tvTypeOfMeal = view.findViewById(R.id.tvTypeOfMeal);
         TextView tvKcal = view.findViewById(R.id.tvKcal);
         TextView tvProtein = view.findViewById(R.id.tvProtein);

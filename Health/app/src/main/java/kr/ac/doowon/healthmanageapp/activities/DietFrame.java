@@ -16,6 +16,7 @@ import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
 import kr.ac.doowon.healthmanageapp.databinding.ActivityDietBinding;
 import kr.ac.doowon.healthmanageapp.fragments.management.Diet;
+import kr.ac.doowon.healthmanageapp.fragments.management.DietDetail;
 import kr.ac.doowon.healthmanageapp.fragments.management.MyDatePicker;
 import kr.ac.doowon.healthmanageapp.view_model.NavigationVIewModel;
 
@@ -32,6 +33,7 @@ public class DietFrame extends AppCompatActivity implements View.OnClickListener
         FragmentPagerAdapter adapter = navigationVIewModel.getFragmentAdapter();
         if (adapter==null){
             adapter = navigationVIewModel.initAdpter(this)
+                    .addFragment(new DietDetail())
                     .addFragment(new Diet())
                     .addFragment(new DietAdd())
                     .getFragmentAdapter();
@@ -39,6 +41,7 @@ public class DietFrame extends AppCompatActivity implements View.OnClickListener
 
         binding.dietViewpager.setAdapter(adapter);
         binding.dietViewpager.setUserInputEnabled(false);
+        binding.dietViewpager.setCurrentItem(1);
 
         binding.ibtnDate.setOnClickListener(this::onClick);
         binding.ibtnDietRegister.setOnClickListener(this::onClick);
@@ -53,21 +56,28 @@ public class DietFrame extends AppCompatActivity implements View.OnClickListener
             binding.ibtnDietRegister.setVisibility(View.GONE);
             binding.ibtnDate.setVisibility(View.GONE);
 
-            binding.dietViewpager.setCurrentItem(1);
+            binding.dietViewpager.setCurrentItem(2);
         }
         else if (binding.ibtnDate.equals(v)){
             DialogFragment dialog = new MyDatePicker();
             dialog.show(this.getSupportFragmentManager(), "tag");
         }
         else  if (binding.ibtnHome.equals(v)){
-            moveDietActivity();
+            moveDietFragment();
         }
     }
 
-    public void moveDietActivity(){
+    public void moveDietFragment(){
         binding.ibtnTargetKcal.setVisibility(View.VISIBLE);
         binding.ibtnDietRegister.setVisibility(View.VISIBLE);
         binding.ibtnDate.setVisibility(View.VISIBLE);
+        binding.dietViewpager.setCurrentItem(1);
+    }
+
+    public void moveDietDetailFragment(){
+        binding.ibtnTargetKcal.setVisibility(View.GONE);
+        binding.ibtnDietRegister.setVisibility(View.GONE);
+        binding.ibtnDate.setVisibility(View.GONE);
         binding.dietViewpager.setCurrentItem(0);
     }
 }

@@ -38,5 +38,6 @@ public class BannerViewModel extends ViewModel {
 
     public FragmentPagerAdapter getFragmentAdapter(){
         return mutableLiveDatafragmentAdapter.getValue();
+
     }
 }
