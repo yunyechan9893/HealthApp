@@ -7,18 +7,18 @@ import androidx.lifecycle.ViewModel;
 import java.io.File;
 import java.util.List;
 
-import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
+import kr.ac.doowon.healthmanageapp.adapters.MyFragmentStateAdapter;
 import kr.ac.doowon.healthmanageapp.fragments.home.HomeMainImage;
 
 
 public class BannerViewModel extends ViewModel {
 
-    private MutableLiveData<FragmentPagerAdapter> mutableLiveDatafragmentAdapter
+    private MutableLiveData<MyFragmentStateAdapter> mutableLiveDatafragmentAdapter
             = new MutableLiveData<>();
     private List<File> imgFiles;
 
     public BannerViewModel initAdpter(FragmentActivity activity){
-        mutableLiveDatafragmentAdapter.setValue(new FragmentPagerAdapter(activity));
+        mutableLiveDatafragmentAdapter.setValue(new MyFragmentStateAdapter(activity));
 
         return this;
     }
@@ -36,7 +36,7 @@ public class BannerViewModel extends ViewModel {
         }
     }
 
-    public FragmentPagerAdapter getFragmentAdapter(){
+    public MyFragmentStateAdapter getFragmentAdapter(){
         return mutableLiveDatafragmentAdapter.getValue();
 
     }

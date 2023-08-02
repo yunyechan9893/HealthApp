@@ -1,23 +1,21 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
-import static android.view.Gravity.AXIS_CLIP;
-
 import android.os.Bundle;
 import android.view.View;
-import android.widget.PopupMenu;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
+import kr.ac.doowon.healthmanageapp.fragments.dialog.MyEditTextDialog;
 import kr.ac.doowon.healthmanageapp.fragments.management.DietAdd;
 import kr.ac.doowon.healthmanageapp.R;
-import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
+import kr.ac.doowon.healthmanageapp.adapters.MyFragmentStateAdapter;
 import kr.ac.doowon.healthmanageapp.databinding.ActivityDietBinding;
 import kr.ac.doowon.healthmanageapp.fragments.management.Diet;
 import kr.ac.doowon.healthmanageapp.fragments.management.DietDetail;
-import kr.ac.doowon.healthmanageapp.fragments.management.MyDatePicker;
+import kr.ac.doowon.healthmanageapp.fragments.dialog.MyDatePicker;
 import kr.ac.doowon.healthmanageapp.view_model.NavigationVIewModel;
 
 public class DietFrame extends AppCompatActivity implements View.OnClickListener {
@@ -30,7 +28,7 @@ public class DietFrame extends AppCompatActivity implements View.OnClickListener
 
         NavigationVIewModel navigationVIewModel = new NavigationVIewModel();
 
-        FragmentPagerAdapter adapter = navigationVIewModel.getFragmentAdapter();
+        MyFragmentStateAdapter adapter = navigationVIewModel.getFragmentAdapter();
         if (adapter==null){
             adapter = navigationVIewModel.initAdpter(this)
                     .addFragment(new DietDetail())
@@ -64,6 +62,10 @@ public class DietFrame extends AppCompatActivity implements View.OnClickListener
         }
         else  if (binding.ibtnHome.equals(v)){
             moveDietFragment();
+        }
+        else if (binding.ibtnTargetKcal.equals(v)){
+            MyEditTextDialog dialog = new MyEditTextDialog();
+            dialog.setTitle("목표 칼로리").setContentHint("목표 Kcal를 입력해주세요");
         }
     }
 

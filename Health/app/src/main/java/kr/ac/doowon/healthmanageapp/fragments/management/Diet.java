@@ -23,7 +23,7 @@ import kr.ac.doowon.healthmanageapp.activities.DietFrame;
 import kr.ac.doowon.healthmanageapp.adapters.AteFoodBaseAdapter;
 import kr.ac.doowon.healthmanageapp.databinding.FragmentManagementDietMainBinding;
 
-public class Diet extends Fragment implements AdapterView.OnItemClickListener {
+public class Diet extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     FragmentManagementDietMainBinding binding;
 
     @Nullable
@@ -43,5 +43,9 @@ public class Diet extends Fragment implements AdapterView.OnItemClickListener {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         DietFrame dietFrame = (DietFrame) getActivity();
         dietFrame.moveDietDetailFragment();
+    }
+
+    @Override
+    public void onClick(View v) {
     }
 }

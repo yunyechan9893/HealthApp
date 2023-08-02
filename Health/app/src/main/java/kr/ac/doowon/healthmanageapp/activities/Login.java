@@ -7,8 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -36,7 +34,6 @@ import kr.ac.doowon.healthmanageapp.models.LoginResponse;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
-import kr.ac.doowon.healthmanageapp.z_Test;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -215,6 +212,7 @@ public class Login extends Activity implements View.OnClickListener {
                     else{
                         Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
                     }
+                    return false;
                 }
 
                 @Override
@@ -226,8 +224,6 @@ public class Login extends Activity implements View.OnClickListener {
         }
 
         else if(binding.btnFindIdPwd.equals(view)){
-            Intent intent = new Intent(Login.this, z_Test.class);
-            startActivity(intent);
         }
     }
 

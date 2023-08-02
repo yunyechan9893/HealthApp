@@ -1,15 +1,9 @@
 package kr.ac.doowon.healthmanageapp.fragments.management;
 
-import static android.view.Gravity.AXIS_CLIP;
-
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,10 +12,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import kr.ac.doowon.healthmanageapp.DialogFragment_Time;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.activities.DietFrame;
 import kr.ac.doowon.healthmanageapp.databinding.FragmentManagementDietAddBinding;
+import kr.ac.doowon.healthmanageapp.fragments.dialog.MyDatePicker;
+import kr.ac.doowon.healthmanageapp.fragments.dialog.MyTimePicker;
 
 public class DietAdd extends Fragment implements View.OnClickListener {
 
@@ -52,7 +47,7 @@ public class DietAdd extends Fragment implements View.OnClickListener {
             DialogFragment dialog = new MyDatePicker();
             dialog.show(getActivity().getSupportFragmentManager(),"tag");
         }else if (binding.tvTime.equals(v)){
-            DialogFragment dialog = new DialogFragment_Time();
+            DialogFragment dialog = new MyTimePicker();
             dialog.show(getActivity().getSupportFragmentManager(),"tag");
         }else if (binding.btnFoodSearch.equals(v)){
             String foodName = binding.edFoodName.getText().toString();

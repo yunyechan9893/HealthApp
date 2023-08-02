@@ -49,6 +49,7 @@ public class Loding extends AppCompatActivity {
                 public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
                     if (response.body().getMessage()==200)
                         nextActivity = MainFrame.class;
+                    return false;
                 }
 
                 @Override

@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
-import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
+import kr.ac.doowon.healthmanageapp.adapters.MyFragmentStateAdapter;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
 import kr.ac.doowon.healthmanageapp.database.TargetKcal;
 import kr.ac.doowon.healthmanageapp.databinding.FragmentHomeBinding;
@@ -61,7 +61,7 @@ public class Home extends Fragment implements View.OnClickListener {
             bannerViewModel.setFragments();
         }
 
-        FragmentPagerAdapter pagerAdapter = bannerViewModel.getFragmentAdapter();
+        MyFragmentStateAdapter pagerAdapter = bannerViewModel.getFragmentAdapter();
 
         binding.viewPager2.setAdapter(pagerAdapter);
         binding.circleIndicator.setViewPager(binding.viewPager2);

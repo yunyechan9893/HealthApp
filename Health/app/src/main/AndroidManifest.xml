@@ -21,7 +21,6 @@
         <activity android:name=".activities.MainFrame"/>
         <activity android:name=".activities.Login"/>
         <activity android:name=".activities.Signup"/>
-        <activity android:name=".z_Test"/>
         <activity
             android:name=".activities.Loding"
             android:exported="true">

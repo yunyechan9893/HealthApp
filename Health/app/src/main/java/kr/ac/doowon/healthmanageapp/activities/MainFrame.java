@@ -13,13 +13,13 @@ import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.navigation.NavigationBarView;
 
-import kr.ac.doowon.healthmanageapp.Fragment_Introduce_Main;
+import kr.ac.doowon.healthmanageapp.fragments.introduce.IntroduceMainFrame;
 import kr.ac.doowon.healthmanageapp.fragments.management.Management;
 import kr.ac.doowon.healthmanageapp.databinding.ActivityMainFrameBinding;
 import kr.ac.doowon.healthmanageapp.fragments.home.Home;
 
 import kr.ac.doowon.healthmanageapp.R;
-import kr.ac.doowon.healthmanageapp.adapters.FragmentPagerAdapter;
+import kr.ac.doowon.healthmanageapp.adapters.MyFragmentStateAdapter;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 import kr.ac.doowon.healthmanageapp.view_model.NavigationVIewModel;
 
@@ -82,12 +82,12 @@ public class MainFrame extends AppCompatActivity implements NavigationBarView.On
 
     private void setNavigationFragmentAdapter(){
         NavigationVIewModel navigationVIewModel = new NavigationVIewModel();
-        FragmentPagerAdapter fragmentAdapter = navigationVIewModel.getFragmentAdapter();
+        MyFragmentStateAdapter fragmentAdapter = navigationVIewModel.getFragmentAdapter();
         if (fragmentAdapter==null){
             fragmentAdapter = navigationVIewModel.initAdpter(this)
                     .addFragment(new Home())
                     .addFragment(new Management())
-                    .addFragment(new Fragment_Introduce_Main())
+                    .addFragment(new IntroduceMainFrame())
                     .getFragmentAdapter();
         }
 

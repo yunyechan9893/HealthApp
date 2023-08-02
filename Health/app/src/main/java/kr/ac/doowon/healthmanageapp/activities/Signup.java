@@ -1,218 +1,136 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import kr.ac.doowon.healthmanageapp.Interface_TextWatcher;
 import kr.ac.doowon.healthmanageapp.R;
+import kr.ac.doowon.healthmanageapp.databinding.ActivitySignupBinding;
 import kr.ac.doowon.healthmanageapp.models.JsonResponese;
 import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.models.UserRequest;
 import kr.ac.doowon.healthmanageapp.res.KeyPatten;
+
+import kr.ac.doowon.healthmanageapp.util.MyTextWatch;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Signup extends Activity {
+public class Signup extends Fragment {
 
-    private ArrayList<Boolean> checkList;
+    private class ValidationStatus {
+        private HashMap<String, Boolean> validationMap = new HashMap<>();
+
+        public void setValidationStatus(String key, boolean val){
+            validationMap.put(key, val);
+        }
+
+        public boolean isValidation(){
+            for (boolean status:
+                    validationMap.values()) {
+                if(!status){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    private ActivitySignupBinding binding;
+    ValidationStatus validationStatus;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.activity_signup,container,false);
+        return binding.getRoot();
+    }
+
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_03_register);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        validationStatus = new ValidationStatus();
+        validationStatus.setValidationStatus("isIdDoubleCheck", false);
 
-        checkList = new ArrayList<>(Arrays.asList(false, false, false, false, false, false));
-
-        Button btnCancel = findViewById(R.id.btnCancel);
-        Button btnRegister = findViewById(R.id.btnRegister);
-        Button btnIdCheck = findViewById(R.id.btnIdCheck);
-        Button btnNickNameCheck = findViewById(R.id.btnNickNameCheck);
-        Button btnPhoneNumberCheck = findViewById(R.id.btnPhoneNumberCheck);
-
-        EditText edId = findViewById(R.id.edId);
-        EditText edPwd = findViewById(R.id.edPwd);
-        EditText edPwdCheck = findViewById(R.id.edPwdCheck);
-        EditText edName = findViewById(R.id.edName);
-        EditText edNickName = findViewById(R.id.edNickName);
-        EditText edPhoneNumber = findViewById(R.id.edPhoneNumber);
-
-        TextView txPwdDoubleCheck = findViewById(R.id.txPwdDoubleCheck);
-        TextView txIdCheck = findViewById(R.id.txIdCheck);
-        TextView txNameCheck = findViewById(R.id.txNameCheck);
-        TextView txPhoneCheck = findViewById(R.id.txPhoneCheck);
-        TextView txPwdCheck = findViewById(R.id.txPwdCheck);
+        validationStatus.setValidationStatus("isNicknameDoubleCheck", false);
+        validationStatus.setValidationStatus("isCertificationNumberSendCheck", false);
+        validationStatus.setValidationStatus("isCertificationNumberValidCheck", false);
 
         KeyPatten keyPatten = new KeyPatten();
-        edId.setFilters(new InputFilter[]{keyPatten.AlphaNum});
-        edName.setFilters(new InputFilter[]{keyPatten.Kor});
-        edPwd.setFilters(new InputFilter[]{keyPatten.AlphaNum});
-        edPwdCheck.setFilters(new InputFilter[]{keyPatten.AlphaNum});
+        binding.edId.setFilters(new InputFilter[]{keyPatten.AlphaNum});
+        binding.edName.setFilters(new InputFilter[]{keyPatten.Kor});
+        binding.edPwd.setFilters(new InputFilter[]{keyPatten.AlphaNum});
+        binding.edPwdCheck.setFilters(new InputFilter[]{keyPatten.AlphaNum});
 
-        Drawable draw = getResources().getDrawable(R.drawable.register_border2);
-        draw.setColorFilter(0xFFDF00, PorterDuff.Mode.SRC_ATOP);
-        btnRegister.setBackgroundDrawable(draw);
 
-        edId.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) -> checkList.set(0, false));
+        binding.edPwd.addTextChangedListener((MyTextWatch) (editable) ->
+            validationStatus.setValidationStatus("isPwdValidCheck",performPasswordValidCheck()));
 
-        edPwd.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) -> {
-            String strPwd = edPwd.getText().toString();
 
-            int pwdLength = strPwd.length();
-            if (pwdLength < 8 || pwdLength > 20) {
-                txPwdCheck.setText("8~20자 사이를 입력해주세요.");
-                txPwdCheck.setVisibility(View.VISIBLE);
-                return;
+        binding.edPwdCheck.addTextChangedListener((MyTextWatch) (editable) ->
+            validationStatus.setValidationStatus("isPwdValidCheck",performPasswordEqulCheck()));
+
+        binding.edName.addTextChangedListener((MyTextWatch) (editable) ->
+            validationStatus.setValidationStatus("isNameInputCheck",performNameInputCheck()));
+
+        binding.btnCancel.setOnClickListener(v -> {
+            // mainActivity로 이동
+        });
+
+        binding.btnIdCheck.setOnClickListener(v -> {
+            String id = binding.edId.getText().toString();
+            TextView txIdCheck = binding.txIdCheck;
+
+            if (isIdValid(id)){
+                validationStatus.setValidationStatus("isIdDoubleCheck",checkDuplicateId(id, txIdCheck));
             } else {
-                txPwdCheck.setVisibility(View.INVISIBLE);
+                validationStatus.setValidationStatus("isIdDoubleCheck",false);
             }
+        });
 
-            checkList.set(1, false);
-            for (int index = 0; index < pwdLength; index++) {
-                char c = strPwd.charAt(index);
-                if (Character.isLetter(c)) {
-                    checkList.set(1, true);
-                    break;
-                }
-            }
+        binding.btnNickNameCheck.setOnClickListener(v -> {
+            String nickname = binding.edNickName.getText().toString();
 
-            if (!checkList.get(1)) {
-                txPwdCheck.setText("영문자를 입력해주세요.");
-                txPwdCheck.setVisibility(View.VISIBLE);
+            if (nickname.isEmpty()) {
+                showErrorMessage(binding.txNicknameCheck, "닉네임을 입력하세요");
                 return;
             }
 
-            txPwdCheck.setVisibility(View.INVISIBLE);
+            checkDuplicateNickname(nickname);
         });
 
-        edPwdCheck.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) -> {
-            String strPwd = edPwd.getText().toString();
+        binding.btnPhoneNumberCheck.setOnClickListener(v -> {
+            int phoneNumberLength = binding.edPhoneNumber.getText().toString().length();
+            TextView phoneNumberCheck = binding.txPhoneCheck;
 
-            if (strPwd.equals(edPwdCheck.getText().toString())) {
-                txPwdDoubleCheck.setVisibility(View.INVISIBLE);
-                checkList.set(2, true);
-            } else {
-                txPwdDoubleCheck.setText("비밀번호가 일치하지 않습니다.");
-                txPwdDoubleCheck.setVisibility(View.VISIBLE);
-                checkList.set(2, false);
-            }
-        });
-
-        edName.addTextChangedListener((Interface_TextWatcher) (charSequence, i, i1, i2) ->{
-            boolean isName = i1!=0;
-            txNameCheck.setVisibility(isName ?  View.INVISIBLE:View.VISIBLE);
-            checkList.set(3, isName);
-        });
-
-        Toast toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
-
-        btnCancel.setOnClickListener(v -> {
-            Intent intent = new Intent(Signup.this, Login.class);
-            startActivity(intent);
-        });
-
-        btnIdCheck.setOnClickListener(v -> {
-            String id = edId.getText().toString();
-            txIdCheck.setVisibility(View.INVISIBLE);
-
-            if (id.length() < 8 || id.length() > 20) {
-                toast.setText("8~15자 사이로 입력해주세요.");
-                toast.show();
-                return;
+            if (phoneNumberLength < 7 || phoneNumberLength > 8 ) {
+                showErrorMessage(phoneNumberCheck, "정확한 핸드폰 번호를 입력해주세요");
+                return; // false
             }
 
-            boolean alphabatCheck = false;
-            for (char c : id.toCharArray()) {
-                if (Character.isLetter(c)) {
-                    alphabatCheck = true;
-                }
-
-                if (!Character.isLetterOrDigit(c)) {
-                    toast.setText("특수문자는 사용할 수 없습니다.");
-                    toast.show();
-                    return;
-                }
-            }
-
-            if (!alphabatCheck) {
-                toast.setText("영문이 포함되어야 합니다.");
-                toast.show();
-                return;
-            }
-
-            Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateId(id);
-            call.enqueue(new Callback<JsonResponese>() {
-                @Override
-                public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
-                    JsonResponese resp = response.body();
-                    boolean isSuccess = resp.isSuccess();
-
-                    if (isSuccess) {
-                        toast.setText("사용가능한 아이디입니다");
-                    }else {
-                        toast.setText("아이디가 중복되었습니다");
-                    }
-                    checkList.set(0, isSuccess);
-                    toast.show();
-                }
-
-                @Override
-                public void onFailure(Call<JsonResponese> call, Throwable t) {
-                    System.out.println(t);
-                }
-            });
+            hideErrorMessage(phoneNumberCheck);
+            return; // true
         });
 
-        btnNickNameCheck.setOnClickListener( v -> {
-            String nickname = edNickName.getText().toString();
-
-            Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
-            call.enqueue(new Callback<JsonResponese>() {
-                @Override
-                public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
-                    JsonResponese resp = response.body();
-                    boolean isSuccess = resp.isSuccess();
-
-                    if (isSuccess) {
-                        toast.setText("사용가능한 닉네임입니다");
-                    }else {
-                        toast.setText("닉네임이 중복되었습니다");
-                    }
-                    checkList.set(5, isSuccess);
-                    toast.show();
-                }
-
-                @Override
-                public void onFailure(Call<JsonResponese> call, Throwable t) {
-                    System.out.println(t);
-                }
-            });
-        });
-
-        btnPhoneNumberCheck.setOnClickListener(v -> {
-            if (edPhoneNumber.length() > 8) {
-                checkList.set(4, true);
-                txPhoneCheck.setVisibility(View.INVISIBLE);
-            } else {
-                txPhoneCheck.setVisibility(View.VISIBLE);
-            }
-        });
-
-        btnRegister.setOnClickListener(v -> {
+        binding.btnRegister.setOnClickListener(v -> {
             for (int i = 0; i < checkList.size(); i++) {
                 if (!checkList.get(i)) {
                     showErrorAndFocusInput(i);
@@ -220,11 +138,11 @@ public class Signup extends Activity {
                 }
             }
 
-            String id = edId.getText().toString();
-            String pwd = edPwd.getText().toString();
-            String name = edName.getText().toString();
-            String nickname = edNickName.getText().toString();
-            String phone = edPhoneNumber.getText().toString();
+            String id = binding.edId.getText().toString();
+            String pwd = binding.edPwd.getText().toString();
+            String name = binding.edName.getText().toString();
+            String nickname = binding.edNickName.getText().toString();
+            String phone = binding.edPhoneNumber.getText().toString();
 
             String hashPwd;
             try {
@@ -247,6 +165,7 @@ public class Signup extends Activity {
                     toast.setText("회원가입에 성공했습니다");
                     toast.show();
                     onBackPressed();
+                    return false;
                 }
                 @Override
                 public void onFailure(Call<JsonResponese> call, Throwable t) {
@@ -290,11 +209,7 @@ public class Signup extends Activity {
         }
         textView.setVisibility(View.VISIBLE);
         editText.requestFocus();
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     public String encrypt(String text) throws NoSuchAlgorithmException {
@@ -311,4 +226,159 @@ public class Signup extends Activity {
         }
         return builder.toString();
     }
+
+    private boolean performPasswordValidCheck(){
+        String password = binding.edPwd.getText().toString();
+        int passwordLength = password.length();
+
+        if (passwordLength < 8 || passwordLength > 20) {
+            showErrorMessage(binding.txPwdCheck,"8~20자 사이를 입력해주세요.");
+            return false;
+        }
+
+        if (!containsLowerCaseLetter(password)) {
+            showErrorMessage(binding.txPwdCheck,"영문자를 입력해주세요.");
+            return false;
+        }
+
+        hideErrorMessage(binding.txPwdCheck);
+        return true;
+    }
+
+    private boolean containsLowerCaseLetter(String text) {
+        for (int index = 0; index < text.length(); index++) {
+            if (Character.isLowerCase(text.charAt(index))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean performPasswordEqulCheck(){
+        String password = binding.edPwd.getText().toString();
+        String passwordEquelCheck = binding.edPwdCheck.getText().toString();
+
+        if (!passwordEquelCheck.equals(password)) {
+            showErrorMessage(binding.txPwdDoubleCheck, "비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+
+        hideErrorMessage(binding.txPwdDoubleCheck);
+        return true;
+    }
+
+    private boolean performNameInputCheck(){
+        if (binding.edName.getText().toString().length()== 0){
+            showErrorMessage(binding.txNameCheck, "이름을 입력하세요.");
+            return false;
+        }
+
+        hideErrorMessage(binding.txNameCheck);
+        return true;
+    }
+
+    private boolean isIdValid(String id) {
+        if (id.length() < 8 || id.length() > 20) {
+            showErrorMessage(binding.txIdCheck, "8~15자 사이로 입력해주세요");
+            return false;
+        }
+
+        for (char c : id.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                showErrorMessage(binding.txIdCheck, "특수문자는 사용할 수 없습니다.");
+                return false;
+            }
+        }
+
+        if (!containsLetter(id)) {
+            showErrorMessage(binding.txIdCheck, "영문이 포함되어야 합니다.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean containsLetter(String text) {
+        for (char c : text.toCharArray()) {
+            if (Character.isLetter(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkDuplicateId(String id, TextView txIdCheck) {
+        final AtomicBoolean isDuplicate = new AtomicBoolean(false);
+
+        Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateId(id);
+        call.enqueue(new Callback<JsonResponese>() {
+            @Override
+            public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
+                JsonResponese resp = response.body();
+                boolean isSuccess = resp != null && resp.isSuccess();
+
+                if (isSuccess) {
+                    showErrorMessage(txIdCheck, "사용 가능한 아이디입니다");
+                    isDuplicate.set(false);
+                } else {
+                    showErrorMessage(txIdCheck, "아이디가 중복되었습니다");
+                    isDuplicate.set(true); // 설정
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonResponese> call, Throwable t) {
+                System.out.println(t);
+                isDuplicate.set(false); // 설정
+            }
+        });
+
+        if (!isDuplicate.get()){
+            return false;
+        }
+
+        hideErrorMessage(txIdCheck);
+        return isDuplicate.get();
+    }
+
+
+    private boolean checkDuplicateNickname(String nickname) {
+        AtomicBoolean isDuplicate = new AtomicBoolean(false);
+
+        Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
+        call.enqueue(new Callback<JsonResponese>() {
+            @Override
+            public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
+                JsonResponese resp = response.body();
+                boolean isSuccess = resp != null && resp.isSuccess();
+
+                if (isSuccess) {
+                    showErrorMessage(binding.txNicknameCheck, "사용 가능한 닉네임입니다");
+                } else {
+                    showErrorMessage(binding.txNicknameCheck, "닉네임이 중복되었습니다");
+                }
+                isDuplicate.set(isSuccess);
+            }
+
+            @Override
+            public void onFailure(Call<JsonResponese> call, Throwable t) {
+                System.out.println(t);
+                showErrorMessage(binding.txNicknameCheck, "오류가 발생했습니다");
+                isDuplicate.set(false);
+            }
+        });
+        return isDuplicate.get();
+    }
+
+
+    private void showErrorMessage(TextView textView, String message) {
+        textView.setText(message);
+        textView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideErrorMessage(TextView textView) {
+        textView.setVisibility(View.INVISIBLE);
+    }
+
+
 }
