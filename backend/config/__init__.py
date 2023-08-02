@@ -2,6 +2,8 @@ class Config :
     APP_NAME = 'health_app'
     ADMIN_NAME = '윤예찬'
 
+    FOODSAFETY_API_KEY = "b7261cee5f2f462086d9"
+
 class DevelopmentConfig(Config):
     DEBUG = True
     __DATABASE_IP='127.0.0.1'
