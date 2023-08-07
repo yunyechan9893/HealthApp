@@ -10,23 +10,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:background="@color/background"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/white"
-                android:layout_marginBottom="10dp"/>
 
 
             <!--오늘 섭취 칼로리 끝-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dp"
+                android:padding="8dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/background"
                 android:orientation="vertical">
 
                 <!--오늘-->
@@ -43,7 +38,7 @@
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:fontFamily="@font/nanum_middle"
-                        android:textSize="27dp"/>
+                        android:textSize="27sp"/>
 
                 </LinearLayout>
                 <!--오늘 끝-->
@@ -53,16 +48,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:gravity="left">
+                    android:gravity="start">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="섭취 칼로리"
-                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
                         android:textColor="@color/white"
                         android:fontFamily="@font/nanum_middle"
-                        android:textSize="15dp"/>
+                        android:textSize="15sp"/>
 
                 </LinearLayout>
                 <!--섭취칼로리 텍스트뷰 끝-->
@@ -81,7 +76,7 @@
                         android:fontFamily="@font/nanum_bold"
                         android:text="0"
                         android:textColor="@color/white"
-                        android:textSize="70dp"
+                        android:textSize="70sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -93,7 +88,7 @@
                         android:text="kcal"
                         android:textColor="@color/white"
                         android:layout_margin="15dp"
-                        android:textSize="17dp"
+                        android:textSize="17sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tvConsumedKcal" />
 
@@ -103,20 +98,11 @@
             <!--오늘 섭취 칼로리 끝-->
 
 
-            <!--밑줄-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:orientation="vertical"
-                android:background="@color/white"/>
-            <!--밑줄 끝-->
-
-
-
             <!--오늘목표칼로리 오늘목표단백질-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:baselineAligned="true"
                 android:orientation="horizontal">
 
 
@@ -124,13 +110,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginEnd="1dp"
                     android:padding="5dp"
                     android:layout_weight="1"
+                    android:background="@color/background"
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        >
 
                         <TextView
                             android:id="@+id/textView"
@@ -140,7 +129,7 @@
                             android:fontFamily="@font/nanum_middle"
                             android:text="오늘목표"
                             android:textColor="@color/white"
-                            android:layout_marginLeft="18dp"
+                            android:layout_marginStart="18dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -153,7 +142,7 @@
                             android:textStyle="bold"
                             android:text="0"
                             android:textColor="@color/white"
-                            android:textSize="42dp"
+                            android:textSize="42sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -165,7 +154,7 @@
                             android:fontFamily="@font/nanum_light"
                             android:text=" kcal"
                             android:textColor="@color/white"
-                            android:textSize="17dp"
+                            android:textSize="17sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/tvTodayTargetKcal" />
 
@@ -174,28 +163,19 @@
                 </LinearLayout>
                 <!--오늘목표칼로리 끝-->
 
-                <TextView
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"/>
-
                 <!--오늘목표단백질-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:padding="5dp"
                     android:layout_weight="1"
+                    android:background="@color/background"
                     android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="5dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="1dp">
 
                             <TextView
                                 android:id="@+id/textView1"
@@ -205,7 +185,7 @@
                                 android:fontFamily="@font/nanum_middle"
                                 android:text="남은칼로리"
                                 android:textColor="@color/white"
-                                android:layout_marginLeft="18dp"
+                                android:layout_marginStart="18dp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -218,7 +198,7 @@
                                 android:textStyle="bold"
                                 android:text="0"
                                 android:textColor="@color/white"
-                                android:textSize="42dp"
+                                android:textSize="42sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/textView1" />
@@ -230,13 +210,12 @@
                                 android:fontFamily="@font/nanum_light"
                                 android:text=" kcal"
                                 android:textColor="@color/white"
-                                android:textSize="17dp"
+                                android:textSize="17sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/tvTodayExtratKcal" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    </LinearLayout>
 
                 </LinearLayout>
                 <!--오늘목표단백질 끝-->
@@ -260,7 +239,8 @@
                     android:id="@+id/imgBackgroundFood"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:background="@drawable/ic_baseline_fastfood_24"
+                    android:contentDescription="햄버거 사진"
+                    android:src="@drawable/ic_baseline_fastfood_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -278,8 +258,7 @@
                 <ListView
                     android:id="@+id/listAteFood"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="60dp" />
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
         </RelativeLayout>
