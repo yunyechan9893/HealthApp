@@ -5,9 +5,8 @@ import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kr.ac.doowon.healthmanageapp.R;
@@ -31,19 +31,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Signup extends Fragment {
+public class Signup extends Fragment implements View.OnClickListener {
+    private static class ValidationStatus  {
+        private final HashMap<View, Boolean> validationMap = new HashMap<>();
 
-    private class ValidationStatus {
-        private HashMap<String, Boolean> validationMap = new HashMap<>();
-
-        public void setValidationStatus(String key, boolean val){
-            validationMap.put(key, val);
+        public void setValidationStatus(View focusView, boolean val){
+            validationMap.put(focusView, val);
         }
 
         public boolean isValidation(){
-            for (boolean status:
-                    validationMap.values()) {
-                if(!status){
+            for (Map.Entry<View, Boolean> entry:
+                    validationMap.entrySet()) {
+                if(!entry.getValue()){
+                    entry.getKey().requestFocus();
                     return false;
                 }
             }
@@ -68,11 +68,13 @@ public class Signup extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         validationStatus = new ValidationStatus();
-        validationStatus.setValidationStatus("isIdDoubleCheck", false);
-
-        validationStatus.setValidationStatus("isNicknameDoubleCheck", false);
-        validationStatus.setValidationStatus("isCertificationNumberSendCheck", false);
-        validationStatus.setValidationStatus("isCertificationNumberValidCheck", false);
+        validationStatus.setValidationStatus(binding.btnIdCheck, false);
+        validationStatus.setValidationStatus(binding.edPwd, false);
+        validationStatus.setValidationStatus(binding.edName, false);
+        validationStatus.setValidationStatus(binding.edPwdCheck, false);
+        validationStatus.setValidationStatus(binding.btnNickNameCheck, false);
+        validationStatus.setValidationStatus(binding.btnPhoneNumberCheck, false);
+        validationStatus.setValidationStatus(binding.edPhoneNumber, false);
 
         KeyPatten keyPatten = new KeyPatten();
         binding.edId.setFilters(new InputFilter[]{keyPatten.AlphaNum});
@@ -80,62 +82,81 @@ public class Signup extends Fragment {
         binding.edPwd.setFilters(new InputFilter[]{keyPatten.AlphaNum});
         binding.edPwdCheck.setFilters(new InputFilter[]{keyPatten.AlphaNum});
 
+        // ID키를 입력할 때마다 중복확인 추가로 하도록 만듦
+        binding.edId.addTextChangedListener((MyTextWatch) (editable) ->
+            validationStatus.setValidationStatus(binding.btnIdCheck, false));
 
-        binding.edPwd.addTextChangedListener((MyTextWatch) (editable) ->
-            validationStatus.setValidationStatus("isPwdValidCheck",performPasswordValidCheck()));
-
-
-        binding.edPwdCheck.addTextChangedListener((MyTextWatch) (editable) ->
-            validationStatus.setValidationStatus("isPwdValidCheck",performPasswordEqulCheck()));
-
-        binding.edName.addTextChangedListener((MyTextWatch) (editable) ->
-            validationStatus.setValidationStatus("isNameInputCheck",performNameInputCheck()));
-
-        binding.btnCancel.setOnClickListener(v -> {
-            // mainActivity로 이동
+        binding.edPwd.addTextChangedListener((MyTextWatch) (editable) ->{
+            validationStatus.setValidationStatus(binding.edPwd, performPasswordValidCheck());
+            validationStatus.setValidationStatus(binding.edPwdCheck, performPasswordEqulCheck());
         });
 
-        binding.btnIdCheck.setOnClickListener(v -> {
+        binding.edPwdCheck.addTextChangedListener((MyTextWatch) (editable) ->{
+            validationStatus.setValidationStatus(binding.edPwd, performPasswordValidCheck());
+            validationStatus.setValidationStatus(binding.edPwdCheck, performPasswordEqulCheck());
+        });
+
+        binding.edName.addTextChangedListener((MyTextWatch) (editable) ->
+                validationStatus.setValidationStatus(binding.edName, performNameInputCheck()));
+
+        // Nickname 키를 입력할 때마다 중복확인 추가로 하도록 만듦
+        binding.edNickName.addTextChangedListener((MyTextWatch) (editable) -> {
+            String nickname = binding.edNickName.getText().toString();
+            performNicknameValidCheck(nickname);
+            validationStatus.setValidationStatus(binding.btnNickNameCheck, false);
+        });
+
+
+        binding.btnCancel.setOnClickListener(this);
+        binding.btnIdCheck.setOnClickListener(this);
+        binding.btnNickNameCheck.setOnClickListener(this);
+        binding.btnPhoneNumberCheck.setOnClickListener(this);
+        binding.btnRegister.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (binding.btnCancel.equals(v)){
+            AuthenticationFrame authenticationFrame = (AuthenticationFrame) getActivity();
+            assert authenticationFrame != null;
+            authenticationFrame.moveFragment("Login");
+        } else if (binding.btnIdCheck.equals(v)){
             String id = binding.edId.getText().toString();
             TextView txIdCheck = binding.txIdCheck;
 
             if (isIdValid(id)){
-                validationStatus.setValidationStatus("isIdDoubleCheck",checkDuplicateId(id, txIdCheck));
+                validationStatus.setValidationStatus(binding.btnIdCheck, checkDuplicateId(id, txIdCheck));
             } else {
-                validationStatus.setValidationStatus("isIdDoubleCheck",false);
+                validationStatus.setValidationStatus(binding.btnIdCheck, false);
             }
-        });
-
-        binding.btnNickNameCheck.setOnClickListener(v -> {
+        } else if (binding.btnNickNameCheck.equals(v)){
             String nickname = binding.edNickName.getText().toString();
+            TextView nickNameCheck = binding.txNicknameCheck;
 
             if (nickname.isEmpty()) {
-                showErrorMessage(binding.txNicknameCheck, "닉네임을 입력하세요");
-                return;
+                showErrorMessage(nickNameCheck, "닉네임을 입력하세요");
+                validationStatus.setValidationStatus(binding.btnNickNameCheck, false);
+
+            }else{
+                hideErrorMessage(nickNameCheck);
+                validationStatus.setValidationStatus(binding.btnNickNameCheck, checkDuplicateNickname(nickname));
             }
-
-            checkDuplicateNickname(nickname);
-        });
-
-        binding.btnPhoneNumberCheck.setOnClickListener(v -> {
+        } else if (binding.btnPhoneNumberCheck.equals(v)){
             int phoneNumberLength = binding.edPhoneNumber.getText().toString().length();
             TextView phoneNumberCheck = binding.txPhoneCheck;
 
-            if (phoneNumberLength < 7 || phoneNumberLength > 8 ) {
+            if (phoneNumberLength < 10 || phoneNumberLength > 11 ) {
                 showErrorMessage(phoneNumberCheck, "정확한 핸드폰 번호를 입력해주세요");
-                return; // false
+                validationStatus.setValidationStatus(binding.btnPhoneNumberCheck, false);
+                return;
             }
 
+            validationStatus.setValidationStatus(binding.btnPhoneNumberCheck, true);
             hideErrorMessage(phoneNumberCheck);
-            return; // true
-        });
-
-        binding.btnRegister.setOnClickListener(v -> {
-            for (int i = 0; i < checkList.size(); i++) {
-                if (!checkList.get(i)) {
-                    showErrorAndFocusInput(i);
-                    return;
-                }
+        } else if (binding.btnRegister.equals(v)) {
+            if (!validationStatus.isValidation()) {
+                makeToast("다시 한번 확인해주세요").show();
+                return;
             }
 
             String id = binding.edId.getText().toString();
@@ -144,79 +165,19 @@ public class Signup extends Fragment {
             String nickname = binding.edNickName.getText().toString();
             String phone = binding.edPhoneNumber.getText().toString();
 
-            String hashPwd;
-            try {
-                hashPwd = encrypt(pwd);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-
-            UserRequest userRequest = new UserRequest();
-            userRequest.setUserId(id);
-            userRequest.setUserPwd(hashPwd);
-            userRequest.setUserName(name);
-            userRequest.setUserNickname(nickname);
-            userRequest.setUserPhone(phone);
-
-            Call<JsonResponese> call = RetrofitClient.getApiService().signup(userRequest);
-            call.enqueue(new Callback<JsonResponese>() {
-                @Override
-                public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
-                    toast.setText("회원가입에 성공했습니다");
-                    toast.show();
-                    onBackPressed();
-                    return false;
-                }
-                @Override
-                public void onFailure(Call<JsonResponese> call, Throwable t) {
-                    toast.setText("회원가입에 실패했습니다");
-                    toast.show();
-                }
-            });
-        });
-    }
-
-    private void showErrorAndFocusInput(int index) {
-        TextView textView;
-        EditText editText;
-        switch (index) {
-            case 0:
-                textView = findViewById(R.id.txIdCheck);
-                editText = findViewById(R.id.edId);
-                break;
-            case 1:
-                textView = findViewById(R.id.txPwdCheck);
-                editText = findViewById(R.id.edPwd);
-                break;
-            case 2:
-                textView = findViewById(R.id.txPwdDoubleCheck);
-                editText = findViewById(R.id.edPwd);
-                break;
-            case 3:
-                textView = findViewById(R.id.txNameCheck);
-                editText = findViewById(R.id.edName);
-                break;
-            case 4:
-                textView = findViewById(R.id.txPhoneCheck);
-                editText = findViewById(R.id.edPhoneNumber);
-                break;
-            case 5:
-                textView = findViewById(R.id.txNicknameCheck);
-                editText = findViewById(R.id.edNickName);
-                break;
-            default:
-                return;
+            registerUser(id, pwd, name, nickname, phone);
         }
-        textView.setVisibility(View.VISIBLE);
-        editText.requestFocus();
-
     }
 
-    public String encrypt(String text) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(text.getBytes());
+    public String encrypt(String text) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(text.getBytes());
 
-        return bytesToHex(md.digest());
+            return bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String bytesToHex(byte[] bytes) {
@@ -311,9 +272,9 @@ public class Signup extends Fragment {
         final AtomicBoolean isDuplicate = new AtomicBoolean(false);
 
         Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateId(id);
-        call.enqueue(new Callback<JsonResponese>() {
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
+            public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
                 JsonResponese resp = response.body();
                 boolean isSuccess = resp != null && resp.isSuccess();
 
@@ -327,8 +288,7 @@ public class Signup extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<JsonResponese> call, Throwable t) {
-                System.out.println(t);
+            public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
                 isDuplicate.set(false); // 설정
             }
         });
@@ -341,14 +301,23 @@ public class Signup extends Fragment {
         return isDuplicate.get();
     }
 
-
+    private void performNicknameValidCheck(String nickname){
+        if (nickname.length() > 1 && nickname.length() < 10) {
+            binding.edNickName.setText("1~10 자리로 입력해주세요");
+        }
+    }
     private boolean checkDuplicateNickname(String nickname) {
+        if (nickname.length() < 1 || nickname.length() >10){
+            binding.edNickName.setText("1~10 자리로 입력해주세요");
+            return false;
+        }
+
         AtomicBoolean isDuplicate = new AtomicBoolean(false);
 
         Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
-        call.enqueue(new Callback<JsonResponese>() {
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
+            public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
                 JsonResponese resp = response.body();
                 boolean isSuccess = resp != null && resp.isSuccess();
 
@@ -361,13 +330,40 @@ public class Signup extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<JsonResponese> call, Throwable t) {
-                System.out.println(t);
+            public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
                 showErrorMessage(binding.txNicknameCheck, "오류가 발생했습니다");
                 isDuplicate.set(false);
             }
         });
         return isDuplicate.get();
+    }
+
+    private void registerUser(String id, String pwd, String name, String nickname, String phone) {
+        String hashPwd = encrypt(pwd);
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUserId(id);
+        userRequest.setUserPwd(hashPwd);
+        userRequest.setUserName(name);
+        userRequest.setUserNickname(nickname);
+        userRequest.setUserPhone(phone);
+
+        Call<JsonResponese> call = RetrofitClient.getApiService().signup(userRequest);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
+                makeToast("회원가입에 성공하셨습니다").show();
+                AuthenticationFrame authenticationFrame = (AuthenticationFrame) getActivity();
+
+                assert authenticationFrame != null;
+                authenticationFrame.moveFragment("Login");
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
+                makeToast("회원가입에 실패했습니다").show();
+            }
+        });
     }
 
 
@@ -378,6 +374,11 @@ public class Signup extends Fragment {
 
     private void hideErrorMessage(TextView textView) {
         textView.setVisibility(View.INVISIBLE);
+
+    }
+
+    private Toast makeToast(String contents){
+        return Toast.makeText(getContext(), contents, Toast.LENGTH_SHORT);
     }
 
 

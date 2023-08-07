@@ -39,7 +39,7 @@ public class Loding extends AppCompatActivity {
 
         prefs = Prefs.getInstance(getApplicationContext());
         String accessToken = prefs.getAccessToken();
-        nextActivity = Login.class;
+        nextActivity = AuthenticationFrame.class;
 
         if (accessToken!=null){
             LoginTokenRequest loginTokenRequest = new LoginTokenRequest(accessToken);
@@ -49,7 +49,6 @@ public class Loding extends AppCompatActivity {
                 public void onResponse(Call<JsonResponese> call, Response<JsonResponese> response) {
                     if (response.body().getMessage()==200)
                         nextActivity = MainFrame.class;
-                    return false;
                 }
 
                 @Override
@@ -78,6 +77,9 @@ public class Loding extends AppCompatActivity {
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             String fileName = "banner_"+ finalI;
                             saveBitmapToFile(resource, fileName);
+
+                            Intent intent = new Intent(Loding.this, nextActivity);
+                            startActivity(intent);
                         }
 
                         @Override
@@ -86,12 +88,6 @@ public class Loding extends AppCompatActivity {
                         }
                     });
         }
-
-
-        new Handler().postDelayed(() -> {
-            Intent intent = new Intent(Loding.this, nextActivity);
-            startActivity(intent);
-        }, 2500);
     }
 
     private void saveBitmapToFile(Bitmap bitmap, String filename){
@@ -104,4 +100,8 @@ public class Loding extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }

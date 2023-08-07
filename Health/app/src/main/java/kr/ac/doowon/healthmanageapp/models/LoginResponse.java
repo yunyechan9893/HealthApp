@@ -23,6 +23,9 @@ public class LoginResponse {
     @SerializedName("target_kcal")
     private List target_kcal;
 
+    public LoginResponse() {
+    }
+
     public boolean isSuccess() {
         return success;
     }

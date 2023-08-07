@@ -1,17 +1,26 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.SurroundingText;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -38,54 +47,48 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Login extends Activity implements View.OnClickListener {
+public class Login extends Fragment implements View.OnClickListener, ViewTreeObserver.OnGlobalLayoutListener {
     private static Prefs prefs;
-    Drawable drawRegist;
     Call<LoginResponse> call;
     Disposable disposable;
     ActivityLoginBinding binding;
 
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.activity_login, container, false);
+        return binding.getRoot();
+    }
 
-        prefs = Prefs.getInstance(getApplicationContext());
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        //버튼 색상 변경 코드
-        drawRegist = getResources().getDrawable(R.drawable.register_border2);
-        drawRegist.setColorFilter(0xff99cc00, PorterDuff.Mode.SRC_ATOP);
-        binding.btnRegist.setBackgroundDrawable(drawRegist);
+        prefs = Prefs.getInstance(getActivity());
 
         binding.btnRegist.setOnClickListener(this::onClick);
         binding.btnLogin.setOnClickListener(this::onClick);
         binding.btnFindIdPwd.setOnClickListener(this::onClick);
+
+        binding.edId.setOnFocusChangeListener((view1, hasFocus) -> handleEditTextFocus(binding.edId, hasFocus));
+
+        binding.edPwd.setOnFocusChangeListener((view12, hasFocus) -> handleEditTextFocus(binding.edPwd, hasFocus));
     }
 
     @Override
     public void onClick(View view) {
         if(binding.btnRegist.equals(view)){
-            Intent intent = new Intent(Login.this, Signup.class);
-            startActivity(intent);
+            AuthenticationFrame authenticationFrame = (AuthenticationFrame) getActivity();
+            authenticationFrame.moveFragment("Signup");
         }
         else if(binding.btnLogin.equals(view)) {
-            EditText edId = findViewById(R.id.edId);
-            EditText edPwd = findViewById(R.id.edPwd);
-
-            String strId = edId.getText().toString();
-            String strPwd = edPwd.getText().toString();
-
-            // 비밀번호 해쉬
-            String hashPwd;
-            try {
-                hashPwd = encrypt(strPwd);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+            String id = binding.edId.getText().toString();
+            String Password = binding.edPwd.getText().toString();
+            String hashPwd = encrypt(Password);
 
             // 백엔드에 전송할 Login body 구성
             UserRequest loginReq = new UserRequest();
-            loginReq.setUserId( strId   );
+            loginReq.setUserId( id );
             loginReq.setUserPwd( hashPwd );
 
             call = RetrofitClient.getApiService().login(loginReq);
@@ -98,8 +101,6 @@ public class Login extends Activity implements View.OnClickListener {
                     int msg = resp.getMessage();
 
                     if (msg==200) {
-                        Intent intent = new Intent(Login.this, MainFrame.class);
-
                         String accessToken = resp.getAccessToken();
                         String refreshToken = resp.getRefreshToken();
                         List dietInfo = resp.getDietInfo();
@@ -173,7 +174,7 @@ public class Login extends Activity implements View.OnClickListener {
                             lisTargetKcal.add(targetKcalTable);
                         }
 
-                        AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
+                        AppDatabase db = AppDatabase.getDatabase(getActivity());
 
                         Completable deleteAllCompletable = db.dietDAO().deleteTable();
 
@@ -201,7 +202,8 @@ public class Login extends Activity implements View.OnClickListener {
                                         () -> {
                                             // 모든 작업이 완료되었을 때 수행할 동작
                                             Log.i("성공", "");
-                                            startActivity(intent);
+                                            AuthenticationFrame authenticationFrame = (AuthenticationFrame) getActivity();
+                                            authenticationFrame.moveMainPage();
                                         },
                                         throwable -> {
                                             // 에러 처리
@@ -210,9 +212,8 @@ public class Login extends Activity implements View.OnClickListener {
                                 );
                     }
                     else{
-                        Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "아이디 혹은 비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
                     }
-                    return false;
                 }
 
                 @Override
@@ -228,11 +229,15 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
 
-    public String encrypt(String text) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(text.getBytes());
+    public String encrypt(String text) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(text.getBytes());
 
-        return bytesToHex(md.digest());
+            return bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
     // 바이트를 해쉬화한다.
     private String bytesToHex(byte[] bytes) {
@@ -243,10 +248,34 @@ public class Login extends Activity implements View.OnClickListener {
         return builder.toString();
     }
 
+    private boolean isKeyboardOpen = false;
+    // 포커스가 변경될 때의 처리
+    private void handleEditTextFocus(EditText editText, boolean hasFocus) {
+        if (hasFocus) {
+            if (isKeyboardOpen) {
+                // 키보드가 열려있는 상태에서 포커스를 얻을 때 처리
+                // 예: 입력 필드의 배경 색상 변경 등
+            }
+        } else {
+            // 포커스를 잃을 때의 처리
+            // 예: 입력 필드의 배경 색상 초기화 등
+        }
+    }
+
+    // 키보드의 열림/닫힘 이벤트 처리
     @Override
-    protected void onDestroy() {
+    public void onGlobalLayout() {
+        int screenHeight = getView().getHeight();
+        int keyboardHeight = screenHeight - getView().getRootView().getHeight();
+
+        isKeyboardOpen = (keyboardHeight > screenHeight * 0.15); // 키보드 높이가 화면 높이의 15% 이상일 경우로 판단
+    }
+
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         disposable.dispose();
 
     }
+
 }
