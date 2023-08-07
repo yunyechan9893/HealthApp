@@ -1,5 +1,7 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,13 +42,10 @@ public class MainFrame extends AppCompatActivity implements NavigationBarView.On
         binding.ibtnNav.setOnClickListener(this::onClick);
         binding.tvLogout.setOnClickListener(this::onClick);
 
+        Log.d(TAG, "onCreate");
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -67,7 +66,6 @@ public class MainFrame extends AppCompatActivity implements NavigationBarView.On
 
     @Override
     public void onClick(View v) {
-        Log.i("e", "1");
         if (binding.ibtnNav.equals(v)) {
             binding.drawerLayout.openDrawer((View) findViewById(R.id.drawer));
         }
@@ -75,7 +73,7 @@ public class MainFrame extends AppCompatActivity implements NavigationBarView.On
             prefs = Prefs.getInstance(getApplicationContext());
             prefs.clearToken();
 
-            Intent intent = new Intent(MainFrame.this, Login.class);
+            Intent intent = new Intent(this, AuthenticationFrame.class);
             startActivity(intent);
         }
     }
@@ -94,4 +92,45 @@ public class MainFrame extends AppCompatActivity implements NavigationBarView.On
         binding.viewPager.setAdapter(fragmentAdapter);
         binding.viewPager.setUserInputEnabled(false);
     }
+
+    public void moveFragment(String fragmentName){
+        if (fragmentName.equals("Login")) binding.viewPager.setCurrentItem(0);
+        else binding.viewPager.setCurrentItem(1);
+    }
+
+    public void moveMainPage(){
+        Intent intent = new Intent(this, MainFrame.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+    }
+
 }
