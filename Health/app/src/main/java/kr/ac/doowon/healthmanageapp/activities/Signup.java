@@ -2,6 +2,7 @@ package kr.ac.doowon.healthmanageapp.activities;
 
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.databinding.ActivitySignupBinding;
 import kr.ac.doowon.healthmanageapp.models.JsonResponese;
@@ -40,10 +44,12 @@ public class Signup extends Fragment implements View.OnClickListener {
         }
 
         public boolean isValidation(){
-            for (Map.Entry<View, Boolean> entry:
-                    validationMap.entrySet()) {
+            for (Map.Entry<View, Boolean> entry:validationMap.entrySet()) {
+                Log.i("유효성",entry.getKey().toString());
+                Log.i("유효성 값",entry.getValue().toString());
                 if(!entry.getValue()){
                     entry.getKey().requestFocus();
+
                     return false;
                 }
             }
@@ -73,7 +79,6 @@ public class Signup extends Fragment implements View.OnClickListener {
         validationStatus.setValidationStatus(binding.edName, false);
         validationStatus.setValidationStatus(binding.edPwdCheck, false);
         validationStatus.setValidationStatus(binding.btnNickNameCheck, false);
-        validationStatus.setValidationStatus(binding.btnPhoneNumberCheck, false);
         validationStatus.setValidationStatus(binding.edPhoneNumber, false);
 
         KeyPatten keyPatten = new KeyPatten();
@@ -99,13 +104,6 @@ public class Signup extends Fragment implements View.OnClickListener {
         binding.edName.addTextChangedListener((MyTextWatch) (editable) ->
                 validationStatus.setValidationStatus(binding.edName, performNameInputCheck()));
 
-        // Nickname 키를 입력할 때마다 중복확인 추가로 하도록 만듦
-        binding.edNickName.addTextChangedListener((MyTextWatch) (editable) -> {
-            String nickname = binding.edNickName.getText().toString();
-            performNicknameValidCheck(nickname);
-            validationStatus.setValidationStatus(binding.btnNickNameCheck, false);
-        });
-
 
         binding.btnCancel.setOnClickListener(this);
         binding.btnIdCheck.setOnClickListener(this);
@@ -125,33 +123,46 @@ public class Signup extends Fragment implements View.OnClickListener {
             TextView txIdCheck = binding.txIdCheck;
 
             if (isIdValid(id)){
-                validationStatus.setValidationStatus(binding.btnIdCheck, checkDuplicateId(id, txIdCheck));
+                checkDuplicateId(id, txIdCheck)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                result -> validationStatus.setValidationStatus(binding.btnIdCheck, result),
+                                throwable -> Log.i("IdError", throwable.toString())
+                        );
             } else {
                 validationStatus.setValidationStatus(binding.btnIdCheck, false);
             }
         } else if (binding.btnNickNameCheck.equals(v)){
-            String nickname = binding.edNickName.getText().toString();
+            String nickname = binding.nickNameEdittext.getText().toString();
             TextView nickNameCheck = binding.txNicknameCheck;
 
             if (nickname.isEmpty()) {
                 showErrorMessage(nickNameCheck, "닉네임을 입력하세요");
                 validationStatus.setValidationStatus(binding.btnNickNameCheck, false);
-
-            }else{
-                hideErrorMessage(nickNameCheck);
-                validationStatus.setValidationStatus(binding.btnNickNameCheck, checkDuplicateNickname(nickname));
+                return;
             }
+
+            hideErrorMessage(nickNameCheck);
+            checkDuplicateNickname(nickname)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> validationStatus.setValidationStatus(binding.btnNickNameCheck, result),
+                            throwable -> Log.i("NicknameError", throwable.toString())
+
+                    );
+
         } else if (binding.btnPhoneNumberCheck.equals(v)){
             int phoneNumberLength = binding.edPhoneNumber.getText().toString().length();
             TextView phoneNumberCheck = binding.txPhoneCheck;
 
             if (phoneNumberLength < 10 || phoneNumberLength > 11 ) {
                 showErrorMessage(phoneNumberCheck, "정확한 핸드폰 번호를 입력해주세요");
-                validationStatus.setValidationStatus(binding.btnPhoneNumberCheck, false);
+                validationStatus.setValidationStatus(binding.edPhoneNumber, false);
                 return;
             }
 
-            validationStatus.setValidationStatus(binding.btnPhoneNumberCheck, true);
+            validationStatus.setValidationStatus(binding.edPhoneNumber, true);
             hideErrorMessage(phoneNumberCheck);
         } else if (binding.btnRegister.equals(v)) {
             if (!validationStatus.isValidation()) {
@@ -162,7 +173,7 @@ public class Signup extends Fragment implements View.OnClickListener {
             String id = binding.edId.getText().toString();
             String pwd = binding.edPwd.getText().toString();
             String name = binding.edName.getText().toString();
-            String nickname = binding.edNickName.getText().toString();
+            String nickname = binding.nickNameEdittext.getText().toString();
             String phone = binding.edPhoneNumber.getText().toString();
 
             registerUser(id, pwd, name, nickname, phone);
@@ -268,74 +279,56 @@ public class Signup extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    private boolean checkDuplicateId(String id, TextView txIdCheck) {
-        final AtomicBoolean isDuplicate = new AtomicBoolean(false);
+    private Single<Boolean> checkDuplicateId(String id, TextView txIdCheck) {
+        return Single.create(emitter -> {
+            Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateId(id);
+            call.enqueue(new Callback<>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
+                    JsonResponese resp = response.body();
+                    boolean isSuccess = resp != null && resp.isSuccess();
 
-        Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateId(id);
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
-                JsonResponese resp = response.body();
-                boolean isSuccess = resp != null && resp.isSuccess();
-
-                if (isSuccess) {
-                    showErrorMessage(txIdCheck, "사용 가능한 아이디입니다");
-                    isDuplicate.set(false);
-                } else {
-                    showErrorMessage(txIdCheck, "아이디가 중복되었습니다");
-                    isDuplicate.set(true); // 설정
+                    if (isSuccess) {
+                        showErrorMessage(txIdCheck, "사용 가능한 아이디입니다");
+                        emitter.onSuccess(true);
+                    } else {
+                        showErrorMessage(txIdCheck, "아이디가 중복되었습니다");
+                        emitter.onSuccess(false);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
-                isDuplicate.set(false); // 설정
-            }
+                @Override
+                public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
+                    emitter.onSuccess(false);
+                }
+            });
         });
-
-        if (!isDuplicate.get()){
-            return false;
-        }
-
-        hideErrorMessage(txIdCheck);
-        return isDuplicate.get();
     }
 
-    private void performNicknameValidCheck(String nickname){
-        if (nickname.length() > 1 && nickname.length() < 10) {
-            binding.edNickName.setText("1~10 자리로 입력해주세요");
-        }
-    }
-    private boolean checkDuplicateNickname(String nickname) {
-        if (nickname.length() < 1 || nickname.length() >10){
-            binding.edNickName.setText("1~10 자리로 입력해주세요");
-            return false;
-        }
-
-        AtomicBoolean isDuplicate = new AtomicBoolean(false);
-
-        Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
-                JsonResponese resp = response.body();
-                boolean isSuccess = resp != null && resp.isSuccess();
-
-                if (isSuccess) {
-                    showErrorMessage(binding.txNicknameCheck, "사용 가능한 닉네임입니다");
-                } else {
-                    showErrorMessage(binding.txNicknameCheck, "닉네임이 중복되었습니다");
+    private Single<Boolean> checkDuplicateNickname(String nickname) {
+        return Single.create(emitter -> {
+            Call<JsonResponese> call = RetrofitClient.getApiService().checkDuplicateNickname(nickname);
+            call.enqueue(new Callback<>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonResponese> call, @NonNull Response<JsonResponese> response) {
+                    JsonResponese resp = response.body();
+                    boolean isSuccess = resp != null && resp.isSuccess();
+                    if (isSuccess) {
+                        showErrorMessage(binding.txNicknameCheck, "사용 가능한 닉네임입니다");
+                        emitter.onSuccess(true);
+                    } else {
+                        showErrorMessage(binding.txNicknameCheck, "닉네임이 중복되었습니다");
+                        emitter.onSuccess(false);
+                    }
                 }
-                isDuplicate.set(isSuccess);
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
-                showErrorMessage(binding.txNicknameCheck, "오류가 발생했습니다");
-                isDuplicate.set(false);
-            }
+                @Override
+                public void onFailure(@NonNull Call<JsonResponese> call, @NonNull Throwable t) {
+                    showErrorMessage(binding.txNicknameCheck, "오류가 발생했습니다");
+                    emitter.onSuccess(false);
+                }
+            });
         });
-        return isDuplicate.get();
     }
 
     private void registerUser(String id, String pwd, String name, String nickname, String phone) {
