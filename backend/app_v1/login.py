@@ -61,7 +61,11 @@ def login():
                     "carbohydrate": food.get_carbohydrate(),
                     "protein": food.get_protein(),
                     "fat": food.get_fat(),
-                    "sodium": food.get_sodium()
+                    "sugars": food.get_sugars(),
+                    "sodium": food.get_sodium(),
+                    "cholesterol": food.get_cholesterol(),
+                    "saturated_fat": food.get_saturated_fat(),
+                    "trans_fat": food.get_trans_fat(),
                 }
                 for food in ate_foods
             ]
@@ -76,6 +80,15 @@ def login():
                     "target_kcal":target_kcal_list,
             }
 
+        response_data = {
+                "success":"T",
+                "message":200,
+                "refresh_token":refresh_token,
+                "access_token":access_token,
+                "diet_info":[],
+                "food_list":[],
+                "target_kcal":[],
+        }
     return jsonify(response_data)
 
 @api.route('/login/token', methods= ['POST'])
