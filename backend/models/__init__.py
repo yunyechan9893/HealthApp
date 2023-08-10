@@ -1,5 +1,5 @@
 from flask import jsonify
-from .table import Position, User, Diet, AteFood, DietTargetKcal
+from .table import Position, User, Diet, AteFood, TargetKcal
 from .connection import SessionContext
 from .manager import create, get_one, get
 
@@ -15,26 +15,27 @@ session = Session()
 def login_defualt(id, pwd):
     try:
         with SessionContext(session) as se:
-            return get_one( session=se ,table=User, filter= and_(User.id==id, User.passward==pwd) )
+            return get_one( session=se ,table=User, filter= and_(User.id==id, User.password==pwd) )
     except Exception as e:
+        print(e)
         raise e
     
 def login_token(id, pwd):
     try:
         with SessionContext(session) as se:
-            return get_one( session=se ,table=User, filter= and_(User.id==id, User.passward==pwd) )
+            return get_one( session=se ,table=User, filter= and_(User.id==id, User.password==pwd) )
     except Exception as e:
         raise e
     
 
-def register( id, passward, name, phone, nickname, position ):
+def register( id, password, name, phone, nickname, position ):
     try:
         with SessionContext(session) as se:
             create( 
                 session=se ,
                 table=User( 
                     id=id, 
-                    passward=passward,
+                    password=password,
                     name=name,
                     phone=phone,
                     nickname=nickname,
@@ -83,8 +84,8 @@ def get_target_kcal(id):
     try:
         with SessionContext(session) as se:
             print(id)
-            table  = DietTargetKcal
-            filter = and_(DietTargetKcal.id==id)
+            table  = TargetKcal
+            filter = and_(TargetKcal.id==id)
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:
