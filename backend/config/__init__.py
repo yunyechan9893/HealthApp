@@ -7,7 +7,7 @@ class Config :
 class DevelopmentConfig(Config):
     DEBUG = True
     __DATABASE_IP='127.0.0.1'
-    DATABASE_URL=f'mssql+pymssql://yyc:9893@{__DATABASE_IP}:1433/HealthApp'
+    DATABASE_URL=f'mysql+pymysql://yyc:9893@localhost:3306/HealthApp'
 
     #jwt
     JWT_algorithm ='HS256'
@@ -25,5 +25,5 @@ class DevelopmentConfig(Config):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(("pwnbit.kr", 443))
         __DATABASE_IP=sock.getsockname()[0]
-        DATABASE_URL=f'mssql+pymssql://yyc:9893@{__DATABASE_IP}:1433/HealthApp'
+        DATABASE_URL=f'mysql+pymysql://yyc:9893@localhost:3306/HealthApp'
         print("내부 IP: ", DATABASE_URL)
