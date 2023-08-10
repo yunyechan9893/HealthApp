@@ -12,7 +12,9 @@ def signup():
     user_nickname = params.get('user_nickname')
     user_code = params.get('user_code')
 
-    user_position = 1 if user_code == '' else 4
+    print(user_code)
+
+    user_position = 1 if not user_code else 4
     
     
     print(user_id, user_pwd, user_name, user_phone, user_nickname, user_position)
