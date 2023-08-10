@@ -1,20 +1,10 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.SurroundingText;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Login extends Fragment implements View.OnClickListener, ViewTreeObserver.OnGlobalLayoutListener {
+public class Login extends Fragment implements View.OnClickListener {
     private static Prefs prefs;
     Call<LoginResponse> call;
     Disposable disposable;
@@ -69,10 +59,6 @@ public class Login extends Fragment implements View.OnClickListener, ViewTreeObs
         binding.btnRegist.setOnClickListener(this::onClick);
         binding.btnLogin.setOnClickListener(this::onClick);
         binding.btnFindIdPwd.setOnClickListener(this::onClick);
-
-        binding.edId.setOnFocusChangeListener((view1, hasFocus) -> handleEditTextFocus(binding.edId, hasFocus));
-
-        binding.edPwd.setOnFocusChangeListener((view12, hasFocus) -> handleEditTextFocus(binding.edPwd, hasFocus));
     }
 
     @Override
@@ -80,8 +66,8 @@ public class Login extends Fragment implements View.OnClickListener, ViewTreeObs
         if(binding.btnRegist.equals(view)){
             AuthenticationFrame authenticationFrame = (AuthenticationFrame) getActivity();
             authenticationFrame.moveFragment("Signup");
-        }
-        else if(binding.btnLogin.equals(view)) {
+
+        }else if(binding.btnLogin.equals(view)) {
             String id = binding.edId.getText().toString();
             String Password = binding.edPwd.getText().toString();
             String hashPwd = encrypt(Password);
@@ -98,15 +84,20 @@ public class Login extends Fragment implements View.OnClickListener, ViewTreeObs
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     LoginResponse resp = response.body();
+
+
                     int msg = resp.getMessage();
 
                     if (msg==200) {
                         String accessToken = resp.getAccessToken();
                         String refreshToken = resp.getRefreshToken();
                         List dietInfo = resp.getDietInfo();
+
                         List ateFood = resp.getAteFoodList();
                         List targetKcals = resp.getTargetKcal();
-                        Log.i("TargetKcal",targetKcals.toString() );
+                        Log.i("dietInfo",dietInfo.toString() );
+                        Log.i("dietInfo",dietInfo.getClass().getName() );
+
 
                         prefs.setAccessToken(accessToken);
                         prefs.setRefreshToken(refreshToken);
@@ -138,14 +129,19 @@ public class Login extends Fragment implements View.OnClickListener, ViewTreeObs
                         List<AteFood> lisAteFood = new ArrayList<>();
                         for (Object food : ateFood){
                             LinkedTreeMap foodMap = (LinkedTreeMap) food;
-                            int diet_no      = (int) Double.parseDouble( foodMap.get("diet_no").toString() );
-                            String name      = (String) foodMap.get("name");
-                            int amount       = (int) Double.parseDouble( foodMap.get("amount").toString() );
-                            int kcal         = (int) Double.parseDouble( foodMap.get("kcal").toString() );
-                            int carbohydrate = (int) Double.parseDouble( foodMap.get("carbohydrate").toString() );
-                            int protein      = (int) Double.parseDouble( foodMap.get("protein").toString() );
-                            int fat          = (int) Double.parseDouble( foodMap.get("fat").toString() );
-                            int sodium       = (int) Double.parseDouble( foodMap.get("sodium").toString() );
+                            int diet_no       = (int) Double.parseDouble( foodMap.get("diet_no").toString() );
+                            String name       = (String) foodMap.get("name");
+                            int amount        = (int) Double.parseDouble( foodMap.get("amount").toString() );
+                            int kcal          = (int) Double.parseDouble( foodMap.get("kcal").toString() );
+                            int carbohydrate  = (int) Double.parseDouble( foodMap.get("carbohydrate").toString() );
+                            int protein       = (int) Double.parseDouble( foodMap.get("protein").toString() );
+                            int fat           = (int) Double.parseDouble( foodMap.get("fat").toString() );
+                            int sugars        = (int) Double.parseDouble( foodMap.get("sugars").toString() );
+                            int sodium        = (int) Double.parseDouble( foodMap.get("sodium").toString() );
+                            int cholesterol   = (int) Double.parseDouble( foodMap.get("cholesterol").toString() );
+                            int saturated_fat = (int) Double.parseDouble( foodMap.get("saturated_fat").toString() );
+                            int trans_fat     = (int) Double.parseDouble( foodMap.get("trans_fat").toString() );
+
 
                             AteFood ateFoodTable = new AteFood();
                             ateFoodTable.setDietNo(diet_no)
@@ -195,7 +191,6 @@ public class Login extends Fragment implements View.OnClickListener, ViewTreeObs
                                                 )
                                 ) // deleteAllCompletable 다음 실행
                                 .andThen(insertAteFoodsCompletable) // insertDietsCompletable 다음 실행
-
                                 .subscribeOn(Schedulers.io()) // 입출력 스케줄러 사용
                                 .observeOn(Schedulers.io()) // UI에 영향을 안주기에 입출력 스케줄러 사용
                                 .subscribe(
@@ -246,29 +241,6 @@ public class Login extends Fragment implements View.OnClickListener, ViewTreeObs
             builder.append(String.format("%02x", b));
         }
         return builder.toString();
-    }
-
-    private boolean isKeyboardOpen = false;
-    // 포커스가 변경될 때의 처리
-    private void handleEditTextFocus(EditText editText, boolean hasFocus) {
-        if (hasFocus) {
-            if (isKeyboardOpen) {
-                // 키보드가 열려있는 상태에서 포커스를 얻을 때 처리
-                // 예: 입력 필드의 배경 색상 변경 등
-            }
-        } else {
-            // 포커스를 잃을 때의 처리
-            // 예: 입력 필드의 배경 색상 초기화 등
-        }
-    }
-
-    // 키보드의 열림/닫힘 이벤트 처리
-    @Override
-    public void onGlobalLayout() {
-        int screenHeight = getView().getHeight();
-        int keyboardHeight = screenHeight - getView().getRootView().getHeight();
-
-        isKeyboardOpen = (keyboardHeight > screenHeight * 0.15); // 키보드 높이가 화면 높이의 15% 이상일 경우로 판단
     }
 
     @Override
