@@ -25,6 +25,43 @@ public class Diet{
     @ColumnInfo(name = "url")
     public String url;
 
+    public Diet(){
+
+    }
+
+    public Diet(int dietId, String typeOfMeal, String mealTime, String comment, String dateTime, String url){
+        this.dietId = dietId;
+        this.typeOfMeal = typeOfMeal;
+        this.mealTime = mealTime;
+        this.comment = comment;
+        this.dateTime = dateTime;
+        this.url = url;
+    }
+
+    public int getDietId() {
+        return dietId;
+    }
+
+    public String getTypeOfMeal() {
+        return typeOfMeal;
+    }
+
+    public String getMealTime() {
+        return mealTime;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     public Diet setDietId(int dietId) {
         this.dietId = dietId;
         return this;

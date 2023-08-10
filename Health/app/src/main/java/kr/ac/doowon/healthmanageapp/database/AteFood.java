@@ -47,11 +47,65 @@ public class AteFood{
     @ColumnInfo(name = "protein")
     public int protein;
 
+    @ColumnInfo(name = "sugars")
+    public int sugars;
+
     @ColumnInfo(name = "fat")
     public int fat;
 
     @ColumnInfo(name = "sodium")
     public int sodium;
+
+    @ColumnInfo(name = "cholesterol")
+    public int cholesterol;
+
+    @ColumnInfo(name = "saturated_fat")
+    public int saturated_fat;
+
+    @ColumnInfo(name = "trans_fat")
+    public int trans_fat;
+
+
+
+    public int getNo() {
+        return no;
+    }
+
+    public int getDietNo() {
+        return dietNo;
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public int getKcal() {
+        return kcal;
+    }
+
+    public int getCarbohydrate() {
+        return carbohydrate;
+    }
+
+    public int getProtein() {
+        return protein;
+    }
+
+    public int getFat() {
+        return fat;
+    }
+
+    public int getSodium() {
+        return sodium;
+    }
 
     public void setNo(int no) {
         this.no = no;

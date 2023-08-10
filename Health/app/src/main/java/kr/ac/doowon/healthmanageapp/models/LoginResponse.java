@@ -4,13 +4,18 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import kr.ac.doowon.healthmanageapp.database.Diet;
+
 public class LoginResponse {
     @SerializedName("success")
     private boolean success;
+
     @SerializedName("message")
     private int message;
+
     @SerializedName("refresh_token")
     private String refresh_token;
+
     @SerializedName("access_token")
     private String access_token;
 
@@ -40,6 +45,12 @@ public class LoginResponse {
         return refresh_token;
     }
     public List getDietInfo() {
+
+        return diet_info;
+    }
+
+    public List<Diet> getDietInfos() {
+
         return diet_info;
     }
     public List getAteFoodList() {

@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.navigation.NavigationBarView;
 
+import kr.ac.doowon.healthmanageapp.database.AppDatabase;
 import kr.ac.doowon.healthmanageapp.fragments.introduce.IntroduceMainFrame;
 import kr.ac.doowon.healthmanageapp.fragments.management.Management;
 import kr.ac.doowon.healthmanageapp.databinding.ActivityMainFrameBinding;
@@ -38,9 +39,9 @@ public class MainFrame extends AppCompatActivity implements NavigationBarView.On
         // 네비게이션 아이템 클릭 시 보여줄 프레그먼트 구성
         setNavigationFragmentAdapter();
 
-        binding.navBottom.setOnItemSelectedListener(this::onNavigationItemSelected);
-        binding.ibtnNav.setOnClickListener(this::onClick);
-        binding.tvLogout.setOnClickListener(this::onClick);
+        binding.navBottom.setOnItemSelectedListener(this);
+        binding.ibtnNav.setOnClickListener(this);
+        binding.tvLogout.setOnClickListener(this);
 
         Log.d(TAG, "onCreate");
     }

@@ -26,6 +26,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.adapters.MyFragmentStateAdapter;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
+import kr.ac.doowon.healthmanageapp.database.AteFood;
+import kr.ac.doowon.healthmanageapp.database.Diet;
 import kr.ac.doowon.healthmanageapp.database.TargetKcal;
 import kr.ac.doowon.healthmanageapp.databinding.FragmentHomeBinding;
 import kr.ac.doowon.healthmanageapp.view_model.BannerViewModel;
@@ -35,6 +37,8 @@ public class Home extends Fragment implements View.OnClickListener {
     private FragmentHomeBinding binding;
     private BannerViewModel bannerViewModel;
     private Disposable disposable;
+    private AppDatabase db;
+    private String formatNowDate;
 
 
     @Nullable
@@ -42,14 +46,29 @@ public class Home extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
+        setNowData();
+        setupViewModel();
+        setupBannerIfNeeded();
+        setupViewPager();
+        loadTargetKcalsFromDatabase();
 
+        return binding.getRoot();
+    }
 
-        // ViewModel 초기화
+    private void setNowData(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date nowDate = new Date();
+        formatNowDate = dateFormat.format(nowDate);
+    }
+
+    private void setupViewModel() {
         bannerViewModel = new ViewModelProvider(this).get(BannerViewModel.class);
+    }
 
-        if (bannerViewModel.initAdpter(getActivity()).getFragmentAdapter().getItemCount()==0){
+    private void setupBannerIfNeeded() {
+        MyFragmentStateAdapter pagerAdapter = bannerViewModel.initAdpter(getActivity()).getFragmentAdapter();
 
-            // 차후에 동적으로 받아온다
+        if (pagerAdapter.getItemCount() == 0) {
             List<File> imgFiles = Arrays.asList(
                     new File(requireActivity().getFilesDir(), "banner_0"),
                     new File(requireActivity().getFilesDir(), "banner_1"),
@@ -61,41 +80,75 @@ public class Home extends Fragment implements View.OnClickListener {
             bannerViewModel.setFragments();
         }
 
-        MyFragmentStateAdapter pagerAdapter = bannerViewModel.getFragmentAdapter();
-
         binding.viewPager2.setAdapter(pagerAdapter);
         binding.circleIndicator.setViewPager(binding.viewPager2);
+    }
 
-        int listCnt= pagerAdapter.getItemCount();
-        binding.circleIndicator.createIndicators(listCnt,0);
-        binding.viewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        binding.viewPager2.setCurrentItem(listCnt, true);
-        binding.viewPager2.setOffscreenPageLimit(listCnt);
+    private void setupViewPager() {
+        int listCnt = bannerViewModel.getFragmentAdapter().getItemCount();
+        ViewPager2 viewPager = binding.viewPager2;
 
-        AppDatabase db = AppDatabase.getDatabase(requireContext());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date nowDate = new Date();
-        String formatNowDate = dateFormat.format(nowDate);
+        binding.circleIndicator.createIndicators(listCnt, 0);
+        viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        viewPager.setCurrentItem(0, false);
+        viewPager.setOffscreenPageLimit(listCnt);
+    }
 
-        // RxJava를 사용한 비동기 처리
+    private void loadTargetKcalsFromDatabase() {
+        db = AppDatabase.getDatabase(requireContext());
+
         disposable = db.targetKcalDAO().getTargetKcal(formatNowDate)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(targetKcals -> {
-                    // 데이터 처리
-                    for (TargetKcal targetKcal:
-                    targetKcals) {
-                        Log.i("targetKcals",targetKcal.getKcal()+"");
+                .observeOn(Schedulers.io())
+                .subscribe(
+                        targetKcals -> {
+                            loadAteDietFromDatabase();
+                        },
+                        throwable -> {
+                            handleTargetKcalsError(throwable);
+                        }
+                );
+    }
+
+    private void handleTargetKcals(List<TargetKcal> targetKcals) {
+        for (TargetKcal targetKcal : targetKcals) {
+            Log.i("targetKcals", targetKcal.getKcal() + "");
+        }
+    }
+
+    private void loadAteDietFromDatabase(){
+        db.dietDAO().getDiet(formatNowDate)
+                .subscribeOn(Schedulers.io())
+                .subscribe((diets, throwable) -> {
+                    if (diets==null) return;
+
+                    for ( Diet diet : diets ) {
+                        loadAteFoodFromDatabase(diet.getDietId());
                     }
 
-                }, throwable -> {
-                    // 에러 처리
-                    Log.i("targetKcals","실패");
-                    Log.i("targetKcals",throwable.toString());
+                    Log.i("throwable", throwable+"");
                 });
 
-        // 나머지 코드는 그대로 유지
-        return binding.getRoot();
+
+    }
+
+    private void loadAteFoodFromDatabase(int diet_no){
+        db.ateFoodDAO().getAteFood(diet_no)
+                .subscribeOn(Schedulers.io())
+                .subscribe((ateFoods, throwable) -> {
+                    if (ateFoods == null) return;
+
+                    for (AteFood ateFood : ateFoods) {
+                        Log.i("getKcal", ateFood.getKcal()+"");
+                    }
+                }
+        );
+
+    }
+
+    private void handleTargetKcalsError(Throwable throwable) {
+        Log.i("targetKcals", "실패");
+        Log.i("targetKcals", throwable.toString());
     }
 
     @Override

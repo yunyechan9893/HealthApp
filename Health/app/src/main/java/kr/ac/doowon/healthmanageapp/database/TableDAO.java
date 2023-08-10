@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 import kr.ac.doowon.healthmanageapp.database.AteFood;
 import kr.ac.doowon.healthmanageapp.database.Diet;
 import kr.ac.doowon.healthmanageapp.database.TargetKcal;
@@ -31,7 +32,7 @@ public class TableDAO {
         Completable deleteTable();
 
         @Query("SELECT * FROM diet WHERE date_time=:dateTime")
-        List<Diet> getDiet(String dateTime);
+        Single<List<Diet>> getDiet(String dateTime);
     }
 
     @Dao
@@ -48,8 +49,8 @@ public class TableDAO {
         @Query("DELETE FROM ate_food")
         Completable deleteTable();
 
-        @Query("SELECT * FROM ate_food")
-        List<AteFood> getAteFood();
+        @Query("SELECT * FROM ate_food WHERE diet_no==:diet_no")
+        Single<List<AteFood>> getAteFood(int diet_no);
     }
 
     @Dao
