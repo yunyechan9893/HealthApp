@@ -9,9 +9,9 @@ class Position(Base):
     name = Column(String(20))
 
 class User(Base):
-    __tablename__='Members'
+    __tablename__='members'
     id       = Column(String(20), primary_key=True)
-    passward = Column(String(64))
+    password = Column(String(64))
     name     = Column(String(12))
     phone    = Column(String(11))
     nickname = Column(String(15))
@@ -31,9 +31,9 @@ class User(Base):
     
 
 class Diet(Base):
-    __tablename__='Diet'
+    __tablename__='diet'
     no           = Column(Integer, primary_key=True, autoincrement=True)
-    member_id    = Column(String(20), ForeignKey('Members.id'))
+    member_id    = Column(String(20), ForeignKey('members.id'))
     type_of_meal = Column(String(10))
     meal_time    = Column(String(8))
     comment      = Column(String(500))
@@ -61,23 +61,23 @@ class Diet(Base):
     
 
 class AteFood(Base):
-    __tablename__='AteFood'
+    __tablename__='ate_food'
     no            = Column(Integer, primary_key=True, autoincrement=True)
-    diet_no       = Column(Integer, ForeignKey('Diet.no'))
-    serial_number = Column(Integer)
-    food_name     = Column(String(100))
-    amount        = Column(String(20))
+    diet_no       = Column(Integer, ForeignKey('diet.no'))
+    name          = Column(String(30))
+    amount        = Column(Integer)
     kcal          = Column(Integer)
     carbohydrate  = Column(Integer)
     protein       = Column(Integer)
     fat           = Column(Integer)
+    sugars        = Column(Integer)
     sodium        = Column(Integer)
+    cholesterol   = Column(Integer)
+    saturated_fat = Column(Integer)
+    trans_fat     = Column(Integer)
 
     def get_diet_no(self):
         return self.diet_no
-
-    def get_serial_number(self):
-        return self.serial_number
     
     def get_food_name(self):
         return self.food_name.strip()
@@ -97,15 +97,27 @@ class AteFood(Base):
     def get_fat(self):
         return self.fat
     
+    def get_sugars(self):
+        return self.sugars
+    
     def get_sodium(self):
         return self.sodium
     
-class DietTargetKcal(Base):
-    __tablename__='DietTargetKcal'
+    def get_cholesterol(self):
+        return self.cholesterol
+    
+    def get_saturated_fat(self):
+        return self.saturated_fat
+    
+    def get_trans_fat(self):
+        return self.trans_fat
+    
+class TargetKcal(Base):
+    __tablename__='target_kcal'
     no           = Column(Integer, primary_key=True, autoincrement=True)
-    id           = Column(String(20), ForeignKey('Members.id'))
+    id           = Column(String(20), ForeignKey('members.id'))
     date         = Column(String(10))
-    target_kcal  = Column(Integer)
+    kcal         = Column(Integer)
 
     def get_no(self):
         return self.no
