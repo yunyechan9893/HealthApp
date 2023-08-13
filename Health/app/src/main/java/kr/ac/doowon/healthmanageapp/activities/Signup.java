@@ -45,11 +45,8 @@ public class Signup extends Fragment implements View.OnClickListener {
 
         public boolean isValidation(){
             for (Map.Entry<View, Boolean> entry:validationMap.entrySet()) {
-                Log.i("유효성",entry.getKey().toString());
-                Log.i("유효성 값",entry.getValue().toString());
                 if(!entry.getValue()){
                     entry.getKey().requestFocus();
-
                     return false;
                 }
             }
