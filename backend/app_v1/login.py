@@ -9,15 +9,14 @@ def login():
     params = request.get_json()
     user_id  = params['user_id']
     user_pwd = params['user_pwd']
-    print(user_pwd)
 
-    response_data = {
+    resp = {
             "success":"F", 
             "message":100, 
-            "token":""
     }
+    print(user_id, user_pwd)
 
-    result = models.login_defualt(user_id, user_pwd)
+    result = models.login_default(user_id, user_pwd)
     if result :
         user_id = result.get_id()
         user_position = result.get_position()
@@ -34,62 +33,86 @@ def login():
         
         redis.set( refresh_token, json.dumps(refresh_token_info, ensure_ascii=False).encode('utf-8') )
 
-        diets = models.get_diet(user_id)
-        
-        if diets:
-            diet_numbers = [diet.get_no() for diet in diets]
-            diet_numbers_dict = {diet_numbers[i]:i for i in range(len(diet_numbers))}
-            ate_foods = models.get_ate_food(diet_numbers)
-            target_kcals = models.get_target_kcal(user_id)
-
-            target_kcal_list = [json.loads(target_kcal.get_all_data()) for target_kcal in target_kcals]
-
-            diet_info = [ {
-                "no": diet_numbers_dict.get(diet.get_no()) + 1,
-                "type_of_meal": diet.get_type_of_meal(),
-                "meal_time": diet.get_meal_time(),
-                "comment": diet.get_comment(),
-                "date": diet.get_date(),
-                "url": diet.get_url()} for diet in diets] 
-
-            food_list = [
-                {
-                    "diet_no": diet_numbers_dict.get(food.get_diet_no()) + 1,
-                    "name": food.get_food_name(),
-                    "amount": food.get_amount(),
-                    "kcal": food.get_kcal(),
-                    "carbohydrate": food.get_carbohydrate(),
-                    "protein": food.get_protein(),
-                    "fat": food.get_fat(),
-                    "sugars": food.get_sugars(),
-                    "sodium": food.get_sodium(),
-                    "cholesterol": food.get_cholesterol(),
-                    "saturated_fat": food.get_saturated_fat(),
-                    "trans_fat": food.get_trans_fat(),
-                }
-                for food in ate_foods
-            ]
-
-            response_data = {
+        resp = {
                     "success":"T",
                     "message":200,
                     "refresh_token":refresh_token,
                     "access_token":access_token,
-                    "diet_info":diet_info,
-                    "food_list":food_list,
-                    "target_kcal":target_kcal_list,
-            }
+        }
 
-        response_data = {
+    print(resp)
+    return jsonify(resp)
+
+
+@api.route('/login/diet/<id>', methods=['GET'])
+def get_login_diet(id):
+    diets = models.get_diet(id)
+
+    resp = {
+        "success":"F", 
+        "message":100, 
+    }
+        
+    if diets:
+        diet_numbers = [diet.get_no() for diet in diets]
+        diet_numbers_dict = {diet_numbers[i]:i for i in range(len(diet_numbers))}
+        ate_foods = models.get_ate_food(diet_numbers)
+
+        diet_info = [ {
+            "no": diet_numbers_dict.get(diet.get_no()) + 1,
+            "type_of_meal": diet.get_type_of_meal(),
+            "meal_time": diet.get_meal_time(),
+            "comment": diet.get_comment(),
+            "date": diet.get_date(),
+            "url": diet.get_url()} for diet in diets] 
+
+        food_list = [
+            {
+                "diet_no": diet_numbers_dict.get(food.get_diet_no()) + 1,
+                "name": food.get_food_name(),
+                "amount": food.get_amount(),
+                "kcal": food.get_kcal(),
+                "carbohydrate": food.get_carbohydrate(),
+                "protein": food.get_protein(),
+                "fat": food.get_fat(),
+                "sugars": food.get_sugars(),
+                "sodium": food.get_sodium(),
+                "cholesterol": food.get_cholesterol(),
+                "saturated_fat": food.get_saturated_fat(),
+                "trans_fat": food.get_trans_fat(),
+            }
+            for food in ate_foods
+        ]
+        resp = {
                 "success":"T",
                 "message":200,
-                "refresh_token":refresh_token,
-                "access_token":access_token,
-                "diet_info":[],
-                "food_list":[],
-                "target_kcal":[],
+                "diet_info":diet_info,
+                "food_list":food_list,
         }
-    return jsonify(response_data)
+    
+    return jsonify(resp)
+
+@api.route('/login/target-kcal/<id>', methods=['GET'])
+def get_login_target_kcal(id):
+    resp = {
+        "success":"F", 
+        "message":100, 
+    }
+
+    target_kcals = models.get_target_kcal(id)
+    if target_kcals:
+        target_kcal_list = [json.loads(target_kcal.get_all_data()) for target_kcal in target_kcals]
+
+        resp = {
+                "success":"T",
+                "message":200,
+                "target_kcal":target_kcal_list,
+        }
+    
+
+    return jsonify(resp)
+
+
 
 @api.route('/login/token', methods= ['POST'])
 def login_token():
@@ -99,25 +122,3 @@ def login_token():
                 "success":"T",
                 "message":200
     })
-
-
-## test code ## 
-
-@test.route('/target_kcals', methods= ['POST'])
-def get_diet_target_kcals():
-    if current_app.config['DEBUG_MODE'] :
-        test_id = 'test0000'
-        target_kcals = models.get_target_kcal(test_id)
-
-        target_kcal_list = [target_kcal.get_all_data() for target_kcal in target_kcals]
-
-        respone_data = {
-                    "success":"T",
-                    "message":200,
-                    "target_kcal":target_kcal_list,
-            }
-        
-        return respone_data
-
-    
-    raise Exception
