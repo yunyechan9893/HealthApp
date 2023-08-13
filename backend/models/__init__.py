@@ -12,7 +12,7 @@ engine = create_engine(config.DATABASE_URL, pool_size=20, pool_recycle=30, max_o
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def login_defualt(id, pwd):
+def login_default(id, pwd):
     try:
         with SessionContext(session) as se:
             return get_one( session=se ,table=User, filter= and_(User.id==id, User.password==pwd) )
