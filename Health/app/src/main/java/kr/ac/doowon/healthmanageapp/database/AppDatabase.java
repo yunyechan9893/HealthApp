@@ -30,7 +30,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "health_database.db")
-                            .addMigrations(MIGRATION_1_2)    // Migration 방법 지정
+                            //.addMigrations(MIGRATION_1_2)    // Migration 방법 지정
                             .addCallback(new RoomDatabase.Callback() {
                                 @Override
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
