@@ -10,11 +10,13 @@ from config import DevelopmentConfig as config
 
 engine = create_engine(config.DATABASE_URL, pool_size=20, pool_recycle=30, max_overflow=30)
 Session = sessionmaker(bind=engine)
-session = Session()
+
 
 def login_default(id, pwd):
+    session = Session()
     try:
         with SessionContext(session) as se:
+            print(id, pwd)
             return get_one( session=se ,table=User, filter= and_(User.id==id, User.password==pwd) )
     except Exception as e:
         print(e)
@@ -30,6 +32,7 @@ def login_token(id, pwd):
 
 def register( id, password, name, phone, nickname, position ):
     try:
+        session = Session()
         with SessionContext(session) as se:
             create( 
                 session=se ,
@@ -48,6 +51,7 @@ def register( id, password, name, phone, nickname, position ):
 
 def get_id(id):
     try:
+        session = Session()
         with SessionContext(session) as se:
             return get_one( session=se ,table=User, filter= and_(User.id==id) )
     except Exception as e:
@@ -55,6 +59,7 @@ def get_id(id):
     
 def get_nickname(nickname):
     try:
+        session = Session()
         with SessionContext(session) as se:
             return get_one( session=se ,table=User, filter= and_(User.nickname==nickname) )
     except Exception as e:
@@ -62,26 +67,31 @@ def get_nickname(nickname):
     
 def get_diet(id):
     try:
+        session = Session()
         with SessionContext(session) as se:
             table  = Diet
             filter = and_(Diet.member_id==id)
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:
+        print(e)
         return False
     
 def get_ate_food(numbers):
     try:
+        session = Session()
         with SessionContext(session) as se:
             table  = AteFood
             filter = or_(AteFood.diet_no == no for no in numbers)
             
             return get(session=se, table=table, filter=filter)
     except Exception as e:
+        print(e)
         return False
     
 def get_target_kcal(id):
     try:
+        session = Session()
         with SessionContext(session) as se:
             print(id)
             table  = TargetKcal
