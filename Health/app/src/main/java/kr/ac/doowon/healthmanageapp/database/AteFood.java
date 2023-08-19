@@ -6,7 +6,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-
+import com.google.gson.internal.LinkedTreeMap;
 
 @Entity(
         tableName = "ate_food",
@@ -29,10 +29,7 @@ public class AteFood{
     @ColumnInfo(name = "diet_no")
     public int dietNo;
 
-    @ColumnInfo(name = "serial_number")
-    public int serialNumber;
-
-    @ColumnInfo(name = "food_name")
+    @ColumnInfo(name = "name")
     public String foodName;
 
     @ColumnInfo(name = "amount")
@@ -66,17 +63,12 @@ public class AteFood{
     public int trans_fat;
 
 
-
     public int getNo() {
         return no;
     }
 
     public int getDietNo() {
         return dietNo;
-    }
-
-    public int getSerialNumber() {
-        return serialNumber;
     }
 
     public String getFoodName() {
@@ -107,17 +99,13 @@ public class AteFood{
         return sodium;
     }
 
-    public void setNo(int no) {
+    public AteFood setNo(int no) {
         this.no = no;
+        return this;
     }
 
     public AteFood setDietNo(int dietNo) {
         this.dietNo = dietNo;
-        return this;
-    }
-
-    public AteFood setSerialNumber(int serialNumber) {
-        this.serialNumber = serialNumber;
         return this;
     }
 
@@ -153,6 +141,26 @@ public class AteFood{
 
     public AteFood setSodium(int sodium) {
         this.sodium = sodium;
+        return this;
+    }
+
+    public AteFood setSugars(int sugars) {
+        this.sugars = sugars;
+        return this;
+    }
+
+    public AteFood setCholesterol(int cholesterol) {
+        this.cholesterol = cholesterol;
+        return this;
+    }
+
+    public AteFood setSaturatedFat(int saturated_fat) {
+        this.saturated_fat = saturated_fat;
+        return this;
+    }
+
+    public AteFood setTrans_fat(int trans_fat) {
+        this.trans_fat = trans_fat;
         return this;
     }
 }
