@@ -173,24 +173,23 @@ public class Login extends Fragment implements View.OnClickListener {
         authenticationFrame.moveMainPage();
     }
 
-    private List<AteFood> adaptLinkedTreeMapToAteFoodsList(List ateFood){
+    private List<AteFood> adaptLinkedTreeMapToAteFoodsList(List<LinkedTreeMap> ateFood){
         List<AteFood> lisAteFood = new ArrayList<>();
 
-        for (Object food : ateFood) {
-            LinkedTreeMap foodMap = (LinkedTreeMap) food;
-            int ate_food_no   = (int) Double.parseDouble(foodMap.get("ate_food_no").toString());
-            int diet_no       = (int) Double.parseDouble(foodMap.get("diet_no").toString());
-            String name       = (String) foodMap.get("name");
-            int amount        = (int) Double.parseDouble(foodMap.get("amount").toString());
-            int kcal          = (int) Double.parseDouble(foodMap.get("kcal").toString());
-            int carbohydrate  = (int) Double.parseDouble(foodMap.get("carbohydrate").toString());
-            int protein       = (int) Double.parseDouble(foodMap.get("protein").toString());
-            int fat           = (int) Double.parseDouble(foodMap.get("fat").toString());
-            int sugars        = (int) Double.parseDouble(foodMap.get("sugars").toString());
-            int sodium        = (int) Double.parseDouble(foodMap.get("sodium").toString());
-            int cholesterol   = (int) Double.parseDouble(foodMap.get("cholesterol").toString());
-            int saturated_fat = (int) Double.parseDouble(foodMap.get("saturated_fat").toString());
-            int trans_fat     = (int) Double.parseDouble(foodMap.get("trans_fat").toString());
+        for (LinkedTreeMap food : ateFood) {
+            int ate_food_no   = (int) Double.parseDouble(food.get("ate_food_no").toString());
+            int diet_no       = (int) Double.parseDouble(food.get("diet_no").toString());
+            String name       = (String) food.get("name");
+            int amount        = (int) Double.parseDouble(food.get("amount").toString());
+            int kcal          = (int) Double.parseDouble(food.get("kcal").toString());
+            int carbohydrate  = (int) Double.parseDouble(food.get("carbohydrate").toString());
+            int protein       = (int) Double.parseDouble(food.get("protein").toString());
+            int fat           = (int) Double.parseDouble(food.get("fat").toString());
+            int sugars        = (int) Double.parseDouble(food.get("sugars").toString());
+            int sodium        = (int) Double.parseDouble(food.get("sodium").toString());
+            int cholesterol   = (int) Double.parseDouble(food.get("cholesterol").toString());
+            int saturated_fat = (int) Double.parseDouble(food.get("saturated_fat").toString());
+            int trans_fat     = (int) Double.parseDouble(food.get("trans_fat").toString());
 
             AteFood ateFoodTable = new AteFood();
             ateFoodTable.setDietNo(diet_no)
@@ -213,16 +212,15 @@ public class Login extends Fragment implements View.OnClickListener {
     }
 
 
-    private List<Diet> adaptLinkedTreeMapToDietsList(List dietInfo){
+    private List<Diet> adaptLinkedTreeMapToDietsList(List<LinkedTreeMap> dietInfo){
         List<Diet> lisDiet = new ArrayList<>();
-        for (Object diet : dietInfo){
-            LinkedTreeMap dietMap = (LinkedTreeMap) diet;
-            int no            = (int) Double.parseDouble( dietMap.get("no").toString() );
-            String typeOfMeal = (String) dietMap.get("type_of_meal");
-            String mealTime   = (String) dietMap.get("meal_time");
-            String comment    = (String) dietMap.get("comment");
-            String dateTime   = (String) dietMap.get("date");
-            String url        = (String) dietMap.get("url");
+        for (LinkedTreeMap diet : dietInfo){
+            int no            = (int) Double.parseDouble( diet.get("no").toString() );
+            String typeOfMeal = (String) diet.get("type_of_meal");
+            String mealTime   = (String) diet.get("meal_time");
+            String comment    = (String) diet.get("comment");
+            String dateTime   = (String) diet.get("date");
+            String url        = (String) diet.get("url");
             Diet dietTable = new Diet();
 
             lisDiet.add(
@@ -239,12 +237,11 @@ public class Login extends Fragment implements View.OnClickListener {
         return lisDiet;
     }
 
-    private List<TargetKcal> handleTargetKcal(List targetKcals){
+    private List<TargetKcal> handleTargetKcal(List<LinkedTreeMap> targetKcals){
         List<TargetKcal> lisTargetKcal = new ArrayList<>();
-        for (Object targetKcal : targetKcals){
-            LinkedTreeMap targetKcalMap = (LinkedTreeMap) targetKcal;
-            String date = targetKcalMap.get("date").toString();
-            int kcal = (int) Double.parseDouble( targetKcalMap.get("target_kcal").toString() );
+        for (LinkedTreeMap targetKcal : targetKcals){
+            String date = targetKcal.get("date").toString();
+            int kcal = (int) Double.parseDouble( targetKcal.get("target_kcal").toString() );
 
             TargetKcal targetKcalTable = new TargetKcal();
             targetKcalTable.setKcal(kcal)

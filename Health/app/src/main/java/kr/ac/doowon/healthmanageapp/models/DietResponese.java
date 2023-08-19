@@ -1,6 +1,7 @@
 package kr.ac.doowon.healthmanageapp.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
 
@@ -12,10 +13,10 @@ public class DietResponese {
     private int message;
 
     @SerializedName("diet_info")
-    private List diet_info;
+    private List<LinkedTreeMap> diet_info;
 
     @SerializedName("food_list")
-    private List food_list;
+    private List<LinkedTreeMap> food_list;
 
     public DietResponese() {
     }
@@ -26,8 +27,8 @@ public class DietResponese {
     }
 
     //링크드 뭐시기로 반환되니깐 타입 잡고 여기서 해체시도
-    public List getDietInfo() { return diet_info;}
-    public List getAteFoodList() {
+    public List<LinkedTreeMap> getDietInfo() { return diet_info;}
+    public List<LinkedTreeMap> getAteFoodList() {
         return food_list;
     }
 }

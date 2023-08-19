@@ -45,7 +45,7 @@ def login():
 @api.route('/login/diet/<id>', methods=['GET'])
 def get_login_diet(id):
     diets = models.get_diet(id)
-    print(id, diets)
+
 
     resp = {
         "success":"F", 
@@ -56,7 +56,6 @@ def get_login_diet(id):
         
     if diets:
         diet_numbers = [diet.get_no() for diet in diets]
-        print(diet_numbers)
         ate_foods = models.get_ate_food(diet_numbers)
   
         diet_info = [ {
@@ -92,9 +91,7 @@ def get_login_diet(id):
                 "food_list":food_list,
         }
     
-    print(resp["diet_info"])
-    print(resp["food_list"])
-    
+
     return jsonify(resp)
 
 @api.route('/login/target-kcal/<id>', methods=['GET'])
