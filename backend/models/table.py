@@ -57,7 +57,7 @@ class Diet(Base):
         return self.date.strip()
     
     def get_url(self):
-        return self.url.strip()
+        return self.url.strip() if self.url else None
     
 
 class AteFood(Base):
@@ -76,14 +76,18 @@ class AteFood(Base):
     saturated_fat = Column(Integer)
     trans_fat     = Column(Integer)
 
+
+    def get_ate_food_no(self):
+        return self.no
+
     def get_diet_no(self):
         return self.diet_no
     
     def get_food_name(self):
-        return self.food_name.strip()
+        return self.name.strip()
     
     def get_amount(self):
-        return self.amount.strip()
+        return self.amount
     
     def get_kcal(self):
         return self.kcal
