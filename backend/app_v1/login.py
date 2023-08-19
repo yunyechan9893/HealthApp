@@ -14,7 +14,6 @@ def login():
             "success":"F", 
             "message":100, 
     }
-    print(user_id, user_pwd)
 
     result = models.login_default(user_id, user_pwd)
     if result :
@@ -40,26 +39,28 @@ def login():
                     "access_token":access_token,
         }
 
-    print(resp)
     return jsonify(resp)
 
 
 @api.route('/login/diet/<id>', methods=['GET'])
 def get_login_diet(id):
     diets = models.get_diet(id)
+    print(id, diets)
 
     resp = {
         "success":"F", 
-        "message":100, 
+        "message":100,
+        "diet_info":[],
+        "food_list":[],
     }
         
     if diets:
         diet_numbers = [diet.get_no() for diet in diets]
-        diet_numbers_dict = {diet_numbers[i]:i for i in range(len(diet_numbers))}
+        print(diet_numbers)
         ate_foods = models.get_ate_food(diet_numbers)
-
+  
         diet_info = [ {
-            "no": diet_numbers_dict.get(diet.get_no()) + 1,
+            "no": diet.get_no(),
             "type_of_meal": diet.get_type_of_meal(),
             "meal_time": diet.get_meal_time(),
             "comment": diet.get_comment(),
@@ -68,7 +69,8 @@ def get_login_diet(id):
 
         food_list = [
             {
-                "diet_no": diet_numbers_dict.get(food.get_diet_no()) + 1,
+                "ate_food_no": food.get_ate_food_no(),
+                "diet_no": food.get_diet_no(),
                 "name": food.get_food_name(),
                 "amount": food.get_amount(),
                 "kcal": food.get_kcal(),
@@ -90,13 +92,17 @@ def get_login_diet(id):
                 "food_list":food_list,
         }
     
+    print(resp["diet_info"])
+    print(resp["food_list"])
+    
     return jsonify(resp)
 
 @api.route('/login/target-kcal/<id>', methods=['GET'])
 def get_login_target_kcal(id):
     resp = {
         "success":"F", 
-        "message":100, 
+        "message":100,
+        "target_kcal":[]
     }
 
     target_kcals = models.get_target_kcal(id)
@@ -109,6 +115,7 @@ def get_login_target_kcal(id):
                 "target_kcal":target_kcal_list,
         }
     
+    print(resp["target_kcal"])
 
     return jsonify(resp)
 
