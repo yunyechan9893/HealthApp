@@ -1,8 +1,12 @@
 -- HealthApp 데이터베이스 생성
-CREATE DATABASE IF NOT EXISTS HealthApp;
+CREATE DATABASE IF NOT EXISTS HealthApp CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; 
 
 -- HealthApp 데이터베이스 사용
 USE HealthApp;
+
+-- .sql 파일 내의 문자 인코딩 설정
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
 
 -- position 테이블 생성
 CREATE TABLE position (
@@ -61,10 +65,16 @@ CREATE TABLE diet (
   meal_time CHAR(8), -- 몇 시에 먹었는지 저장 (예시: 15:19:00)
   comment NVARCHAR(500), -- 식단에 대해 간단한 평가를 남길 수 있음
   date CHAR(10), -- 며칠에 먹었는지 저장 (예시: 2023.08.08)
-  shere INT, -- 트레이너와 공유를 하고 싶을 때 사용, 1은 공유, 0은 안함
+  share INT, -- 트레이너와 공유를 하고 싶을 때 사용, 1은 공유, 0은 안함
   url VARCHAR(500), -- 식단 사진 URL 저장
   FOREIGN KEY (member_id) REFERENCES members (id) -- members 테이블의 id를 참조하는 외래키
 );
+
+INSERT INTO `diet` (member_id, type_of_meal, meal_time, comment, date, share) 
+VALUES ('test0000', '아침', '15:19:00', '너모 맛있었다', '23.08.19', 1);
+
+INSERT INTO `diet` (member_id, type_of_meal, meal_time, comment, date, share) 
+VALUES ('test0000', '점심', '15:19:00', '너모 맛있었다', '23.08.19', 1);
 
 -- ate_food 테이블 생성
 CREATE TABLE ate_food (
@@ -73,7 +83,7 @@ CREATE TABLE ate_food (
   name NVARCHAR(30),
   amount INT, -- 음식의 양을 저장
   kcal INT,
-  carbohydrates INT,
+  carbohydrate INT,
   protein INT,
   fat INT,
   sugars INT,
@@ -82,7 +92,20 @@ CREATE TABLE ate_food (
   saturated_fat INT,
   trans_fat INT,
   FOREIGN KEY (diet_no) REFERENCES diet (no) -- diet 테이블의 no를 참조하는 외래키
-);
+); 
+
+INSERT INTO `ate_food` (diet_no, name, amount, kcal, carbohydrate,protein, fat, sugars, sodium, cholesterol, saturated_fat, trans_fat) 
+VALUES (1, '제육볶음', 200, 150, 10, 10, 10, 10, 1, 1, 1, 1);
+
+INSERT INTO `ate_food` (diet_no, name, amount, kcal, carbohydrate,protein, fat, sugars, sodium, cholesterol, saturated_fat, trans_fat) 
+VALUES (1, '가지볶음', 200, 150, 10, 10, 10, 10, 1, 1, 1, 1);
+
+INSERT INTO `ate_food` (diet_no, name, amount, kcal, carbohydrate,protein, fat, sugars, sodium, cholesterol, saturated_fat, trans_fat) 
+VALUES (2, '자장면', 200, 150, 10, 10, 10, 10, 1, 1, 1, 1);
+
+INSERT INTO `ate_food` (diet_no, name, amount, kcal, carbohydrate,protein, fat, sugars, sodium, cholesterol, saturated_fat, trans_fat) 
+VALUES (2, '단무지', 200, 150, 10, 10, 10, 10, 1, 1, 1, 1);
+
 
 -- target_kcal 테이블 생성
 CREATE TABLE target_kcal (
