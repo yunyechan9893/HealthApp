@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -27,6 +26,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.models.LoginTokenRequest;
@@ -38,6 +38,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class Loding extends AppCompatActivity {
+    Disposable disposable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,23 +52,20 @@ public class Loding extends AppCompatActivity {
                 "https://firebasestorage.googleapis.com/v0/b/carscratch.appspot.com/o/image%2Fimg_banner_1.png?alt=media&token=19569bed-573a-40df-87cf-9edc79b22bc2"
         );
 
-        loadBannerImageFromFierbase(urls).observeOn(Schedulers.io())
-                .subscribe(() -> {
-                    Log.i("성공?", "성공?");
-                    Prefs prefs = Prefs.getInstance(getApplicationContext());
-                    String accessToken = prefs.getAccessToken();
+        Prefs prefs = Prefs.getInstance(getApplicationContext());
+        String accessToken = prefs.getAccessToken();
 
-                    requestLoginWithToken(accessToken).observeOn(AndroidSchedulers.mainThread())
-                            .subscribe((aBoolean, throwable) -> {
-                                Log.i("aBoolean", aBoolean.toString());
-                                if(aBoolean){
-                                    movePageTo(new MainFrame());
-                                } else {
-                                    movePageTo(new AuthenticationFrame());
-                                }
-                            });
-
-                });
+        disposable = loadBannerImageFromFierbase(urls)
+            .andThen(requestLoginWithToken(accessToken))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe((aBoolean) -> {
+                if(aBoolean){
+                    movePageTo(new MainFrame());
+                } else {
+                    movePageTo(new AuthenticationFrame());
+                }
+            }, Throwable::printStackTrace);
     }
 
     private Completable loadBannerImageFromFierbase(List<String> urls) {
@@ -93,6 +91,8 @@ public class Loding extends AppCompatActivity {
             }
         }).subscribeOn(Schedulers.io());
     }
+
+
 
     private void saveBitmapToFile(Bitmap bitmap, String filename){
         File file = new File(this.getFilesDir(), filename);
@@ -129,7 +129,12 @@ public class Loding extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
+
+
 }
