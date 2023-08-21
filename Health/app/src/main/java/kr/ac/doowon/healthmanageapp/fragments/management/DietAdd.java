@@ -12,6 +12,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.activities.DietFrame;
 import kr.ac.doowon.healthmanageapp.databinding.FragmentManagementDietAddBinding;
@@ -44,11 +48,44 @@ public class DietAdd extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (binding.tvDate.equals(v)){
-            DialogFragment dialog = new MyDatePicker();
-            dialog.show(getActivity().getSupportFragmentManager(),"tag");
+            String dateString = "23.08.21 10:10:10";
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+
+            try {
+                Date date = dateFormat.parse(dateString);
+                long timeInMillis = date.getTime();
+
+                MyDatePicker dialog = MyDatePicker.getInstance(timeInMillis);
+                dialog.setPositiveClick(() -> {
+                    // 날짜를 선택시 나옴
+                });
+                dialog.show(getActivity().getSupportFragmentManager(), "tag");
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
         }else if (binding.tvTime.equals(v)){
-            DialogFragment dialog = new MyTimePicker();
-            dialog.show(getActivity().getSupportFragmentManager(),"tag");
+
+            String timeString = "10:10:10";
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
+            try {
+                Date time = timeFormat.parse(timeString);
+                long timeInMillis = time.getTime();
+
+                MyTimePicker dialog = MyTimePicker.getInstance(timeInMillis);
+                dialog.setPositiveClick(() -> {
+                    // 타임피커 선택시 값 받기
+                });
+                dialog.show(getActivity().getSupportFragmentManager(),"tag");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+
         }else if (binding.btnFoodSearch.equals(v)){
             String foodName = binding.edFoodName.getText().toString();
             // 팝업 메뉴는 안뜨니깐 다른 방법을 찾아보자
