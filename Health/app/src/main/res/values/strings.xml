@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">HealthManageApp</string>
+
+    <!-- Login Page -->
+    <string name="login_logo_description">logo</string>
+    <string name="login_id_hint">아이디</string>
+    <string name="login_password_hint">비밀번호</string>
+    <string name="login_button">로그인</string>
+    <string name="login_register_button">회원가입</string>
+    <string name="login_find_id_password_button">아이디/비밀번호 찾기</string>
+
+    <!-- Loginㅅ Page -->
 </resources>
