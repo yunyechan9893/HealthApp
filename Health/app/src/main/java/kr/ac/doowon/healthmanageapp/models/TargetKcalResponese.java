@@ -9,13 +9,13 @@ public class TargetKcalResponese {
     @SerializedName("message")
     private int message;
     @SerializedName("target_kcal")
-    private List<LinkedTreeMap> target_kcal;
+    private List<LinkedTreeMap<String, ?>> target_kcal;
 
     public int getMessage() {
         return message;
     }
 
-    public List<LinkedTreeMap> getTargetKcal() {
+    public List<LinkedTreeMap<String, ?>> getTargetKcal() {
         return target_kcal;
     }
 }

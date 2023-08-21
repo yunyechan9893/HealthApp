@@ -13,10 +13,10 @@ public class DietResponese {
     private int message;
 
     @SerializedName("diet_info")
-    private List<LinkedTreeMap> diet_info;
+    private List<LinkedTreeMap<String, ?>> diet_info;
 
     @SerializedName("food_list")
-    private List<LinkedTreeMap> food_list;
+    private List<LinkedTreeMap<String, ?>> food_list;
 
     public DietResponese() {
     }
@@ -27,8 +27,8 @@ public class DietResponese {
     }
 
     //링크드 뭐시기로 반환되니깐 타입 잡고 여기서 해체시도
-    public List<LinkedTreeMap> getDietInfo() { return diet_info;}
-    public List<LinkedTreeMap> getAteFoodList() {
+    public List<LinkedTreeMap<String, ?>> getDietInfo() { return diet_info;}
+    public List<LinkedTreeMap<String, ?>> getAteFoodList() {
         return food_list;
     }
 }

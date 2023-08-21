@@ -33,7 +33,7 @@ public class Diet extends Fragment implements AdapterView.OnItemClickListener, V
 
         AteFoodBaseAdapter baseAdapter = new AteFoodBaseAdapter();
         binding.listAteFood.setAdapter(baseAdapter);
-        binding.listAteFood.setOnItemClickListener(this::onItemClick);
+        binding.listAteFood.setOnItemClickListener(this);
 
 
         return binding.getRoot();
