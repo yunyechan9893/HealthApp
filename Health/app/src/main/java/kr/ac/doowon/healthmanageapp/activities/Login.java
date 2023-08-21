@@ -1,5 +1,6 @@
 package kr.ac.doowon.healthmanageapp.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,9 +24,7 @@ import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import kr.ac.doowon.healthmanageapp.R;
 import kr.ac.doowon.healthmanageapp.database.AppDatabase;
@@ -40,6 +39,7 @@ import kr.ac.doowon.healthmanageapp.models.RetrofitClient;
 import kr.ac.doowon.healthmanageapp.models.TargetKcalResponese;
 import kr.ac.doowon.healthmanageapp.res.Prefs;
 public class Login extends Fragment implements View.OnClickListener {
+    @SuppressLint("StaticFieldLeak")
     private static Prefs prefs;
     ActivityLoginBinding binding;
 
@@ -73,12 +73,20 @@ public class Login extends Fragment implements View.OnClickListener {
 
     private void moveToSignupFragment() {
         AuthenticationFrame authenticationFrame = (AuthenticationFrame) getActivity();
+        assert authenticationFrame != null;
         authenticationFrame.moveFragment("Signup");
     }
 
     private void performLogin() {
         String id = binding.edId.getText().toString();
         String password = binding.edPwd.getText().toString();
+
+        if ( id.equals("") || password.equals("")){
+            Toast.makeText(getContext(), "아이디/비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         String hashedPassword = encrypt(password);
 
         LoginRequest loginRequest = new LoginRequest(id, hashedPassword);
@@ -91,21 +99,21 @@ public class Login extends Fragment implements View.OnClickListener {
                 loginSingle,
                 dietSingle,
                 targetKcalSingle,
-                (loginResponse, dietResponse, targetKcalResponse) -> createResponseMap(id, loginResponse, dietResponse, targetKcalResponse)
+                this::createResponseMap
         );
 
         combinedSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMapCompletable(stringListMap -> processResponseAndDatabase(stringListMap))
+                .flatMapCompletable(this::processResponseAndDatabase)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::onLoginComplete,
-                        throwable -> onLoginError(throwable)
+                        this::onLoginError
                 );
     }
 
-    private Map<String, List> createResponseMap(String id, LoginResponse loginResponse, DietResponese dietResponse, TargetKcalResponese targetKcalResponse) {
+    private Map<String, List> createResponseMap(LoginResponse loginResponse, DietResponese dietResponse, TargetKcalResponese targetKcalResponse) {
         Map<String, List> map = new HashMap<>();
 
         try {
@@ -173,48 +181,46 @@ public class Login extends Fragment implements View.OnClickListener {
         authenticationFrame.moveMainPage();
     }
 
-    private List<AteFood> adaptLinkedTreeMapToAteFoodsList(List<LinkedTreeMap> ateFood){
+    private List<AteFood> adaptLinkedTreeMapToAteFoodsList(List<LinkedTreeMap<String,?>> ateFood) {
         List<AteFood> lisAteFood = new ArrayList<>();
 
-        for (LinkedTreeMap food : ateFood) {
-            int ate_food_no   = (int) Double.parseDouble(food.get("ate_food_no").toString());
-            int diet_no       = (int) Double.parseDouble(food.get("diet_no").toString());
-            String name       = (String) food.get("name");
-            int amount        = (int) Double.parseDouble(food.get("amount").toString());
-            int kcal          = (int) Double.parseDouble(food.get("kcal").toString());
-            int carbohydrate  = (int) Double.parseDouble(food.get("carbohydrate").toString());
-            int protein       = (int) Double.parseDouble(food.get("protein").toString());
-            int fat           = (int) Double.parseDouble(food.get("fat").toString());
-            int sugars        = (int) Double.parseDouble(food.get("sugars").toString());
-            int sodium        = (int) Double.parseDouble(food.get("sodium").toString());
-            int cholesterol   = (int) Double.parseDouble(food.get("cholesterol").toString());
-            int saturated_fat = (int) Double.parseDouble(food.get("saturated_fat").toString());
-            int trans_fat     = (int) Double.parseDouble(food.get("trans_fat").toString());
-
+        for (LinkedTreeMap<String,?> food : ateFood) {
             AteFood ateFoodTable = new AteFood();
-            ateFoodTable.setDietNo(diet_no)
-                    .setNo(ate_food_no)
-                    .setFoodName(name)
-                    .setAmount(amount)
-                    .setKcal(kcal)
-                    .setCarbohydrate(carbohydrate)
-                    .setProtein(protein)
-                    .setFat(fat)
-                    .setSodium(sodium)
-                    .setSugars(sugars)
-                    .setCholesterol(cholesterol)
-                    .setSaturatedFat(saturated_fat)
-                    .setTrans_fat(trans_fat);
+
+            ateFoodTable.setNo(getIntValue(food, "ate_food_no"));
+            ateFoodTable.setDietNo(getIntValue(food, "diet_no"));
+            ateFoodTable.setFoodName(getStringValue(food, "name"));
+            ateFoodTable.setAmount(getIntValue(food, "amount"));
+            ateFoodTable.setKcal(getIntValue(food, "kcal"));
+            ateFoodTable.setCarbohydrate(getIntValue(food, "carbohydrate"));
+            ateFoodTable.setProtein(getIntValue(food, "protein"));
+            ateFoodTable.setFat(getIntValue(food, "fat"));
+            ateFoodTable.setSodium(getIntValue(food, "sodium"));
+            ateFoodTable.setSugars(getIntValue(food, "sugars"));
+            ateFoodTable.setCholesterol(getIntValue(food, "cholesterol"));
+            ateFoodTable.setSaturatedFat(getIntValue(food, "saturated_fat"));
+            ateFoodTable.setTrans_fat(getIntValue(food, "trans_fat"));
 
             lisAteFood.add(ateFoodTable);
         }
+
         return lisAteFood;
     }
 
+    private int getIntValue(LinkedTreeMap<String,?> map, String key) {
+        Object value = map.get(key);
+        return value instanceof Number ? ((Number) value).intValue() : 0;
+    }
 
-    private List<Diet> adaptLinkedTreeMapToDietsList(List<LinkedTreeMap> dietInfo){
+    private String getStringValue(LinkedTreeMap<String,?> map, String key) {
+        Object value = map.get(key);
+        return value instanceof String ? (String) value : "";
+    }
+
+
+    private List<Diet> adaptLinkedTreeMapToDietsList(List<LinkedTreeMap<String,?>> dietInfo){
         List<Diet> lisDiet = new ArrayList<>();
-        for (LinkedTreeMap diet : dietInfo){
+        for (LinkedTreeMap<String,?> diet : dietInfo){
             int no            = (int) Double.parseDouble( diet.get("no").toString() );
             String typeOfMeal = (String) diet.get("type_of_meal");
             String mealTime   = (String) diet.get("meal_time");
@@ -237,7 +243,7 @@ public class Login extends Fragment implements View.OnClickListener {
         return lisDiet;
     }
 
-    private List<TargetKcal> handleTargetKcal(List<LinkedTreeMap> targetKcals){
+    private List<TargetKcal> handleTargetKcal(List<LinkedTreeMap<String,?>> targetKcals){
         List<TargetKcal> lisTargetKcal = new ArrayList<>();
         for (LinkedTreeMap targetKcal : targetKcals){
             String date = targetKcal.get("date").toString();
