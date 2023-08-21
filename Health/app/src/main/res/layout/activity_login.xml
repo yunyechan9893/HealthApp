@@ -2,120 +2,119 @@
 
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@color/background">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="8"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:src="@drawable/img_logo"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.859" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
         <LinearLayout
-            android:id="@+id/login_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="10"
-            android:gravity="center">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="300dp"
+                    android:layout_height="200dp"
+                    android:contentDescription="@string/login_logo_description"
+                    android:src="@drawable/img_logo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <LinearLayout
-                android:id="@+id/login_inner"
+                android:id="@+id/login_frame"
+                android:layout_width="match_parent"
+                android:layout_height="168dp"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
 
                 <EditText
                     android:id="@+id/edId"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
+                    android:autofillHints="아이디를 입력해주세요"
+                    android:background="@drawable/rectangle_box_black"
                     android:ems="15"
-                    android:hint="아이디"
-                    android:padding="10dp"
-                    android:background="@drawable/rectangle_box_black"/>
+                    android:hint="@string/login_id_hint"
+                    android:inputType="text"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:padding="10dp" />
 
                 <EditText
                     android:id="@+id/edPwd"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
+                    android:autofillHints="비밀번호를 입력해주세요"
+                    android:background="@drawable/rectangle_box_black"
                     android:ems="15"
-                    android:hint="비밀번호"
-                    android:padding="10dp"
+                    android:hint="@string/login_password_hint"
                     android:inputType="textPassword"
-                    android:background="@drawable/rectangle_box_black"/>
+                    android:padding="10dp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:text="로그인"
-                    android:layout_marginTop="1dp"
+                    android:background="#FFDF00"
                     android:elevation="3dp"
                     android:ems="19"
-                    android:background="#FFDF00"/>
+                    android:text="@string/login_button" />
+
             </LinearLayout>
-        </LinearLayout>
 
-
-        <LinearLayout
-            android:id="@+id/tool_button_frame"
-            android:orientation="vertical"
-            android:layout_weight="8"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_marginTop="80dp"
+                android:id="@+id/tool_button_frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:paddingStart="40dp"
+                android:paddingTop="80dp"
+                android:paddingEnd="40dp"
+                android:paddingBottom="80dp">
+
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnRegist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/register_border2"
-                    android:ems="13"
-                    android:textColor="@color/white"
-                    android:textSize="20dp"
                     android:backgroundTint="@color/Yellow"
                     android:elevation="3dp"
-                    android:layout_margin="3dp"
-                    android:textStyle="bold"
-                    android:text="회원가입"/>
+                    android:ems="19"
+                    android:text="@string/login_register_button"
+                    android:textColor="#455A64" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnFindIdPwd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
+                    android:layout_marginTop="3dp"
                     android:background="@drawable/register_border2"
-                    android:ems="13"
-                    android:textColor="@color/white"
                     android:elevation="3dp"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:text="아이디/비밀번호 찾기"/>
+                    android:ems="19"
+                    android:text="@string/login_find_id_password_button"
+                    android:textColor="#37474F" />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
